@@ -9,7 +9,7 @@ import javax.ws.rs.core.MediaType;
 /**
  * Created by Vladimir on 31.12.2015.
  */
-@Path("/hello")
+@Path("/")
 public class Hello {
 
     @GET
