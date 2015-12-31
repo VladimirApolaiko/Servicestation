@@ -7,7 +7,13 @@ public class Main {
     private static final String RESOURCE_BASE = "src/main/webapp/";
 
     public static void main(String[] args) throws Exception {
-        Server server = new Server(8080);
+
+        String webPort = System.getenv("PORT");
+        if (webPort == null || webPort.isEmpty()) {
+            webPort = "5000";
+        }
+
+        Server server = new Server(Integer.valueOf(webPort));
 
         WebAppContext root = new WebAppContext();
         root.setContextPath("/");
