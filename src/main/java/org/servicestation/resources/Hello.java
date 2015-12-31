@@ -15,6 +15,6 @@ public class Hello {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public String sayHello() {
-        return "hello world";
+        return "Hello Niculcha Vlad it's our firs step to create great app which will use all people of world";
     }
 }
