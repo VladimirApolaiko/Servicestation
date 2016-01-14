@@ -9,14 +9,12 @@ public class Main {
 
     public static void main(String[] args) throws Exception {
 
-
-
         String webPort = System.getenv("PORT");
         if (webPort == null || webPort.isEmpty()) {
             webPort = DEFAULT_SERVER_PORT;
         }
 
-        Server server = new Server(Integer.valueOf(webPort));
+        Server server = new Server(Integer.parseInt(webPort));
 
         WebAppContext root = new WebAppContext();
         root.setContextPath("/");
