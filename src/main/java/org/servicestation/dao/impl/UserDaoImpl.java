@@ -21,3 +21,4 @@ public class UserDaoImpl implements IUserDao {
         }, id);
     }
 }
+
