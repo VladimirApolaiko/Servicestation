@@ -17,7 +17,7 @@ public class UserDaoImpl implements IUserDao {
     public User getUserById(Integer id) {
 
         return jdbcTemplate.queryForObject(GET_USER_BY_ID, (rs, rowNum) -> {
-            return new User(rs.getInt(id), rs.getString("name"));
+            return new User(rs.getInt("id"), rs.getString("name"));
         }, id);
     }
 }

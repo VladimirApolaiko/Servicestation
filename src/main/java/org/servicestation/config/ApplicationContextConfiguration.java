@@ -16,14 +16,8 @@ public class ApplicationContextConfiguration {
 
     private static final Integer INITIAL_POOL_SIZE = 10;
 
-    /* @Value("${DATABASE_URL}")*/
+
     private String DATABASE_URL = System.getenv("DATABASE_URL");
-
-    /*@Value("${DATABASE_USERNAME}")*/
-    private String DATABASE_USERNAME = System.getenv("DATABASE_USERNAME");
-
-    /*@Value("${DATABASE_PASSWORD}")*/
-    private String DATABASE_PASSWORD = System.getenv("DATABASE_PASSWORD");
 
     @Bean
     public BasicDataSource basicDataSource() throws URISyntaxException {
