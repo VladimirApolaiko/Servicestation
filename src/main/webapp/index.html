@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style type="text/css">
+        #map {
+            widht: 500px;
+            height: 400px;
+            background-color: #CCC;
+        }
+    </style>
+</head>
+<body>
+<div id="map">
+
+</div>
+<script type="text/javascript">
+    var map;
+    function initMap() {
+        var mapOnPage = document.getElementById("map");
+        index = new google.maps.Map(mapOnPage, {
+            center: {lat: 0, lng: 0},
+            //it's a coordinats of which area map will show
+            //where lat is latitude and lng is Longitude
+            zoom: 0
+            //zoom it's a number between [0;22]
+        });
+        index.data.addGeoJson(
+                {
+                    "type": "FeatureCollection",
+                    "features": [
+                        {
+                            "type": "Feature",
+                            "properties": null,
+                            "geometry": {
+                                "type": "Point",
+                                "coordinates": [
+                                    23.824951,
+                                    53.678337
+                                ]
+                            }
+                        }
+                    ]
+                });
+    }
+</script>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?callback=initMap" async defer></script>
+</body>
+</html>
