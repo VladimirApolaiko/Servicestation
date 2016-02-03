@@ -7,6 +7,7 @@ import org.servicestation.resources.impl.UserResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -41,8 +42,8 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public JdbcTemplate jdbcTemplate() throws URISyntaxException {
-        return new JdbcTemplate(basicDataSource());
+    public NamedParameterJdbcTemplate jdbcTemplate() throws URISyntaxException {
+        return new NamedParameterJdbcTemplate(basicDataSource());
     }
 
     @Bean
