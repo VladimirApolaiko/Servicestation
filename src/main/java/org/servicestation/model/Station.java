@@ -5,6 +5,6 @@ public class Station {
     public String name;
     public String address;
     public String description;
-    public double latitude;
-    public double longitude;
+    public Double latitude;
+    public Double longitude;
 }

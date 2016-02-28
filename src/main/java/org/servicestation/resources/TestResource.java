@@ -7,9 +7,9 @@ import javax.ws.rs.core.MediaType;
 
 
 @Path("/")
-public interface HelloResource {
+public interface TestResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    String sayHello();
+    String test();
 }

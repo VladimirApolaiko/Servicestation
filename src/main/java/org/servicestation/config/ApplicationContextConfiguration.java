@@ -1,7 +1,9 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.servicestation.resources.impl.HelloResourceImpl;
+import org.servicestation.dao.IStationDao;
+import org.servicestation.dao.impl.StationDaoImpl;
+import org.servicestation.resources.impl.TestResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -39,7 +41,12 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public HelloResourceImpl helloResource() {
-        return new HelloResourceImpl();
+    public IStationDao stationDao() {
+        return new StationDaoImpl();
+    }
+
+    @Bean
+    public TestResourceImpl helloResource() {
+        return new TestResourceImpl();
     }
 }
