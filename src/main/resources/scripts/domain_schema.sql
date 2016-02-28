@@ -20,7 +20,8 @@ create table mechanic(
 	name varchar(255) not null,
 	surname varchar(255) not null,
 	patronymic varchar(255) not null,
-	profile work_profile not null
+	profile work_profile not null,
+	station_id serial
 );
 
 create type order_status as enum ('init', 'accepted', 'in_progress', 'done');

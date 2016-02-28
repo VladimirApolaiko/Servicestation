@@ -1,12 +1,9 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.servicestation.dao.impl.UserDaoImpl;
 import org.servicestation.resources.impl.HelloResourceImpl;
-import org.servicestation.resources.impl.UserResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.net.URI;
@@ -37,18 +34,8 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public UserDaoImpl userDao() {
-        return new UserDaoImpl();
-    }
-
-    @Bean
     public NamedParameterJdbcTemplate jdbcTemplate() throws URISyntaxException {
         return new NamedParameterJdbcTemplate(basicDataSource());
-    }
-
-    @Bean
-    public UserResourceImpl userResource() {
-        return new UserResourceImpl();
     }
 
     @Bean
