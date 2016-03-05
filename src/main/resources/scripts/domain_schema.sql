@@ -1,7 +1,9 @@
 ﻿drop table if exists station;
-drop table if exists mechanic;
-drop table if exists "order";
+drop table if exists mechanic cascade;
+drop table if exists "order" cascade;
 drop table if exists mechanic_order;
+drop type if exists work_profile;
+drop type if exists order_status;
 create table station(
 	id serial primary key,
 	name varchar(255) not null,
@@ -32,7 +34,7 @@ create table "order"(
 	work_description varchar(10000),
 	status order_status not null,
 	planned_cost money,
-	planned_end_data timestamp with time zone, 
+	planned_end_data timestamp with time zone,
 	total_cost money,
 	end_date timestamp with time zone
 );
