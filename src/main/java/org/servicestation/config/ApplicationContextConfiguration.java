@@ -1,12 +1,11 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.servicestation.dao.impl.UserDaoImpl;
-import org.servicestation.resources.impl.HelloResourceImpl;
-import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.dao.*;
+import org.servicestation.dao.impl.*;
+import org.servicestation.resources.impl.TestResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.net.URI;
@@ -37,22 +36,37 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public UserDaoImpl userDao() {
-        return new UserDaoImpl();
-    }
-
-    @Bean
     public NamedParameterJdbcTemplate jdbcTemplate() throws URISyntaxException {
         return new NamedParameterJdbcTemplate(basicDataSource());
     }
 
     @Bean
-    public UserResourceImpl userResource() {
-        return new UserResourceImpl();
+    public IStationDao stationDao() {
+        return new StationDaoImpl();
     }
 
     @Bean
-    public HelloResourceImpl helloResource() {
-        return new HelloResourceImpl();
+    public IProfileDao profileDao(){
+        return new ProfileDaoImpl();
+    }
+
+    @Bean
+    public IMechanicDao mechanicDao(){
+        return new MechanicDaoImpl();
+    }
+
+    @Bean
+    public IOrderDao orderDao() {
+        return new OrderDaoImpl();
+    }
+
+    @Bean
+    public IMechanicOrder mechanicOrder() {
+        return new MechanicOrderImpl();
+    }
+
+    @Bean
+    public TestResourceImpl helloResource() {
+        return new TestResourceImpl();
     }
 }

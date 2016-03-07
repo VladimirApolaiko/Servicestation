@@ -1,13 +1,11 @@
 package org.servicestation.config;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.servicestation.resources.impl.HelloResourceImpl;
-import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.resources.impl.TestResourceImpl;
 
 public class JerseyResourceConfig extends ResourceConfig {
 
     public JerseyResourceConfig() {
-        register(HelloResourceImpl.class);
-        register(UserResourceImpl.class);
+        register(TestResourceImpl.class);
     }
 }
