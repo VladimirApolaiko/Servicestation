@@ -1,10 +1,10 @@
 package org.servicestation.model;
 
 public class Station {
-    public int id;
-    public String name;
-    public String address;
-    public String description;
-    public Double latitude;
-    public Double longitude;
+    public Integer id = null;
+    public String name = null;
+    public String address = null;
+    public String description = null;
+    public Double latitude = null;
+    public Double longitude = null;
 }

@@ -2,7 +2,7 @@
 drop table if exists mechanic cascade;
 drop table if exists "order" cascade;
 drop table if exists mechanic_order;
-drop type if exists work_profile;
+drop type if exists mechanic_profile;
 drop type if exists order_status;
 create table station(
 	id serial primary key,
@@ -13,20 +13,24 @@ create table station(
 	longitude double precision
 );
 
-create type work_profile as(
-	mobile_phone_number varchar(255)
+create type mechanic_profile as(
+	name varchar(255),
+	surname varchar(255),
+	patronymic varchar(255),
+	passport_number varchar(255),
+	passport_id varchar(255),
+	address varchar(1000),
+	phone_number varchar(255)
 );
 
 create table mechanic(
 	id serial primary key,
-	name varchar(255) not null,
-	surname varchar(255) not null,
-	patronymic varchar(255) not null,
-	profile work_profile not null,
+	nickname varchar(255) unique not null,
+	profile mechanic_profile,
 	station_id serial
 );
 
-create type order_status as enum ('init', 'accepted', 'in_progress', 'done');
+create type order_status as enum ('INIT', 'ACCEPTED', 'IN_PROGRESS', 'DONE');
 
 create table "order"(
 	id bigserial primary key,
@@ -34,9 +38,10 @@ create table "order"(
 	work_description varchar(10000),
 	status order_status not null,
 	planned_cost money,
-	planned_end_data timestamp with time zone,
+	planned_end_date timestamp with time zone,
 	total_cost money,
-	end_date timestamp with time zone
+	end_date timestamp with time zone,
+	station_id bigint
 );
 
 create table mechanic_order(

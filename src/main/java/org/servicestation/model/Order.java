@@ -3,12 +3,13 @@ package org.servicestation.model;
 import java.util.Date;
 
 public class Order {
-    public int id;
-    public Date initialDate;
-    public String workDescription;
-    public Status status;
-    public double cost;
-    public Date plannedEndDate;
-    public double totalCost;
-    public Date endDate;
+    public Long id = null;
+    public Date initial_date = null;
+    public String work_description = null;
+    public Status status = null;
+    public Double planned_cost = null;
+    public Date planned_end_date = null;
+    public Double total_cost = null;
+    public Date end_date = null;
+    public Integer station_id = null;
 }
