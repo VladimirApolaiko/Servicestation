@@ -1,6 +1,7 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IStationDao;
+import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Station;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,6 +9,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
+import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -16,11 +18,24 @@ import java.util.Map;
 
 public class StationDaoImpl implements IStationDao {
 
+    private static final String DELIMITER = ", ";
+
+    private static final String CREATE_STATION = "INSERT INTO station (name, address, description, latitude, longitude) " +
+            "VALUES(:name, :address, :description, :latitude, :longitude)";
+
+    private static final String SELECT_STATION = "SELECT * FROM station WHERE id=:id";
+
+    private static final String SELECT_ALL_STATIONS = "select * from station";
+
+    private static final String UPDATE_STATION = "update station set ";
+
+    private static final String DELETE_STATION = "delete from station where id=:id";
+
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Station createStation(String name, String address, String description, double latitude, double longitude) {
+    public Station createStation(final String name, final String address, final String description, final Double latitude, final Double longitude) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", name);
         params.addValue("address", address);
@@ -29,20 +44,17 @@ public class StationDaoImpl implements IStationDao {
         params.addValue("longitude", longitude);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
-        namedParameterJdbcTemplate.update(
-                "INSERT INTO station (name, address, description, latitude, longitude) " +
-                        "VALUES(:name, :address, :description, :latitude, :longitude)", params, keyHolder);
+        namedParameterJdbcTemplate.update(CREATE_STATION, params, keyHolder);
 
         return getStationInfoFromKeys(keyHolder.getKeys());
     }
 
     @Override
-    public Station getStationById(int stationId) {
+    public Station getStationById(final Integer stationId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", stationId);
 
-        return namedParameterJdbcTemplate.queryForObject("SELECT * FROM station WHERE id=:id", params, (rs, rowNum) -> {
+        return namedParameterJdbcTemplate.queryForObject(SELECT_STATION, params, (rs, rowNum) -> {
             return getStationInfoFromResultSet(rs);
         });
     }
@@ -50,64 +62,53 @@ public class StationDaoImpl implements IStationDao {
     @Override
     public List<Station> getAllStations() {
         List<Station> stations = new ArrayList<>();
-        namedParameterJdbcTemplate.query("select * from station", (rs, rowNum) -> {
-            while (rs.next()) {
-                stations.add(getStationInfoFromResultSet(rs));
-            }
+        namedParameterJdbcTemplate.query(SELECT_ALL_STATIONS, (rs, rowNum) -> {
+            stations.add(getStationInfoFromResultSet(rs));
             return stations;
         });
         return stations;
     }
 
     @Override
-    public Station changeStation(int stationId, Station newStation) {
+    public Station changeStation(final Integer stationId, final Station newStation) throws Exception {
         MapSqlParameterSource params = new MapSqlParameterSource();
+        StringBuilder sql = new StringBuilder(UPDATE_STATION);
+        boolean notNull = false;
+
+        for (Field field : newStation.getClass().getFields()) {
+            field.setAccessible(true);
+            Object value = field.get(newStation);
+
+            if (field.get(newStation) != null) {
+                params.addValue(field.getName(), value);
+                sql.append(getColumnMapping(field.getName()));
+                notNull = true;
+            }
+        }
+
+        if(!notNull) throw new NullProperiesException("At least one property should be not null");
+
+        sql.deleteCharAt(sql.length() - 2);
         params.addValue("id", stationId);
-        StringBuffer sql = new StringBuffer("update station set ");
-        final String delimiter = ", ";
-
-
-        if (newStation.name != null) {
-            sql.append("name=:name");
-            params.addValue("name", newStation.name);
-        }
-        if (newStation.address != null) {
-            sql.append("address=:address");
-            sql.append(delimiter);
-            params.addValue("address", newStation.address);
-        }
-        if (newStation.description != null) {
-            sql.append("description=:description");
-            sql.append(delimiter);
-            params.addValue("description", newStation.description);
-        }
-        if (newStation.latitude != null) {
-            sql.append("latitude=:latitude");
-            sql.append(delimiter);
-            params.addValue("latitude", newStation.latitude);
-        }
-        if (newStation.longitude != null) {
-            sql.append("longitude=:longitude");
-            params.addValue("longitude", newStation.longitude);
-        }
-        sql.append(" where id=:id");
+        sql.append("where id=:id");
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(sql.toString(), params, keyHolder);
+
         return getStationInfoFromKeys(keyHolder.getKeys());
     }
 
     @Override
-    public Station deleteStation(int stationId) {
+    public Station deleteStation(final Integer stationId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", stationId);
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        namedParameterJdbcTemplate.update("delete from station where id=:id", params, keyHolder);
+        namedParameterJdbcTemplate.update(DELETE_STATION, params, keyHolder);
 
         return getStationInfoFromKeys(keyHolder.getKeys());
     }
 
-    private Station getStationInfoFromKeys(Map<String, Object> keys) {
+    private Station getStationInfoFromKeys(final Map<String, Object> keys) {
         Station updatedStation = new Station();
         updatedStation.id = (int) keys.get("id");
         updatedStation.name = (String) keys.get("name");
@@ -119,7 +120,7 @@ public class StationDaoImpl implements IStationDao {
         return updatedStation;
     }
 
-    private Station getStationInfoFromResultSet(ResultSet rs) throws SQLException {
+    private Station getStationInfoFromResultSet(final ResultSet rs) throws SQLException {
         Station station = new Station();
         station.id = rs.getInt("id");
         station.name = rs.getString("name");
@@ -128,5 +129,9 @@ public class StationDaoImpl implements IStationDao {
         station.latitude = rs.getDouble("latitude");
         station.longitude = rs.getDouble("longitude");
         return station;
+    }
+
+    private String getColumnMapping(final String columnName) {
+        return columnName + "=:" + columnName + DELIMITER;
     }
 }

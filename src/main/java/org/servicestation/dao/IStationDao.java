@@ -1,22 +1,23 @@
 package org.servicestation.dao;
 
+import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Station;
 
 import java.util.List;
 
 public interface IStationDao {
 
-    Station createStation(String name,
-                          String address,
-                          String description,
-                          double latitude,
-                          double longitude);
+    Station createStation(final String name,
+                          final String address,
+                          final String description,
+                          final Double latitude,
+                          final Double longitude);
 
-    Station getStationById(int stationId);
+    Station getStationById(final Integer stationId);
 
     List<Station> getAllStations();
 
-    Station changeStation(int stationId, Station newStation);
+    Station changeStation(final Integer stationId, final Station newStation) throws Exception;
 
-    Station deleteStation(int stationId);
+    Station deleteStation(final Integer stationId);
 }

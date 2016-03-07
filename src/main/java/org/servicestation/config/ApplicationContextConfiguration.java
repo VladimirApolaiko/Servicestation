@@ -1,10 +1,8 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
-import org.servicestation.dao.IMechanicDao;
-import org.servicestation.dao.IStationDao;
-import org.servicestation.dao.impl.MechanicDaoImpl;
-import org.servicestation.dao.impl.StationDaoImpl;
+import org.servicestation.dao.*;
+import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -48,8 +46,23 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public IProfileDao profileDao(){
+        return new ProfileDaoImpl();
+    }
+
+    @Bean
     public IMechanicDao mechanicDao(){
         return new MechanicDaoImpl();
+    }
+
+    @Bean
+    public IOrderDao orderDao() {
+        return new OrderDaoImpl();
+    }
+
+    @Bean
+    public IMechanicOrder mechanicOrder() {
+        return new MechanicOrderImpl();
     }
 
     @Bean

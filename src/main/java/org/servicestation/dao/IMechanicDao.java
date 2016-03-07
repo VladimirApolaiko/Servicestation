@@ -3,17 +3,16 @@ package org.servicestation.dao;
 import org.servicestation.model.Mechanic;
 import org.servicestation.model.Profile;
 
+import java.util.List;
+
 public interface IMechanicDao {
-    Mechanic createMechanic(String name,
-                            String surname,
-                            String patronymic,
-                            Profile profile,
-                            int stationId);
+    Mechanic createMechanic(final String nickname, final Integer stationId);
 
-    Profile changeProfile(int mechanicId, Profile newProfile);
+    Mechanic getMechanicById(final Integer mechanicId);
 
-    Mechanic getMechanicById(int mechanicId);
+    Mechanic deleteMechanic(final Integer mechanicId);
 
-    Mechanic deleteMechanic(int deleteMechanic);
+    Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic) throws Exception;
 
+    List<Mechanic> getAllMechanics(final Integer stationId);
 }

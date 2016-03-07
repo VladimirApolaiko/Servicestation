@@ -1,14 +1,13 @@
 package org.servicestation.resources.impl;
 
-import org.servicestation.dao.IMechanicDao;
-import org.servicestation.dao.IStationDao;
+import org.servicestation.dao.*;
 import org.servicestation.model.Mechanic;
+import org.servicestation.model.Order;
 import org.servicestation.model.Profile;
 import org.servicestation.model.Station;
 import org.servicestation.resources.TestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -20,16 +19,45 @@ public class TestResourceImpl implements TestResource {
     @Autowired
     private IMechanicDao mechanicDao;
 
-    public String test() {
-        /*Station newStation = stationDao.createStation("service_station_1", "Tavlaya 34/3-27", "It's servicestation", 23.824951, 53.678337);
-        stationDao.getStationById(2);
-        stationDao.changeStation(2, new Station() {{
-            name = "COOL SERVICE";
+    @Autowired
+    private IProfileDao profileDao;
+
+    @Autowired
+    private IOrderDao orderDao;
+
+    @Autowired
+    private IMechanicOrder mechanicOrderDao;
+
+    public String test() throws Exception {
+       /* *//*Mechanic mechanic = mechanicDao.createMechanic("Javva222883", 1);
+        Profile profile = profileDao.createProfile(mechanic.id, "Vladimir", "Apolaiko", "Sergeevich", "KH22333998", "323432421234", "Sovetskaya 32/4", "+375336878957");
+        Mechanic changeMechanic = mechanicDao.changeMechanic(mechanic.id, new Mechanic() {{
+            nickname = "python";
         }});
-        stationDao.getStationById(2);
-        stationDao.deleteStation(2);
-        return newStation.toString();*/
-        Mechanic mechanic = mechanicDao.createMechanic("Vladimir", "Apolaiko", "Sergeevich", new Profile(){{phoneNumber = "+375336878957";}}, 5);
-        return mechanic.toString();
+        Profile profile1 = profileDao.changeProfile(mechanic.id, new Profile() {{
+            phone_number = "+8885557777";
+        }});
+
+        Profile profileById = profileDao.getProfileById(mechanic.id);*//*
+
+        Order order = orderDao.createNewOrder();
+
+        orderDao.changeOrder(order.id, new Order(){{
+            work_description = "very difficult case";
+        }});*/
+        Mechanic mechanic = null;
+        try{
+            mechanic = mechanicDao.createMechanic("Tim", 1);
+            Order order = orderDao.createNewOrder();
+            mechanicOrderDao.assignOrder(mechanic.id, order.id);
+            mechanicOrderDao.getMechanicOrders(mechanic.id);
+
+        }finally {
+            if(mechanic != null){
+                mechanicDao.deleteMechanic(mechanic.id);
+            }
+        }
+
+        return "Successfully";
     }
 }
