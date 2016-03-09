@@ -1,6 +1,5 @@
 package org.servicestation.dao;
 
-import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Station;
 
 import java.util.List;

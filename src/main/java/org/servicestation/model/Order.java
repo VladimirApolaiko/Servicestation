@@ -11,5 +11,5 @@ public class Order {
     public Date planned_end_date = null;
     public Double total_cost = null;
     public Date end_date = null;
-    public Integer station_id = null;
+    public Long station_id = null;
 }

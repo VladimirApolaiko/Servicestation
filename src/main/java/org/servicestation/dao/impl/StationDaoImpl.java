@@ -109,6 +109,7 @@ public class StationDaoImpl implements IStationDao {
     }
 
     private Station getStationInfoFromKeys(final Map<String, Object> keys) {
+        if(keys == null) return null;
         Station updatedStation = new Station();
         updatedStation.id = (int) keys.get("id");
         updatedStation.name = (String) keys.get("name");

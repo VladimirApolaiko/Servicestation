@@ -8,11 +8,11 @@ public interface IOrderDao {
 
     Order createNewOrder();
 
-    Order changeOrder(final Integer orderId, final Order newOrder) throws Exception;
+    Order changeOrder(final Long orderId, final Order newOrder) throws Exception;
 
-    Order deleteOrder(final Integer orderId);
+    Order deleteOrder(final Long orderId);
 
-    Order getOrderById(final Integer orderId);
+    Order getOrderById(final Long orderId);
 
     List<Order> getAllOrders(final Integer stationId);
 }
