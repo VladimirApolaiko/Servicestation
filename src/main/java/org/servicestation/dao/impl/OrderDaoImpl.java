@@ -5,6 +5,7 @@ import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -30,7 +31,7 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static String SELECT_ORDER = "select * from \"order\" where id=:id";
 
-    private static String SELECT_ORDERS_BY_STATION_ID = "select * from order where station_id=:station_id";
+    private static String SELECT_ORDERS_BY_STATION_ID = "select * from \"order\" where station_id=:station_id";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -47,7 +48,7 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public Order changeOrder(final Integer orderId, final Order newOrder) throws Exception {
+    public Order changeOrder(final Long orderId, final Order newOrder) throws Exception {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_ORDER);
         boolean notNull = false;
@@ -56,8 +57,13 @@ public class OrderDaoImpl implements IOrderDao {
             field.setAccessible(true);
             Object value = field.get(newOrder);
             if(value != null) {
-                params.addValue(field.getName(), value);
-                sql.append(getColumnMapping(field.getName()));
+                if("status".equals(field.getName())){
+                    params.addValue(field.getName(), value.toString());
+                    sql.append("status = cast(:status as order_status)" + DELIMITER);
+                }else{
+                    params.addValue(field.getName(), value);
+                    sql.append(getColumnMapping(field.getName()));
+                }
                 notNull = true;
             }
         }
@@ -75,7 +81,7 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public Order deleteOrder(final Integer orderId) {
+    public Order deleteOrder(final Long orderId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", orderId);
 
@@ -86,14 +92,13 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public Order getOrderById(final Integer orderId) {
+    public Order getOrderById(final Long orderId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("id", orderId);
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        namedParameterJdbcTemplate.update(SELECT_ORDER, params, keyHolder);
-
-        return getOrder(keyHolder.getKeys());
+        return namedParameterJdbcTemplate.queryForObject(SELECT_ORDER, params, (rs, rowNum) -> {
+            return getOrder(rs);
+        });
     }
 
     @Override
@@ -109,6 +114,7 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     private Order getOrder(final Map<String, Object> keys){
+        if(keys == null) return null;
         Order order = new Order();
         order.id = (Long)keys.get("id");
         order.initial_date = (Date)keys.get("initial_date");
@@ -118,7 +124,7 @@ public class OrderDaoImpl implements IOrderDao {
         order.planned_end_date = (Date) keys.get("planned_end_date");
         order.total_cost = (Double) keys.get("total_cost");
         order.end_date = (Date) keys.get("end_date");
-        order.station_id = (Integer) keys.get("station_id");
+        order.station_id = (Long) keys.get("station_id");
 
         return order;
     }
@@ -133,7 +139,7 @@ public class OrderDaoImpl implements IOrderDao {
         order.planned_end_date = rs.getDate("planned_end_date");
         order.total_cost = rs.getDouble("total_cost");
         order.end_date = rs.getDate("end_date");
-        order.station_id = rs.getInt("station_id");
+        order.station_id = rs.getLong("station_id");
 
         return order;
     }

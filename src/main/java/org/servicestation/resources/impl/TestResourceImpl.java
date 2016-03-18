@@ -1,10 +1,7 @@
 package org.servicestation.resources.impl;
 
 import org.servicestation.dao.*;
-import org.servicestation.model.Mechanic;
-import org.servicestation.model.Order;
-import org.servicestation.model.Profile;
-import org.servicestation.model.Station;
+import org.servicestation.model.*;
 import org.servicestation.resources.TestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,35 +26,48 @@ public class TestResourceImpl implements TestResource {
     private IMechanicOrder mechanicOrderDao;
 
     public String test() throws Exception {
-       /* *//*Mechanic mechanic = mechanicDao.createMechanic("Javva222883", 1);
-        Profile profile = profileDao.createProfile(mechanic.id, "Vladimir", "Apolaiko", "Sergeevich", "KH22333998", "323432421234", "Sovetskaya 32/4", "+375336878957");
-        Mechanic changeMechanic = mechanicDao.changeMechanic(mechanic.id, new Mechanic() {{
-            nickname = "python";
-        }});
-        Profile profile1 = profileDao.changeProfile(mechanic.id, new Profile() {{
-            phone_number = "+8885557777";
+        /*Station DAO*/
+       /* Station station = stationDao.createStation("Servicestation 1", "Sovetskaya st. 4", "Good servicestation", 54.3, 32.4);
+        Station newStation = stationDao.changeStation(station.id, new Station() {{
+            description = "Another description";
         }});
 
-        Profile profileById = profileDao.getProfileById(mechanic.id);*//*
+        *//*Mechanic DAO*//*
+        Station stationGotById = stationDao.getStationById(newStation.id);
+        List<Station> allStations = stationDao.getAllStations();
 
-        Order order = orderDao.createNewOrder();
 
-        orderDao.changeOrder(order.id, new Order(){{
-            work_description = "very difficult case";
-        }});*/
-        Mechanic mechanic = null;
-        try{
-            mechanic = mechanicDao.createMechanic("Tim", 1);
-            Order order = orderDao.createNewOrder();
-            mechanicOrderDao.assignOrder(mechanic.id, order.id);
-            mechanicOrderDao.getMechanicOrders(mechanic.id);
+        Mechanic mechanic = mechanicDao.createMechanic("VladimirApolaiko", station.id);
+        Mechanic newMechanic = mechanicDao.changeMechanic(mechanic.id, new Mechanic() {{
+            nickname = "vladimirapolaiko";
+        }});
+        Mechanic mechanicGotById = mechanicDao.getMechanicById(newMechanic.id);
+        List<Mechanic> allMechanics = mechanicDao.getAllMechanics(station.id);
 
-        }finally {
-            if(mechanic != null){
-                mechanicDao.deleteMechanic(mechanic.id);
-            }
-        }
+        *//*MechanicProfile DAO*//*
+        profileDao.createProfile(mechanic.id, "Vladimir", "Apolaiko", "Sergeevich", "KH2233432", "3323443234432", "g.Grodno, Tavlaya st. 34/3-27", "+375336878957");
+        Mechanic mechanicWithProfile = mechanicDao.getMechanicById(mechanic.id);
+        Profile profile = profileDao.changeProfile(mechanic.id, new Profile() {{
+            phone_number = "7788";
+        }});
+        Profile MechanicsProfile = profileDao.getProfileById(mechanic.id);*/
 
-        return "Successfully";
+        /*Order DAO*/
+       /* Order newOrder = orderDao.createNewOrder();
+        Order order = orderDao.changeOrder(newOrder.id, new Order() {{
+            status = Status.DONE;
+            station_id = 5L;
+        }});
+        Order orderById = orderDao.getOrderById(newOrder.id);
+        orderDao.getAllOrders(5);
+
+        mechanicOrderDao.assignOrder(12, order.id);
+
+        orderDao.deleteOrder(order.id);
+        mechanicDao.deleteMechanic(12);*/
+        stationDao.deleteStation(5);
+
+        return "Success";
+
     }
 }

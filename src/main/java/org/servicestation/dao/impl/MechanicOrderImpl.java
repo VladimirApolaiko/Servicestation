@@ -54,7 +54,7 @@ public class MechanicOrderImpl implements IMechanicOrder {
         order.planned_end_date = rs.getDate("planned_end_date");
         order.total_cost = rs.getDouble("total_cost");
         order.end_date = rs.getDate("end_date");
-        order.station_id = rs.getInt("station_id");
+        order.station_id = rs.getLong("station_id");
 
         return order;
     }
