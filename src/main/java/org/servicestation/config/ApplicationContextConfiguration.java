@@ -46,12 +46,12 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public IProfileDao profileDao(){
+    public IProfileDao profileDao() {
         return new ProfileDaoImpl();
     }
 
     @Bean
-    public IMechanicDao mechanicDao(){
+    public IMechanicDao mechanicDao() {
         return new MechanicDaoImpl();
     }
 
