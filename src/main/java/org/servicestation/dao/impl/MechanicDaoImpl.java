@@ -3,7 +3,6 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.IMechanicDao;
 import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Mechanic;
-import org.servicestation.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -21,8 +20,7 @@ public class MechanicDaoImpl implements IMechanicDao {
 
     private static final String DELIMITER = ", ";
 
-    private static final String INSERT_MECHANIC = "insert into mechanic (nickname, station_id) " +
-            "values(:nickname, :station_id);";
+    private static final String INSERT_MECHANIC = "insert into mechanic (nickname, station_id) values(:nickname, :station_id);";
 
     private static final String UPDATE_MECHANIC = "update mechanic set ";
 
@@ -51,8 +49,7 @@ public class MechanicDaoImpl implements IMechanicDao {
         return getMechanic(keyHolder.getKeys());
     }
 
-
-
+    @Override
     public Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic) throws Exception {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_MECHANIC);

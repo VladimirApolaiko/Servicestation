@@ -5,7 +5,6 @@ import org.servicestation.dao.exceptions.NullProperiesException;
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -32,6 +31,9 @@ public class OrderDaoImpl implements IOrderDao {
     private static String SELECT_ORDER = "select * from \"order\" where id=:id";
 
     private static String SELECT_ORDERS_BY_STATION_ID = "select * from \"order\" where station_id=:station_id";
+
+    private static String GET_MECHANIC_ORDERS = "select * from \"order\" where id in " +
+            "(select order_id from mechanic_order where mechanic_id=:mechanic_id)";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -110,6 +112,18 @@ public class OrderDaoImpl implements IOrderDao {
         namedParameterJdbcTemplate.query(SELECT_ORDERS_BY_STATION_ID, params, rs -> {
             orders.add(getOrder(rs));
         });
+        return orders;
+    }
+
+    @Override
+    public List<Order> getMechanicOrders(Integer mechanicId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("mechanic_id", mechanicId);
+        List<Order> orders = new ArrayList<>();
+        namedParameterJdbcTemplate.query(GET_MECHANIC_ORDERS, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
         return orders;
     }
 
