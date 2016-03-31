@@ -1,4 +1,3 @@
-/*
 package org.servicestation.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,37 +64,45 @@ public class OAuth2Config {
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
         private final TokenStore tokenStore = new InMemoryTokenStore();
+
         @Value("353b302c44574f565045687e534e7d6a")
         private String clientName;
+
         @Value("286924697e615a672a646a493545646c")
         private String clientSecret;
+
         @Autowired
         @Qualifier("authenticationManager")
         private AuthenticationManager authenticationManager;
+
         @Autowired
         private ClientDetailsService clientDetailsService;
+
         @Autowired
         @Qualifier("tokenServices")
         private AuthorizationServerTokenServices tokenServices;
+
         @Autowired
         @Qualifier("codeServices")
         private AuthorizationCodeServices codeServices;
+
         @Autowired
         @Qualifier("requestFactory")
         private OAuth2RequestFactory requestFactory;
+
         @Autowired
         @Qualifier("tokenGranter")
         private TokenGranter tokenGranter;
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.setClientDetailsService(clientDetailsService);
-            endpoints.tokenServices(tokenServices)
+            endpoints.setClientDetailsService(clientDetailsService); // Service which responsible for client (where clients saved)
+            endpoints.tokenServices(tokenServices) //set token services which responsible for place where tokens saved, support refresh token
                     .tokenStore(tokenStore)
                     .authorizationCodeServices(codeServices)
-                    .authenticationManager(authenticationManager)
+                    .authenticationManager(authenticationManager) // Authorization codes for Authorization grant flow
                     .requestFactory(requestFactory)
-                    .tokenGranter(tokenGranter);
+                    .tokenGranter(tokenGranter); // specify supported grant types
         }
 
         @Override
@@ -103,15 +110,11 @@ public class OAuth2Config {
             clients.withClientDetails(clientDetailsService);
         }
 
-        @Override
-        public void configure(AuthorizationServerSecurityConfigurer http) throws Exception {
-
-        }
 
         @Bean(name = "tokenGranter")
         @Primary
         public TokenGranter tokenGranter() {
-            final List<TokenGranter> tokenGranters = new ArrayList<TokenGranter>();
+            final List<TokenGranter> tokenGranters = new ArrayList<>();
 
             tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, codeServices, clientDetailsService, requestFactory));
             tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory));
@@ -166,4 +169,3 @@ public class OAuth2Config {
         }
     }
 }
-*/
