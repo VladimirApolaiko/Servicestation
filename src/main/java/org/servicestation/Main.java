@@ -24,6 +24,7 @@ public class Main {
         root.setResourceBase(RESOURCE_BASE);
         root.setDescriptor(RESOURCE_BASE + "/WEB-INF/web.xml");
 
+
         server.setHandler(root);
         server.start();
         LOGGER.info("Start application on port {}", webPort);
