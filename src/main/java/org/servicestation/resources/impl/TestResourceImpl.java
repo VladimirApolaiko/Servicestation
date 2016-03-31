@@ -65,7 +65,6 @@ public class TestResourceImpl implements TestResource {
 
         orderDao.deleteOrder(order.id);
         mechanicDao.deleteMechanic(12);*/
-        stationDao.deleteStation(5);
 
         return "Success";
 

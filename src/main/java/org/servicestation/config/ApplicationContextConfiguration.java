@@ -7,6 +7,7 @@ import org.servicestation.resources.impl.TestResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.web.filter.DelegatingFilterProxy;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -69,4 +70,10 @@ public class ApplicationContextConfiguration {
     public TestResourceImpl helloResource() {
         return new TestResourceImpl();
     }
+
+    @Bean(name="springSecurityFilterChain")
+    public DelegatingFilterProxy springSecurityFilterChain() {
+        return new DelegatingFilterProxy();
+    }
+
 }
