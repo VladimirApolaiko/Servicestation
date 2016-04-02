@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.web.filter.DelegatingFilterProxy;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -71,9 +72,14 @@ public class ApplicationContextConfiguration {
         return new TestResourceImpl();
     }
 
-    @Bean(name="springSecurityFilterChain")
+    @Bean(name = "springSecurityFilterChain")
     public DelegatingFilterProxy springSecurityFilterChain() {
         return new DelegatingFilterProxy();
+    }
+
+    @Bean
+    public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
+        return new RequestMappingHandlerAdapter();
     }
 
 }

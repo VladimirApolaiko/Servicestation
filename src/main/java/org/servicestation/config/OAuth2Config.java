@@ -16,17 +16,14 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
 import org.springframework.security.oauth2.provider.OAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.TokenGranter;
-import org.springframework.security.oauth2.provider.client.ClientCredentialsTokenGranter;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.code.AuthorizationCodeTokenGranter;
 import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCodeServices;
-import org.springframework.security.oauth2.provider.implicit.ImplicitTokenGranter;
+import org.springframework.security.oauth2.provider.password.ResourceOwnerPasswordTokenGranter;
 import org.springframework.security.oauth2.provider.refresh.RefreshTokenGranter;
 import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
@@ -110,16 +107,12 @@ public class OAuth2Config {
             clients.withClientDetails(clientDetailsService);
         }
 
-
         @Bean(name = "tokenGranter")
         @Primary
         public TokenGranter tokenGranter() {
             final List<TokenGranter> tokenGranters = new ArrayList<>();
-
-            tokenGranters.add(new AuthorizationCodeTokenGranter(tokenServices, codeServices, clientDetailsService, requestFactory));
             tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory));
-            tokenGranters.add(new ImplicitTokenGranter(tokenServices, clientDetailsService, requestFactory));
-            tokenGranters.add(new ClientCredentialsTokenGranter(tokenServices, clientDetailsService, requestFactory));
+            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
 
             return new CompositeTokenGranter(tokenGranters);
         }
@@ -134,15 +127,12 @@ public class OAuth2Config {
                     .scopes("read", "write")
                     .resourceIds(RESOURCE_ID)
                     .secret(clientSecret);
-
             try {
                 return builder.build();
             } catch (final Exception e) {
                 e.printStackTrace();
             }
-
             return null;
-
         }
 
         @Bean(name = "tokenServices")
@@ -167,5 +157,6 @@ public class OAuth2Config {
         public AuthorizationCodeServices authorizationCodeServices() {
             return new InMemoryAuthorizationCodeServices();
         }
+
     }
 }
