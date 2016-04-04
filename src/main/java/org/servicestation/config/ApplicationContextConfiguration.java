@@ -1,6 +1,7 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.servicestation.config.provider.CustomPreAuthProvider;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
@@ -17,7 +18,6 @@ import java.net.URISyntaxException;
 public class ApplicationContextConfiguration {
 
     private static final Integer INITIAL_POOL_SIZE = 10;
-
 
     private String DATABASE_URL = System.getenv("DATABASE_URL");
 
@@ -80,6 +80,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public RequestMappingHandlerAdapter requestMappingHandlerAdapter() {
         return new RequestMappingHandlerAdapter();
+    }
+
+    @Bean
+    public CustomPreAuthProvider customPreAuthProvider(){
+        return new CustomPreAuthProvider();
     }
 
 }
