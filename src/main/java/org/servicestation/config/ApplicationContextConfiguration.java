@@ -2,12 +2,14 @@ package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.servicestation.config.provider.CustomPreAuthProvider;
+import org.servicestation.config.provider.CustomPreAuthUserDetailsService;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -85,6 +87,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public CustomPreAuthProvider customPreAuthProvider(){
         return new CustomPreAuthProvider();
+    }
+
+    @Bean
+    public AuthenticationUserDetailsService authenticationUserDetailsService() {
+        return new CustomPreAuthUserDetailsService();
     }
 
 }
