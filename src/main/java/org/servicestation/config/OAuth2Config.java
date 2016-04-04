@@ -30,7 +30,9 @@ import org.springframework.security.oauth2.provider.token.AuthorizationServerTok
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +62,6 @@ public class OAuth2Config {
     @EnableAuthorizationServer
     protected static class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
-        private final TokenStore tokenStore = new InMemoryTokenStore();
-
         @Value("353b302c44574f565045687e534e7d6a")
         private String clientName;
 
@@ -69,56 +69,37 @@ public class OAuth2Config {
         private String clientSecret;
 
         @Autowired
-        @Qualifier("authenticationManager")
         private AuthenticationManager authenticationManager;
 
         @Autowired
-        private ClientDetailsService clientDetailsService;
+        private DataSource dataSource;
 
-        @Autowired
-        @Qualifier("tokenServices")
-        private AuthorizationServerTokenServices tokenServices;
-
-        @Autowired
-        @Qualifier("codeServices")
-        private AuthorizationCodeServices codeServices;
-
-        @Autowired
-        @Qualifier("requestFactory")
-        private OAuth2RequestFactory requestFactory;
-
-        @Autowired
-        @Qualifier("tokenGranter")
-        private TokenGranter tokenGranter;
 
         @Override
         public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
-            endpoints.setClientDetailsService(clientDetailsService); // Service which responsible for client (where clients saved)
-            endpoints.tokenServices(tokenServices) //set token services which responsible for place where tokens saved, support refresh token
-                    .tokenStore(tokenStore)
-                    .authorizationCodeServices(codeServices)
+            endpoints.setClientDetailsService(clientDetailsService()); // Service which responsible for client (where clients saved)
+            endpoints.tokenServices(tokenServices()) //set token services which responsible for place where tokens saved, support refresh token
+                    .tokenStore(tokenStore())
                     .authenticationManager(authenticationManager) // Authorization codes for Authorization grant flow
-                    .requestFactory(requestFactory)
-                    .tokenGranter(tokenGranter); // specify supported grant types
+                    .requestFactory(requestFactory())
+                    .tokenGranter(tokenGranter()); // specify supported grant types
         }
 
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-            clients.withClientDetails(clientDetailsService);
+            clients.withClientDetails(clientDetailsService());
         }
 
-        @Bean(name = "tokenGranter")
-        @Primary
+        @Bean
         public TokenGranter tokenGranter() {
             final List<TokenGranter> tokenGranters = new ArrayList<>();
-            tokenGranters.add(new RefreshTokenGranter(tokenServices, clientDetailsService, requestFactory));
-            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices, clientDetailsService, requestFactory));
+            tokenGranters.add(new RefreshTokenGranter(tokenServices(), clientDetailsService(), requestFactory()));
+            tokenGranters.add(new ResourceOwnerPasswordTokenGranter(authenticationManager, tokenServices(), clientDetailsService(), requestFactory()));
 
             return new CompositeTokenGranter(tokenGranters);
         }
 
         @Bean
-        @Primary
         public ClientDetailsService clientDetailsService() {
             final InMemoryClientDetailsServiceBuilder builder = new InMemoryClientDetailsServiceBuilder();
             builder.withClient(clientName)
@@ -135,27 +116,24 @@ public class OAuth2Config {
             return null;
         }
 
-        @Bean(name = "tokenServices")
-        @Primary
+        @Bean
+        public TokenStore tokenStore() {
+            return new JdbcTokenStore(dataSource);
+        }
+
+        @Bean
         public AuthorizationServerTokenServices tokenServices() {
             final DefaultTokenServices tokenServices = new DefaultTokenServices();
             tokenServices.setSupportRefreshToken(true);
-            tokenServices.setClientDetailsService(clientDetailsService);
-            tokenServices.setTokenStore(tokenStore);
+            tokenServices.setClientDetailsService(clientDetailsService());
+            tokenServices.setTokenStore(tokenStore());
             tokenServices.setAuthenticationManager(authenticationManager);
             return tokenServices;
         }
 
-        @Bean(name = "requestFactory")
-        @Primary
+        @Bean
         public OAuth2RequestFactory requestFactory() {
-            return new DefaultOAuth2RequestFactory(clientDetailsService);
-        }
-
-        @Bean(name = "codeServices")
-        @Primary
-        public AuthorizationCodeServices authorizationCodeServices() {
-            return new InMemoryAuthorizationCodeServices();
+            return new DefaultOAuth2RequestFactory(clientDetailsService());
         }
 
     }
