@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
@@ -92,6 +94,14 @@ public class ApplicationContextConfiguration {
     @Bean
     public AuthenticationUserDetailsService authenticationUserDetailsService() {
         return new CustomPreAuthUserDetailsService();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() throws URISyntaxException {
+        return new JdbcUserDetailsManager(){{
+            setDataSource(basicDataSource());
+        }};
+
     }
 
 }

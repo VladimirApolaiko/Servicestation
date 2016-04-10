@@ -13,8 +13,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 
+import javax.sql.DataSource;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -31,52 +33,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private PreAuthenticatedAuthenticationProvider preAuthProvider;
 
     @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
     public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(authenticationProvider).authenticationProvider(preAuthProvider);
-        auth.inMemoryAuthentication().withUser("marissa").password("koala").roles("USER").and().withUser("paul")
-                .password("emu").roles("USER");
+        auth.userDetailsService(userDetailsService);
     }
-
-    @Bean
-    public UserDetailsService userDetailsService(){
-        return new InMemoryUserDetailsManager(asList(new UserDetails() {
-            @Override
-            public Collection<? extends GrantedAuthority> getAuthorities() {
-                return Collections.singletonList((GrantedAuthority) () -> "ROLE_USER");
-            }
-
-            @Override
-            public String getPassword() {
-                return "koala";
-            }
-
-            @Override
-            public String getUsername() {
-                return "marissa";
-            }
-
-            @Override
-            public boolean isAccountNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isAccountNonLocked() {
-                return true;
-            }
-
-            @Override
-            public boolean isCredentialsNonExpired() {
-                return true;
-            }
-
-            @Override
-            public boolean isEnabled() {
-                return true;
-            }
-        }));
-    }
-
 
     @Override
     @Bean
