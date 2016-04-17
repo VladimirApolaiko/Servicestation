@@ -1,5 +1,7 @@
 package org.servicestation.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -35,6 +37,8 @@ import java.util.List;
 @Configuration
 public class OAuth2Config {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OAuth2Config.class);
+
     private static final String RESOURCE_ID = "servicestation";
 
     @Configuration
@@ -50,6 +54,7 @@ public class OAuth2Config {
         public void configure(HttpSecurity http) throws Exception {
             http
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                    .and().antMatcher("api/test").anonymous()
                     .and().authorizeRequests().anyRequest().authenticated();
         }
     }
@@ -108,7 +113,7 @@ public class OAuth2Config {
             try {
                 return builder.build();
             } catch (final Exception e) {
-                e.printStackTrace();
+                LOGGER.warn("Unable to build client detail service", e);
             }
             return null;
         }

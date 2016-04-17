@@ -67,6 +67,11 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public IUserDao userDao() {
+        return new UserDaoImpl();
+    }
+
+    @Bean
     public IMechanicOrder mechanicOrder() {
         return new MechanicOrderImpl();
     }

@@ -23,6 +23,9 @@ public class TestResourceImpl implements TestResource {
     private IOrderDao orderDao;
 
     @Autowired
+    private IUserDao userDao;
+
+    @Autowired
     private IMechanicOrder mechanicOrderDao;
 
     public String test() throws Exception {
@@ -65,8 +68,21 @@ public class TestResourceImpl implements TestResource {
 
         orderDao.deleteOrder(order.id);
         mechanicDao.deleteMechanic(12);*/
+        User user = new User();
+        user.username = "vladimirapolaiko@gmail.com";
+        user.password = "123456789";
+        user.enabled = true;
+        user.firstName = "Vladimir";
+        user.lastName = "Apolaiko";
+        User user1 = userDao.createUser(user);
+
+        user.password = "hello";
+        User user2 = userDao.changeUserByUsername(user.username, user);
+
+        User userByUsername = userDao.getUserByUsername(user.username);
+
+        User user3 = userDao.deleteUserByUsername(user.username);
 
         return "Success";
-
     }
 }
