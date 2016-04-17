@@ -68,7 +68,7 @@ public class TestResourceImpl implements TestResource {
 
         orderDao.deleteOrder(order.id);
         mechanicDao.deleteMechanic(12);*/
-        User user = new User();
+        /*User user = new User();
         user.username = "vladimirapolaiko@gmail.com";
         user.password = "123456789";
         user.enabled = true;
@@ -79,9 +79,9 @@ public class TestResourceImpl implements TestResource {
         user.password = "hello";
         User user2 = userDao.changeUserByUsername(user.username, user);
 
-        User userByUsername = userDao.getUserByUsername(user.username);
+        User userByUsername = userDao.getUserByUsername("Karina");*/
 
-        User user3 = userDao.deleteUserByUsername(user.username);
+        User user3 = userDao.deleteUserByUsername("ddfse");
 
         return "Success";
     }

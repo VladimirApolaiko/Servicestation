@@ -6,11 +6,14 @@ import org.servicestation.config.provider.CustomPreAuthUserDetailsService;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
+import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.resources.managers.impl.UserManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
@@ -81,6 +84,11 @@ public class ApplicationContextConfiguration {
         return new TestResourceImpl();
     }
 
+    @Bean
+    public UserResourceImpl userResource() {
+        return new UserResourceImpl();
+    }
+
     @Bean(name = "springSecurityFilterChain")
     public DelegatingFilterProxy springSecurityFilterChain() {
         return new DelegatingFilterProxy();
@@ -92,7 +100,7 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public CustomPreAuthProvider customPreAuthProvider(){
+    public CustomPreAuthProvider customPreAuthProvider() {
         return new CustomPreAuthProvider();
     }
 
@@ -103,10 +111,20 @@ public class ApplicationContextConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() throws URISyntaxException {
-        return new JdbcUserDetailsManager(){{
+        return new JdbcUserDetailsManager() {{
             setDataSource(basicDataSource());
         }};
 
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserManager userManager() {
+        return new UserManager();
     }
 
 }

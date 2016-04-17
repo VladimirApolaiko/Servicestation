@@ -1,10 +1,11 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IUserDao;
-import org.servicestation.dao.exceptions.NullProperiesException;
+import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -16,6 +17,8 @@ import java.sql.SQLException;
 import java.util.Map;
 
 public class UserDaoImpl implements IUserDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(UserDaoImpl.class);
 
     private static final String DELIMITER = ", ";
 
@@ -50,14 +53,19 @@ public class UserDaoImpl implements IUserDao {
 
     }
 
-    public User changeUserByUsername(final String username, final User newUser) throws Exception {
+    public User changeUserByUsername(final String username, final User newUser) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_USER);
         boolean notNull = false;
 
         for (Field field : newUser.getClass().getFields()) {
             field.setAccessible(true);
-            Object value = field.get(newUser);
+            Object value = null;
+            try {
+                value = field.get(newUser);
+            } catch (IllegalAccessException e) {
+                LOGGER.debug("Can't get value of field " + field.getName(), e);
+            }
             if (value != null) {
                 params.addValue(field.getName(), value);
                 sql.append(getColumnMapping(field.getName()));
@@ -65,7 +73,7 @@ public class UserDaoImpl implements IUserDao {
             notNull = true;
         }
 
-        if (!notNull) throw new NullProperiesException("At least one property should be not null");
+        if (!notNull) throw new NullPropertiesException("At least one property should be not null");
 
         sql.deleteCharAt(sql.length() - 2);//delete last delimiter
         params.addValue("username", username);

@@ -1,14 +1,11 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IProfileDao;
-import org.servicestation.dao.exceptions.NullProperiesException;
-import org.servicestation.model.Mechanic;
+import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Profile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
 
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
@@ -78,7 +75,7 @@ public class ProfileDaoImpl implements IProfileDao {
             }
         }
 
-        if (!notNull) throw new NullProperiesException("At least one property should be not null");
+        if (!notNull) throw new NullPropertiesException("At least one property should be not null");
 
         sql.deleteCharAt(sql.length() - 2);//delete last delimiter
         params.addValue("id", mechanicId);

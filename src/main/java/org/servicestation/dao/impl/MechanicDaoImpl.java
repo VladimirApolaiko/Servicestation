@@ -1,7 +1,7 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IMechanicDao;
-import org.servicestation.dao.exceptions.NullProperiesException;
+import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Mechanic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -65,7 +65,7 @@ public class MechanicDaoImpl implements IMechanicDao {
             }
         }
 
-        if (!notNull) throw new NullProperiesException("At least one property should be not null");
+        if (!notNull) throw new NullPropertiesException("At least one property should be not null");
 
         sql.deleteCharAt(sql.length() - 2);//delete last delimiter
         params.addValue("id", mechanicId);

@@ -55,8 +55,10 @@ public class OAuth2Config {
             http
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
                     .and().antMatcher("api/test").anonymous()
+                    .and().antMatcher("api/users").anonymous()
                     .and().authorizeRequests().anyRequest().authenticated();
         }
+
     }
 
     @Configuration
@@ -83,7 +85,7 @@ public class OAuth2Config {
                     .tokenStore(tokenStore())
                     .authenticationManager(authenticationManager) // Authorization codes for Authorization grant flow
                     .requestFactory(requestFactory())
-                    .tokenGranter(tokenGranter()); // specify supported grant types
+                    .tokenGranter(tokenGranter());// specify supported grant type
         }
 
         @Override
