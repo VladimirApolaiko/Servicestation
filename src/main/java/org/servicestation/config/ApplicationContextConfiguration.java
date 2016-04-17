@@ -7,6 +7,7 @@ import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.managers.impl.UserManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -75,6 +76,11 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public IAuthoritiesDao authoritiesDao(){
+        return new AuthorityDaoImpl();
+    }
+
+    @Bean
     public IMechanicOrder mechanicOrder() {
         return new MechanicOrderImpl();
     }
@@ -123,7 +129,7 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public UserManager userManager() {
+    public IUserManager userManager() {
         return new UserManager();
     }
 

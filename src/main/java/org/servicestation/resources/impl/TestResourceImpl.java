@@ -3,6 +3,7 @@ package org.servicestation.resources.impl;
 import org.servicestation.dao.*;
 import org.servicestation.model.*;
 import org.servicestation.resources.TestResource;
+import org.servicestation.resources.managers.Authority;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -24,6 +25,9 @@ public class TestResourceImpl implements TestResource {
 
     @Autowired
     private IUserDao userDao;
+
+    @Autowired
+    private IAuthoritiesDao iAuthoritiesDao;
 
     @Autowired
     private IMechanicOrder mechanicOrderDao;
@@ -81,8 +85,7 @@ public class TestResourceImpl implements TestResource {
 
         User userByUsername = userDao.getUserByUsername("Karina");*/
 
-        User user3 = userDao.deleteUserByUsername("ddfse");
-
+        iAuthoritiesDao.grantAuthority("vvvv", Authority.ROLE_MECHANIC);
         return "Success";
     }
 }
