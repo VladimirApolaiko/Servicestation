@@ -7,7 +7,9 @@ import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
+import org.servicestation.resources.managers.impl.AuthoritiesManager;
 import org.servicestation.resources.managers.impl.UserManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -117,9 +119,9 @@ public class ApplicationContextConfiguration {
 
     @Bean
     public UserDetailsService userDetailsService() throws URISyntaxException {
-        return new JdbcUserDetailsManager() {{
-            setDataSource(basicDataSource());
-        }};
+        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
+        jdbcUserDetailsManager.setDataSource(basicDataSource());
+        return jdbcUserDetailsManager;
 
     }
 
@@ -131,6 +133,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public IUserManager userManager() {
         return new UserManager();
+    }
+
+    @Bean
+    public IAuthoritiesManager authoritiesManager() {
+        return new AuthoritiesManager();
     }
 
 }

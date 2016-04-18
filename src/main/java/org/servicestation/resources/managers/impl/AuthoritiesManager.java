@@ -8,7 +8,9 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
-public class AuthoritiesManager implements IAuthoritiesManager{
+import java.util.List;
+
+public class AuthoritiesManager implements IAuthoritiesManager {
 
     @Autowired
     private IUserDao userDao;
@@ -27,12 +29,17 @@ public class AuthoritiesManager implements IAuthoritiesManager{
     }
 
     @Override
-    public void rejectAuthority(String username, Authority authority) {
-
+    public void revokeAuthority(String username, Authority authority) {
+        authoritiesDao.revokeAuthority(username, authority);
     }
 
     @Override
-    public Authority getAuthorityByUsername(String username) {
-        return null;
+    public List<Authority> getAuthoritiesByUsername(String username) throws UserDoesNotExists {
+        try {
+            userDao.getUserByUsername(username);
+            return authoritiesDao.getAuthoritiesByUsername(username);
+        } catch (EmptyResultDataAccessException e) {
+            throw new UserDoesNotExists("User with username" + username + " not found", e);
+        }
     }
 }
