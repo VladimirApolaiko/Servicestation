@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 
-public class MechanicDaoTest extends AbstractPrepareTest {
+public class MechanicDaoTest extends AbstractTest {
 
     @Autowired
     private IMechanicDao iMechanicDao;

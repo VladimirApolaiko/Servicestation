@@ -19,7 +19,7 @@ import java.util.Scanner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath:META-INF/spring/application-context.xml", "classpath:META-INF/spring/test-application-context.xml"})
-public class AbstractPrepareTest {
+public class AbstractTest {
 
     private static final String INITIALIZE_TEST_DATA_FILE = "scripts/initialize_test_data_script.sql";
 
