@@ -89,6 +89,7 @@ public class StationDaoTest extends AbstractTest {
     }
 
     @Test
+    /*This test depends on testDeleteStation and testCreateNewStation*/
     public void getAllStations() {
         final int expectedNumberOfStations = 5;
         List<Station> allStations = iStationDao.getAllStations();
