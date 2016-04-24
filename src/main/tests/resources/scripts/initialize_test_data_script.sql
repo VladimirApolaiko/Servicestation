@@ -29,13 +29,13 @@ insert into station (station_name, address, description, latitude, longitude)
 values('test_station_foreign_2', 'address2', 'description2', 2.0, 2.0);
 
 insert into station (station_name, address, description, latitude, longitude)
-values('test_station', 'address2', 'description2', 2.0, 2.0);
+values('test_station', 'address3', 'description3', 2.0, 2.0);
 
 insert into station (station_name, address, description, latitude, longitude)
-values('test_change_station', 'address2', 'description2', 3.0, 3.0);
+values('test_change_station', 'address4', 'description4', 3.0, 3.0);
 
 insert into station (station_name, address, description, latitude, longitude)
-values('test_delete_station', 'address2', 'description2', 4.0, 4.0);
+values('test_delete_station', 'address5', 'description5', 4.0, 4.0);
 
 /*Mechanics*/
 

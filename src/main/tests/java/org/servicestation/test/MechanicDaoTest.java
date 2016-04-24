@@ -44,6 +44,7 @@ public class MechanicDaoTest extends AbstractTest {
         newMechanic.station_id = newStationId;
 
         Mechanic mechanic = iMechanicDao.changeMechanic(mechanicToChangeId, newMechanic);
+        //TODO compare other fields
         assertEquals(newStationId, (long) mechanic.station_id);
     }
 
