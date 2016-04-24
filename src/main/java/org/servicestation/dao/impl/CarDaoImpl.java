@@ -1,6 +1,6 @@
 package org.servicestation.dao.impl;
 
-import org.servicestation.dao.ICarsDao;
+import org.servicestation.dao.ICarDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Car;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +16,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class CarsDaoImpl implements ICarsDao {
+public class CarDaoImpl implements ICarDao {
 
     private static final String DELIMITER = ", ";
 
-    private static final String CREATE_NEW_CAR = "insert into cars (brand, model, engine_volume, vin, registration_number, username)" +
+    private static final String CREATE_NEW_CAR = "insert into car (brand, model, engine_volume, vin, registration_number, username)" +
             "values(:brand, :model, :engine_volume, :vin, :registration_number, :username)";
 
-    private static final String GET_CAR_BY_USERNAME = "select * from cars where username = :username";
+    private static final String GET_CAR_BY_USERNAME = "select * from car where username = :username";
 
-    private static final String UPDATE_CAR = "update cars set ";
+    private static final String UPDATE_CAR = "update car set ";
 
-    private static final String DELETE_CAR = "delete from cars where id=:id";
+    private static final String DELETE_CAR = "delete from car where id=:id";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -39,7 +39,7 @@ public class CarsDaoImpl implements ICarsDao {
         params.addValue("model", newCar.model);
         params.addValue("engine_volume", newCar.engine_volume);
         params.addValue("vin", newCar.vin);
-        params.addValue("registration_number", newCar.registrationNumber);
+        params.addValue("registration_number", newCar.registration_number);
         params.addValue("username", username);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -111,7 +111,8 @@ public class CarsDaoImpl implements ICarsDao {
         car.model = (String) keys.get("model");
         car.vin = (String) keys.get("vin");
         car.engine_volume = (double) keys.get("engine_volume");
-        car.registrationNumber = (String) keys.get("registration_number");
+        car.registration_number = (String) keys.get("registration_number");
+        car.username = (String) keys.get("username");
 
         return car;
     }
@@ -124,7 +125,8 @@ public class CarsDaoImpl implements ICarsDao {
         car.model = rs.getString("model");
         car.vin = rs.getString("vin");
         car.engine_volume = rs.getDouble("engine_volume");
-        car.registrationNumber = rs.getString("registration_number");
+        car.registration_number = rs.getString("registration_number");
+        car.username = rs.getString("username");
 
         return car;
     }

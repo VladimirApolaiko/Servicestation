@@ -59,8 +59,8 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public ICarsDao carsDao() {
-        return new CarsDaoImpl();
+    public ICarDao carsDao() {
+        return new CarDaoImpl();
     }
 
     @Bean
