@@ -12,7 +12,6 @@ import org.servicestation.resources.managers.impl.UserManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
-import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
@@ -56,8 +55,8 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public IProfileDao profileDao() {
-        return new ProfileDaoImpl();
+    public ICarsDao carsDao() {
+        return new CarsDaoImpl();
     }
 
     @Bean

@@ -20,23 +20,25 @@ public class MechanicDaoImpl implements IMechanicDao {
 
     private static final String DELIMITER = ", ";
 
-    private static final String INSERT_MECHANIC = "insert into mechanic (nickname, station_id) values(:nickname, :station_id);";
+    private static final String INSERT_MECHANIC = "insert into mechanic (username, station_id) values(:username, :station_id);";
 
     private static final String UPDATE_MECHANIC = "update mechanic set ";
 
-    private static final String SELECT_MECHANIC = "select * from mechanic where id=:id";
+    private static final String SELECT_MECHANIC_BY_ID = "select * from mechanic where id=:id";
 
-    private static final String DELETE_MECHANIC = "delete from mechanic where id=:id";
+    private static final String SELECT_MECHANIC_BY_USERNAME = "select * from mechanic where username=:username";
 
-    private static final String SELECT_ALL_MECHANICS = "select * from mechanic";
+    private static final String DELETE_MECHANIC = "delete from mechanic where username=:username";
+
+    private static final String SELECT_ALL_MECHANICS = "select * from mechanic where station_id = :station_id";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Mechanic createMechanic(final String nickname, final Integer stationId) {
+    public Mechanic createMechanic(final String username, final Integer stationId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("nickname", nickname);
+        params.addValue("username", username);
         params.addValue("station_id", stationId);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -44,7 +46,7 @@ public class MechanicDaoImpl implements IMechanicDao {
         namedParameterJdbcTemplate.update(INSERT_MECHANIC,
                 params,
                 keyHolder,
-                new String[]{"id", "nickname", "station_id"});
+                new String[]{"id", "username", "station_id"});
 
         return getMechanic(keyHolder.getKeys());
     }
@@ -78,19 +80,19 @@ public class MechanicDaoImpl implements IMechanicDao {
     }
 
     @Override
-    public Mechanic getMechanicById(final Integer mechanicId) {
+    public Mechanic getMechanicByUsername(String username) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", mechanicId);
+        params.addValue("username", username);
 
-        return namedParameterJdbcTemplate.queryForObject(SELECT_MECHANIC, params, (rs, rowNum) -> {
+        return namedParameterJdbcTemplate.queryForObject(SELECT_MECHANIC_BY_USERNAME, params, (rs, rowNum) -> {
             return getMechanic(rs);
         });
     }
 
     @Override
-    public Mechanic deleteMechanic(final Integer mechanicId) {
+    public Mechanic deleteMechanic(final String username) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", mechanicId);
+        params.addValue("username", username);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(DELETE_MECHANIC, params, keyHolder);
@@ -115,16 +117,16 @@ public class MechanicDaoImpl implements IMechanicDao {
 
         Mechanic mechanic = new Mechanic();
         mechanic.id = (int) keys.get("id");
-        mechanic.nickname = (String) keys.get("nickname");
-        mechanic.stationId = (int) keys.get("station_Id");
+        mechanic.username = (String) keys.get("username");
+        mechanic.station_id = (int) keys.get("station_Id");
         return mechanic;
     }
 
     private Mechanic getMechanic(final ResultSet rs) throws SQLException {
         Mechanic mechanic = new Mechanic();
         mechanic.id = rs.getInt("id");
-        mechanic.nickname = rs.getString("nickname");
-        mechanic.stationId = rs.getInt("station_id");
+        mechanic.username = rs.getString("username");
+        mechanic.station_id = rs.getInt("station_id");
 
         return mechanic;
     }

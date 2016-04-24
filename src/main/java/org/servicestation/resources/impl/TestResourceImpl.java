@@ -15,9 +15,6 @@ public class TestResourceImpl implements TestResource {
     private IMechanicDao mechanicDao;
 
     @Autowired
-    private IProfileDao profileDao;
-
-    @Autowired
     private IOrderDao orderDao;
 
     @Autowired
@@ -43,7 +40,7 @@ public class TestResourceImpl implements TestResource {
 
         Mechanic mechanic = mechanicDao.createMechanic("VladimirApolaiko", station.id);
         Mechanic newMechanic = mechanicDao.changeMechanic(mechanic.id, new Mechanic() {{
-            nickname = "vladimirapolaiko";
+            username = "vladimirapolaiko";
         }});
         Mechanic mechanicGotById = mechanicDao.getMechanicById(newMechanic.id);
         List<Mechanic> allMechanics = mechanicDao.getAllMechanics(station.id);
