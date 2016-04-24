@@ -1,7 +1,7 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IOrderDao;
-import org.servicestation.dao.exceptions.NullProperiesException;
+import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,7 +70,7 @@ public class OrderDaoImpl implements IOrderDao {
             }
         }
 
-        if (!notNull) throw new NullProperiesException("At least one property should be not null");
+        if (!notNull) throw new NullPropertiesException("At least one property should be not null");
 
         sql.deleteCharAt(sql.length() - 2);//delete last delimiter
         params.addValue("id", orderId);

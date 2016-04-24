@@ -1,0 +1,135 @@
+package org.servicestation.dao.impl;
+
+import org.servicestation.dao.ICarsDao;
+import org.servicestation.dao.exceptions.NullPropertiesException;
+import org.servicestation.model.Car;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
+
+import java.lang.reflect.Field;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class CarsDaoImpl implements ICarsDao {
+
+    private static final String DELIMITER = ", ";
+
+    private static final String CREATE_NEW_CAR = "insert into cars (brand, model, engine_volume, vin, registration_number, username)" +
+            "values(:brand, :model, :engine_volume, :vin, :registration_number, :username)";
+
+    private static final String GET_CAR_BY_USERNAME = "select * from cars where username = :username";
+
+    private static final String UPDATE_CAR = "update cars set ";
+
+    private static final String DELETE_CAR = "delete from cars where id=:id";
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Override
+    public Car createCar(String username, Car newCar) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("brand", newCar.brand);
+        params.addValue("model", newCar.model);
+        params.addValue("engine_volume", newCar.engine_volume);
+        params.addValue("vin", newCar.vin);
+        params.addValue("registration_number", newCar.registrationNumber);
+        params.addValue("username", username);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        namedParameterJdbcTemplate.update(CREATE_NEW_CAR, params, keyHolder);
+
+        return getCar(keyHolder.getKeys());
+
+    }
+
+    @Override
+    public Car updateCar(int carId, Car newCar) throws Exception {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        StringBuilder sql = new StringBuilder(UPDATE_CAR);
+        boolean notNull = false;
+
+        for (Field field : newCar.getClass().getFields()) {
+            field.setAccessible(true);
+            Object value = field.get(newCar);
+
+            if (field.get(newCar) != null) {
+                params.addValue(field.getName(), value);
+                sql.append(getColumnMapping(field.getName()));
+                notNull = true;
+            }
+        }
+
+        if (!notNull) throw new NullPropertiesException("At least one property should be not null");
+
+        sql.deleteCharAt(sql.length() - 2);
+        params.addValue("id", carId);
+        sql.append("where id=:id");
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(sql.toString(), params, keyHolder);
+
+        return getCar(keyHolder.getKeys());
+    }
+
+    @Override
+    public Car deleteCar(int carId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", carId);
+
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        namedParameterJdbcTemplate.update(DELETE_CAR, params, keyHolder);
+
+        return getCar(keyHolder.getKeys());
+    }
+
+    @Override
+    public List<Car> getCarsByUsername(String username) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+
+        List<Car> cars = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_CAR_BY_USERNAME, params, rs -> {
+            cars.add(getCar(rs));
+        });
+
+        return cars;
+    }
+
+    private Car getCar(Map<String, Object> keys) {
+        Car car = new Car();
+
+        car.id = (int) keys.get("id");
+        car.brand = (String) keys.get("brand");
+        car.model = (String) keys.get("model");
+        car.vin = (String) keys.get("vin");
+        car.engine_volume = (double) keys.get("engine_volume");
+        car.registrationNumber = (String) keys.get("registration_number");
+
+        return car;
+    }
+
+    private Car getCar(ResultSet rs) throws SQLException {
+        Car car = new Car();
+
+        car.id = rs.getInt("id");
+        car.brand = rs.getString("brand");
+        car.model = rs.getString("model");
+        car.vin = rs.getString("vin");
+        car.engine_volume = rs.getDouble("engine_volume");
+        car.registrationNumber = rs.getString("registration_number");
+
+        return car;
+    }
+
+    private String getColumnMapping(final String columnName) {
+        return columnName + "=:" + columnName + DELIMITER;
+    }
+}
