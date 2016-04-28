@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class StationDaoTest extends AbstractTest {
 
@@ -73,19 +73,9 @@ public class StationDaoTest extends AbstractTest {
     @Test
     public void testDeleteStation() {
         final int stationId = 5;
-        final String name = "test_delete_station";
-        final String address = "address5";
-        final String description = "description5";
-        final Double latitude = 4.0;
-        final Double longitude = 4.0;
-
         Station deletedStation = iStationDao.deleteStation(stationId);
 
-        assertEquals(name, deletedStation.station_name);
-        assertEquals(address, deletedStation.address);
-        assertEquals(description, deletedStation.description);
-        assertEquals(latitude, deletedStation.latitude);
-        assertEquals(longitude, deletedStation.longitude);
+        assertEquals(stationId, (long) deletedStation.id);
     }
 
     @Test

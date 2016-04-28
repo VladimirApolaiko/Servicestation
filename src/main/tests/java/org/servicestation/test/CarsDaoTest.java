@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 
 public class CarsDaoTest extends AbstractTest {
@@ -60,23 +60,9 @@ public class CarsDaoTest extends AbstractTest {
     @Test
     public void testDeleteCar() {
         final int carId = 2;
-
-        final String brand = "brand2";
-        final String model = "model2";
-        final Double engine_volume = 1.0;
-        final String vin = "322ed2d323e23fg34";
-        final String registrationNumber = "TH33343";
-        final String username = "test_user_foreign_1";
-
         Car car = carDao.deleteCar(carId);
 
         assertEquals(carId, car.id);
-        assertEquals(brand, car.brand);
-        assertEquals(model, car.model);
-        assertEquals(vin, car.vin);
-        assertEquals(registrationNumber, car.registration_number);
-        assertEquals(engine_volume, car.engine_volume);
-        assertEquals(username, car.username);
     }
 
     @Test

@@ -92,11 +92,11 @@ values ('brand5', 'model5', 1.0, '322ed2d323e23fg34', 'TH33343', 'test_user_fore
 
 /*Orders*/
 insert into "order" (initial_date, work_description, status, planned_cost, planned_end_date, total_cost, end_date, station_id)
-values ('2016-01-01', 'test_change_order', cast('INIT' as order_status), 40000.0, '2016-01-03', 0.0, '2016-01-03',
+values ('2016-01-01', 'test_change_order', cast('INIT' as order_status), 40000, '2016-01-03', 0.0, '2016-01-03',
 (select id from station where station_name = 'test_station_foreign_1'));
 
 insert into "order" (initial_date, work_description, status, planned_cost, planned_end_date, total_cost, end_date, station_id)
-values ('2016-01-01', 'test_delete_order', cast('INIT' as order_status), 40000.0, '2016-01-03', 0.0, '2016-01-03',
+values ('2016-01-01', 'test_delete_order', cast('INIT' as order_status), 40000, '2016-01-03', 0.0, '2016-01-03',
 (select id from station where station_name = 'test_station_foreign_1'));
 
 insert into "order" (initial_date, work_description, status, planned_cost, planned_end_date, total_cost, end_date, station_id)
@@ -105,11 +105,11 @@ values ('2016-01-01', 'test_order', cast('INIT' as order_status), 40000.0, '2016
 
 insert into "order" (initial_date, work_description, status, planned_cost, planned_end_date, total_cost, end_date, station_id)
 values ('2016-01-01', 'test_order_1', cast('INIT' as order_status), 40000.0, '2016-01-03', 0.0, '2016-01-03',
-(select id from station where station_name = 'test_station_foreign_1'));
+(select id from station where station_name = 'test_station_foreign_2'));
 
 insert into "order" (initial_date, work_description, status, planned_cost, planned_end_date, total_cost, end_date, station_id)
 values ('2016-01-01', 'test_order_2', cast('INIT' as order_status), 40000.0, '2016-01-03', 0.0, '2016-01-03',
-(select id from station where station_name = 'test_station_foreign_1'));
+(select id from station where station_name = 'test_station_foreign_2'));
 
 /*Mechanic Orders*/
 insert into mechanic_order (order_id, mechanic_id) values (

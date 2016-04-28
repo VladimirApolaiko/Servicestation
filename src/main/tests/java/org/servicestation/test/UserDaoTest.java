@@ -5,7 +5,7 @@ import org.servicestation.dao.IUserDao;
 import org.servicestation.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UserDaoTest extends AbstractTest {
 
@@ -52,18 +52,9 @@ public class UserDaoTest extends AbstractTest {
     @Test
     public void testDeleteUser() {
         final String username = "test_delete_user";
-        final String password = "test_delete_user";
-        final boolean enabled = true;
-        final String firstName = "Test2";
-        final String lastName = "User2";
-
         final User deletedUser = iUserDao.deleteUserByUsername(username);
 
         assertEquals(username, deletedUser.username);
-        assertEquals(password, deletedUser.password);
-        assertEquals(enabled, deletedUser.enabled);
-        assertEquals(firstName, deletedUser.firstName);
-        assertEquals(lastName, deletedUser.lastName);
     }
 
     @Test
