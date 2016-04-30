@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 
-public class MechanicDaoTest extends AbstractPrepareTest {
+public class MechanicDaoTest extends AbstractTest {
 
     @Autowired
     private IMechanicDao iMechanicDao;
@@ -44,6 +44,7 @@ public class MechanicDaoTest extends AbstractPrepareTest {
         newMechanic.station_id = newStationId;
 
         Mechanic mechanic = iMechanicDao.changeMechanic(mechanicToChangeId, newMechanic);
+        //TODO compare other fields
         assertEquals(newStationId, (long) mechanic.station_id);
     }
 

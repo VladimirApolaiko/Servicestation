@@ -5,7 +5,7 @@ import org.servicestation.model.Car;
 
 import java.util.List;
 
-public interface ICarsDao {
+public interface ICarDao {
     Car createCar(final String username, final Car newCar);
 
     Car updateCar(final int carId, final Car newCar) throws Exception;

@@ -20,8 +20,8 @@ public class StationDaoImpl implements IStationDao {
 
     private static final String DELIMITER = ", ";
 
-    private static final String CREATE_STATION = "INSERT INTO station (name, address, description, latitude, longitude) " +
-            "VALUES(:name, :address, :description, :latitude, :longitude)";
+    private static final String CREATE_STATION = "INSERT INTO station (station_name, address, description, latitude, longitude) " +
+            "VALUES(:station_name, :address, :description, :latitude, :longitude)";
 
     private static final String SELECT_STATION = "SELECT * FROM station WHERE id=:id";
 
@@ -35,13 +35,13 @@ public class StationDaoImpl implements IStationDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Station createStation(final String name, final String address, final String description, final Double latitude, final Double longitude) {
+    public Station createStation(final Station newStation) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("name", name);
-        params.addValue("address", address);
-        params.addValue("description", description);
-        params.addValue("latitude", latitude);
-        params.addValue("longitude", longitude);
+        params.addValue("station_name", newStation.station_name);
+        params.addValue("address", newStation.address);
+        params.addValue("description", newStation.description);
+        params.addValue("latitude", newStation.latitude);
+        params.addValue("longitude", newStation.longitude);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(CREATE_STATION, params, keyHolder);
@@ -112,7 +112,7 @@ public class StationDaoImpl implements IStationDao {
         if(keys == null) return null;
         Station updatedStation = new Station();
         updatedStation.id = (int) keys.get("id");
-        updatedStation.name = (String) keys.get("name");
+        updatedStation.station_name = (String) keys.get("station_name");
         updatedStation.address = (String) keys.get("address");
         updatedStation.description = (String) keys.get("description");
         updatedStation.latitude = (Double) keys.get("latitude");
@@ -124,7 +124,7 @@ public class StationDaoImpl implements IStationDao {
     private Station getStationInfoFromResultSet(final ResultSet rs) throws SQLException {
         Station station = new Station();
         station.id = rs.getInt("id");
-        station.name = rs.getString("name");
+        station.station_name = rs.getString("station_name");
         station.address = rs.getString("address");
         station.description = rs.getString("description");
         station.latitude = rs.getDouble("latitude");

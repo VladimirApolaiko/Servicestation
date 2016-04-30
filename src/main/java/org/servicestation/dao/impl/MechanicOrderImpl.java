@@ -10,7 +10,7 @@ public class MechanicOrderImpl implements IMechanicOrder {
     private static String ASSIGN_ORDER = "insert into mechanic_order " +
             "(order_id, mechanic_id) values(:order_id, :mechanic_id);";
 
-    private static String UNASSIGN_ORDER = "delete from mechanic_order where mechanic_id=:mechanic_id";
+    private static String UNASSIGN_ORDER = "delete from mechanic_order where mechanic_id=:mechanic_id and order_id=:order_id";
 
 
     @Autowired
@@ -26,11 +26,11 @@ public class MechanicOrderImpl implements IMechanicOrder {
     }
 
     @Override
-    public void unassignOrder(Integer mechanicId) {
+    public void unAssignOrder(Integer mechanicId, Long orderId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("mechanic_id", mechanicId);
+        params.addValue("order_id", orderId);
 
         namedParameterJdbcTemplate.update(UNASSIGN_ORDER, params);
-
     }
 }

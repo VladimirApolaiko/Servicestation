@@ -6,11 +6,7 @@ import java.util.List;
 
 public interface IStationDao {
 
-    Station createStation(final String name,
-                          final String address,
-                          final String description,
-                          final Double latitude,
-                          final Double longitude);
+    Station createStation(final Station newStation);
 
     Station getStationById(final Integer stationId);
 
