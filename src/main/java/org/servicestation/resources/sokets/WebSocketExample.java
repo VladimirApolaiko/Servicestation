@@ -8,7 +8,7 @@ import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
 
-@ServerEndpoint("/uppercase")
+@ServerEndpoint("/api/websocket")
 public class WebSocketExample {
 
     @Autowired
@@ -24,7 +24,9 @@ public class WebSocketExample {
 
     @OnMessage
     public void onMessage(String txt, Session session) throws IOException {
-        session.getBasicRemote().sendText(txt.toUpperCase());
+        for (int i = 0; i < 10; i++) {
+            session.getBasicRemote().sendText(txt.toUpperCase());
+        }
     }
 
     @OnClose
