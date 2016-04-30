@@ -1,6 +1,8 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
+import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
 import org.servicestation.resources.impl.TestResourceImpl;
@@ -9,6 +11,8 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.managers.impl.AuthoritiesManager;
 import org.servicestation.resources.managers.impl.UserManager;
+import org.servicestation.resources.sokets.WebSocketExample;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,9 +21,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.provisioning.JdbcUserDetailsManager;
+import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
+import javax.annotation.PostConstruct;
+import javax.websocket.DeploymentException;
+import javax.websocket.server.ServerEndpoint;
+import javax.websocket.server.ServerEndpointConfig;
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -32,6 +41,11 @@ public class ApplicationContextConfiguration {
 
     @Value("${database.url}")
     private String databaseUrl;
+
+    @Autowired
+    private WebApplicationContext webAppContext;
+
+    private ServerContainer container;
 
     @Bean
     public BasicDataSource basicDataSource() throws URISyntaxException {
@@ -131,4 +145,38 @@ public class ApplicationContextConfiguration {
         return new AuthoritiesManager();
     }
 
+    @Bean
+    public WebSocketExample toUpper356Socket() {
+        return new WebSocketExample();
+    }
+
+    @Bean
+    public ServerEndpointConfig.Configurator configurator() {
+        return new SpringServerEndpointConfigurator();
+    }
+
+    @PostConstruct
+    public void init() throws DeploymentException {
+        container = (ServerContainer) webAppContext.getServletContext().
+                getAttribute(javax.websocket.server.ServerContainer.class.getName());
+
+        container.addEndpoint(
+                new AnnotatedServerEndpointConfig(
+                        container,
+                        WebSocketExample.class,
+                        WebSocketExample.class.getAnnotation(ServerEndpoint.class)) {
+                    @Override
+                    public Configurator getConfigurator() {
+                        return configurator();
+                    }
+                });
+    }
+
+    public class SpringServerEndpointConfigurator extends ServerEndpointConfig.Configurator {
+        @Override
+        public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
+            return webAppContext.getAutowireCapableBeanFactory().getBean(endpointClass);
+        }
+    }
 }
+

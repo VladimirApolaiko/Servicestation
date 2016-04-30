@@ -12,14 +12,12 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
-import org.springframework.security.oauth2.config.annotation.builders.JdbcClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
-import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
@@ -55,11 +53,9 @@ public class OAuth2Config {
 
         @Override
         public void configure(HttpSecurity http) throws Exception {
-            http
-                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                    .and().antMatcher("api/test").anonymous()
-                    .and().antMatcher("api/users").anonymous()
-                    .and().authorizeRequests().anyRequest().authenticated();
+            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
+            http.authorizeRequests().antMatchers("/api/users").anonymous();
+            http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");
         }
 
     }

@@ -2,6 +2,8 @@ package org.servicestation;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,8 +26,12 @@ public class Main {
         root.setResourceBase(RESOURCE_BASE);
         root.setDescriptor(RESOURCE_BASE + "/WEB-INF/web.xml");
 
-
         server.setHandler(root);
+
+        //Create web socket container
+        ServerContainer serverContainer = WebSocketServerContainerInitializer.configureContext(root);
+        /*serverContainer.addEndpoint(WebSocketExample.class);*/
+
         server.start();
         LOGGER.info("Start application on port {}", webPort);
         server.join();
