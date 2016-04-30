@@ -1,7 +1,6 @@
 package org.servicestation.config;
 
 import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.spring.scope.RequestContextFilter;
 import org.servicestation.config.provider.JsonObjectMapperProvider;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.servicestation.resources.impl.UserResourceImpl;
