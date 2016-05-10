@@ -11,6 +11,7 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.managers.impl.AuthoritiesManager;
 import org.servicestation.resources.managers.impl.UserManager;
+import org.servicestation.resources.sokets.WebSocketEventEmitter;
 import org.servicestation.resources.sokets.WebSocketExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -152,6 +153,13 @@ public class ApplicationContextConfiguration {
 
     @Bean
     public ServerEndpointConfig.Configurator configurator() {
+        class SpringServerEndpointConfigurator extends ServerEndpointConfig.Configurator {
+            @Override
+            public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
+                return webAppContext.getAutowireCapableBeanFactory().getBean(endpointClass);
+            }
+        }
+
         return new SpringServerEndpointConfigurator();
     }
 
@@ -172,11 +180,9 @@ public class ApplicationContextConfiguration {
                 });
     }
 
-    public class SpringServerEndpointConfigurator extends ServerEndpointConfig.Configurator {
-        @Override
-        public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
-            return webAppContext.getAutowireCapableBeanFactory().getBean(endpointClass);
-        }
+    @Bean
+    public WebSocketEventEmitter deviceSessionHandler() {
+        return new WebSocketEventEmitter();
     }
 }
 

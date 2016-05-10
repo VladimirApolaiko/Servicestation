@@ -3,6 +3,7 @@ package org.servicestation.resources.sokets;
 import org.servicestation.dao.IAuthoritiesDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 
 import javax.websocket.*;
 import javax.websocket.server.ServerEndpoint;
@@ -17,16 +18,31 @@ public class WebSocketExample {
     @Autowired
     private ApplicationContext applicationContext;
 
+    @Autowired
+    private WebSocketEventEmitter eventEmitter;
+
+    @Autowired
+    private TokenStore tokenStore;
+
     @OnOpen
     public void onOpen(Session session) {
-        System.out.println("WebSocket opened: " + session.getId());
+       eventEmitter.registerEventHandler(WebSocketEvent.GET_ALL_ORDERS, session, (event, data) -> {
+           try {
+               session.getBasicRemote().sendText("Web socket event: " + event.toString());
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       });
     }
 
     @OnMessage
     public void onMessage(String txt, Session session) throws IOException {
-        for (int i = 0; i < 10; i++) {
-            session.getBasicRemote().sendText(txt.toUpperCase());
-        }
+       try{
+           WebSocketEvent webSocketEvent = WebSocketEvent.valueOf(txt);
+           eventEmitter.emit(webSocketEvent, null);
+       } catch(IllegalArgumentException e) {
+           throw new WebSocketHandlersNotFound("Event " + txt + "not found");
+       }
     }
 
     @OnClose

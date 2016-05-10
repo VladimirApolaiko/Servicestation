@@ -3,6 +3,7 @@ package org.servicestation.resources.impl;
 import org.servicestation.dao.*;
 import org.servicestation.model.User;
 import org.servicestation.resources.TestResource;
+import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -25,6 +26,9 @@ public class TestResourceImpl implements TestResource {
 
     @Autowired
     private IMechanicOrder mechanicOrderDao;
+
+    @Autowired
+    private IAuthoritiesManager authoritiesManager;
 
     public String test() throws Exception {
         /*Station DAO*/
@@ -66,13 +70,13 @@ public class TestResourceImpl implements TestResource {
 
         orderDao.deleteOrder(order.id);
         mechanicDao.deleteMechanic(12);*/
-        User user = new User();
+    /*    User user = new User();
         user.username = "vladimirapolaiko@gmail.com";
         user.password = "123456789";
         user.enabled = true;
         user.firstName = "Vladimir";
         user.lastName = "Apolaiko";
-        User user1 = userDao.createUser(user);
+        User user1 = userDao.createUser(user);*/
 
        /* user.password = "hello";
         User user2 = userDao.changeUserByUsername(user.username, user);
@@ -82,6 +86,8 @@ public class TestResourceImpl implements TestResource {
         /*iAuthoritiesDao.grantAuthority("vvvv", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.revokeAuthority("vladimir", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.getAuthoritiesByUsername("vladimir");*/
+
+        authoritiesManager.getAuthoritiesByUsername("vladimirapolaiko@gmail.com");
         return "Success";
     }
 }
