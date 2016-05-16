@@ -4,9 +4,11 @@ import javax.websocket.Session;
 import java.util.function.BiConsumer;
 
 public interface IWebSocketEventEmitter {
-    void registerEventHandler(WebSocketEvent event, Session session, BiConsumer handler);
+    void registerEventHandler(String username, WebSocketEvent event, BiConsumer handler);
 
-    void unregisterEventHandler(WebSocketEvent event, BiConsumer handler);
+    void unregisterEventHandler(String username, WebSocketEvent event, BiConsumer handler);
 
-    <T> void emit(WebSocketEvent event, T data);
+    <T> void emit(String username, WebSocketEvent event, T data);
+
+    boolean isHandlerExists(String username, WebSocketEvent webSocketEvent);
 }

@@ -21,6 +21,6 @@
         console.log("Incoming message with content:", event.data);
     };
 
-    socket.send("message"); //here can be e.g. json
+    socket.send(JSON.stringify({action:"GET_ALL_ORDERS", accessToken: "863303b5-fcaf-411c-9f2f-1e48bcc9d5e4", data: "hello"})); //here can be e.g. json
 </script>
 </html>

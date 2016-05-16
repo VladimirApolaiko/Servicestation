@@ -1,27 +1,30 @@
 package org.servicestation.resources.sokets;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
-
-import javax.websocket.Session;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class WebSocketEventEmitter implements IWebSocketEventEmitter {
 
-    private Multimap<WebSocketEvent, BiConsumer> eventHandlers = HashMultimap.create();
+    private Map<EventKey, BiConsumer> eventHandlers = new HashMap<>();
 
     @Override
-    public void registerEventHandler(WebSocketEvent event, Session session, BiConsumer handler) {
-        eventHandlers.put(event, handler);
+    public void registerEventHandler(String username, WebSocketEvent event, BiConsumer handler) {
+        eventHandlers.put(new EventKey(username, event), handler);
     }
 
     @Override
-    public void unregisterEventHandler(WebSocketEvent event, BiConsumer handler) {
-        eventHandlers.remove(event, handler);
+    public void unregisterEventHandler(String username, WebSocketEvent event, BiConsumer handler) {
+        eventHandlers.remove(new EventKey(username, event), handler);
     }
 
     @Override
-    public <T> void emit(WebSocketEvent event, T data) {
-        eventHandlers.get(event).forEach(handler -> handler.accept(event, data));
+    public <T> void emit(String username, WebSocketEvent event, T data) {
+        eventHandlers.get(new EventKey(username, event)).accept(event, data);
+    }
+
+    @Override
+    public boolean isHandlerExists(String username, WebSocketEvent webSocketEvent) {
+        return eventHandlers.get(new EventKey(username, webSocketEvent)) != null;
     }
 }
