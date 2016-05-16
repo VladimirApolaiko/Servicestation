@@ -8,9 +8,13 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import javax.websocket.Session;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class AuthoritiesManager implements IAuthoritiesManager {
+
+
 
     @Autowired
     private IUserDao userDao;
@@ -42,4 +46,5 @@ public class AuthoritiesManager implements IAuthoritiesManager {
             throw new UserDoesNotExists("User with username" + username + " not found", e);
         }
     }
+
 }

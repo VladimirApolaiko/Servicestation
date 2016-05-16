@@ -10,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
@@ -55,7 +57,7 @@ public class OAuth2Config {
         public void configure(HttpSecurity http) throws Exception {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
             http.authorizeRequests().antMatchers("/api/users").anonymous();
-            http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");
+            /*http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");*/
         }
 
     }
