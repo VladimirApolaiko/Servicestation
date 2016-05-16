@@ -6,6 +6,8 @@
 </head>
 <body>
 <h1>It's web sokets test page</h1>
+Access token<input type="text" id="accessToken">
+<button onclick = "sendMessage()">Send message</button>
 </body>
 <script>
     var socket = new WebSocket("ws://localhost:5000/api/websocket");
@@ -21,6 +23,8 @@
         console.log("Incoming message with content:", event.data);
     };
 
-    socket.send(JSON.stringify({action:"GET_ALL_ORDERS", accessToken: "863303b5-fcaf-411c-9f2f-1e48bcc9d5e4", data: "hello"})); //here can be e.g. json
+    var sendMessage = function() {
+        socket.send(JSON.stringify({action:"GET_ALL_ORDERS", accessToken: document.getElementById("accessToken").value, data: "hell"}));
+    }
 </script>
 </html>

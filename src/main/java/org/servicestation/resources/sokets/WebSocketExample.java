@@ -1,5 +1,7 @@
 package org.servicestation.resources.sokets;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servicestation.dao.IAuthoritiesDao;
 import org.servicestation.resources.sokets.dto.SocketMessage;
@@ -17,6 +19,7 @@ import javax.websocket.*;
 import javax.websocket.CloseReason.CloseCodes;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.Map;
 
 @ServerEndpoint("/api/websocket")
 public class WebSocketExample {
@@ -27,13 +30,13 @@ public class WebSocketExample {
     private IAuthoritiesDao iAuthoritiesDao;
 
     @Autowired
-    private ApplicationContext applicationContext;
-
-    @Autowired
     private WebSocketEventEmitter eventEmitter;
 
     @Autowired
     private TokenStore tokenStore;
+
+    @Autowired
+    private ApplicationContext applicationContext;
 
     @OnOpen
     public void onOpen(Session session) {
@@ -51,30 +54,26 @@ public class WebSocketExample {
                 throw new WebSocketAuthenticationFailed("Authentication with access token " + socketMessage.accessToken + " not found");
 
             WebSocketEvent webSocketEvent = WebSocketEvent.valueOf(socketMessage.action);
- 
+
             String username = oAuth2Authentication.getName();
 
-            if(!eventEmitter.isHandlerExists(username, WebSocketEvent.GET_ALL_ORDERS)){
-                eventEmitter.registerEventHandler(username, WebSocketEvent.GET_ALL_ORDERS, (event, data) -> {
-                    try {
-                        session.getBasicRemote().sendText("Hello");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
+            Map<String, WebSocketEventHandler> webSocketEventListeners = applicationContext.getBeansOfType(WebSocketEventHandler.class);
+
+            for (WebSocketEventHandler listener : webSocketEventListeners.values()) {
+                eventEmitter.registerEventHandler(username, session, WebSocketEvent.GET_ALL_ORDERS, listener);
             }
-
-
 
             eventEmitter.emit(oAuth2Authentication.getName(), webSocketEvent, socketMessage.data);
         } catch (IllegalArgumentException e) {
             final String errorMessage = "Can't find specified action";
             session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, errorMessage));
             throw new WebSocketEventNotFound(errorMessage);
-        } catch (IOException e) {
+        } catch(JsonParseException | JsonMappingException e) {
             final String errorMessage = "Can't parse incoming web socket message";
             session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, errorMessage));
             throw new WebSocketMessageParseException(errorMessage);
+        } catch (IOException e) {
+            session.close(new CloseReason(CloseCodes.CLOSED_ABNORMALLY, e.getMessage()));
         } catch (WebSocketAuthenticationFailed e) {
             session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, e.getMessage()));
             throw e;

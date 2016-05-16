@@ -13,11 +13,13 @@ import org.servicestation.resources.managers.impl.AuthoritiesManager;
 import org.servicestation.resources.managers.impl.UserManager;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
 import org.servicestation.resources.sokets.WebSocketExample;
+import org.servicestation.resources.sokets.handlers.GetAllOrdersWebSocketEventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -128,7 +130,6 @@ public class ApplicationContextConfiguration {
         JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager();
         jdbcUserDetailsManager.setDataSource(basicDataSource());
         return jdbcUserDetailsManager;
-
     }
 
     @Bean
@@ -183,6 +184,12 @@ public class ApplicationContextConfiguration {
     @Bean
     public WebSocketEventEmitter deviceSessionHandler() {
         return new WebSocketEventEmitter();
+    }
+
+    @Bean
+    @Scope("prototype")
+    public GetAllOrdersWebSocketEventHandler getAllOrdersWebSocketEventHandler() {
+        return new GetAllOrdersWebSocketEventHandler();
     }
 }
 
