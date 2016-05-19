@@ -12,5 +12,4 @@ public class GetAllOrdersWebSocketEventHandler extends WebSocketEventHandler {
     public void handle(WebSocketEvent event, Session session, Object data) throws IOException {
         session.getBasicRemote().sendText("Hello guys");
     }
-
 }
