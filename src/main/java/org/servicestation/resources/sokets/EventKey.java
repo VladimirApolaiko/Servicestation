@@ -2,11 +2,11 @@ package org.servicestation.resources.sokets;
 
 
 public class EventKey {
-    public String username;
+    public String sessionId;
     public WebSocketEvent event;
 
-    public EventKey(String username, WebSocketEvent event) {
-        this.username = username;
+    public EventKey(String sessionId, WebSocketEvent event) {
+        this.sessionId = sessionId;
         this.event = event;
     }
 
@@ -17,14 +17,14 @@ public class EventKey {
 
         EventKey eventKey = (EventKey) o;
 
-        if (username != null ? !username.equals(eventKey.username) : eventKey.username != null) return false;
+        if (sessionId != null ? !sessionId.equals(eventKey.sessionId) : eventKey.sessionId != null) return false;
         return event == eventKey.event;
 
     }
 
     @Override
     public int hashCode() {
-        int result = username != null ? username.hashCode() : 0;
+        int result = sessionId != null ? sessionId.hashCode() : 0;
         result = 31 * result + (event != null ? event.hashCode() : 0);
         return result;
     }

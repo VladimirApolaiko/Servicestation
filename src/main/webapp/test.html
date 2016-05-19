@@ -20,7 +20,10 @@ Access token<input type="text" id="accessToken">
     };
 
     socket.onmessage = function (event) {
-        console.log("Incoming message with content:", event.data);
+        var div = document.createElement('div');
+        div.className = "alert alert-success";
+        div.innerHTML = "<strong>" + event.data + "</strong>";
+        document.body.appendChild(div);
     };
 
     var sendMessage = function() {
