@@ -1,11 +1,14 @@
 package org.servicestation.test.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.servicestation.dao.*;
+import org.servicestation.dao.impl.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -38,5 +41,45 @@ public class ApplicationConfigTest {
     @Bean
     public JdbcTemplate testJdbcTemplate() throws URISyntaxException {
         return new JdbcTemplate(testBasicDataSource());
+    }
+
+    @Bean
+    public IStationDao stationDao() {
+        return new StationDaoImpl();
+    }
+
+    @Bean
+    public ICarDao carsDao() {
+        return new CarDaoImpl();
+    }
+
+    @Bean
+    public IMechanicDao mechanicDao() {
+        return new MechanicDaoImpl();
+    }
+
+    @Bean
+    public IOrderDao orderDao() {
+        return new OrderDaoImpl();
+    }
+
+    @Bean
+    public IUserDao userDao() {
+        return new UserDaoImpl();
+    }
+
+    @Bean
+    public IAuthoritiesDao authoritiesDao() {
+        return new AuthorityDaoImpl();
+    }
+
+    @Bean
+    public IMechanicOrder mechanicOrder() {
+        return new MechanicOrderImpl();
+    }
+
+    @Bean
+    public NamedParameterJdbcTemplate jdbcTemplate() throws URISyntaxException {
+        return new NamedParameterJdbcTemplate(testBasicDataSource());
     }
 }
