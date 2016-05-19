@@ -1,6 +1,8 @@
 package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
+import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
 import org.servicestation.dao.*;
@@ -10,6 +12,7 @@ import org.servicestation.resources.impl.UserResourceImpl;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.managers.impl.AuthoritiesManager;
+import org.servicestation.resources.managers.impl.MailManager;
 import org.servicestation.resources.managers.impl.UserManager;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
 import org.servicestation.resources.sokets.WebSocketExample;
@@ -36,7 +39,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Configuration
-@PropertySource("classpath:database.properties")
+@PropertySource({"classpath:database.properties", "classpath:mail.properties"})
 public class ApplicationContextConfiguration {
 
     private static final Integer INITIAL_POOL_SIZE = 10;
@@ -190,6 +193,19 @@ public class ApplicationContextConfiguration {
     @Scope("prototype")
     public GetAllOrdersWebSocketEventHandler getAllOrdersWebSocketEventHandler() {
         return new GetAllOrdersWebSocketEventHandler();
+    }
+
+    @Bean
+    public VelocityEngine velocityEngine() {
+        VelocityEngine velocityEngine = new VelocityEngine();
+        velocityEngine.setProperty("resource.loader", "class");
+        velocityEngine.setProperty("class.resource.loader.class", " org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader");
+        return velocityEngine;
+    }
+
+    @Bean
+    public MailManager mailManager() {
+        return new MailManager();
     }
 }
 

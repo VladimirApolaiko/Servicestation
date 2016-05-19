@@ -4,7 +4,10 @@ import org.servicestation.dao.*;
 import org.servicestation.model.User;
 import org.servicestation.resources.TestResource;
 import org.servicestation.resources.managers.IAuthoritiesManager;
+import org.servicestation.resources.managers.impl.MailManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.HashMap;
 
 
 public class TestResourceImpl implements TestResource {
@@ -29,6 +32,9 @@ public class TestResourceImpl implements TestResource {
 
     @Autowired
     private IAuthoritiesManager authoritiesManager;
+
+    @Autowired
+    private MailManager mailManager;
 
     public String test() throws Exception {
         /*Station DAO*/
@@ -86,8 +92,8 @@ public class TestResourceImpl implements TestResource {
         /*iAuthoritiesDao.grantAuthority("vvvv", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.revokeAuthority("vladimir", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.getAuthoritiesByUsername("vladimir");*/
+        mailManager.sendEmail("vladimirapolaiko@gmail.com", "Hello", "mail-templates/VerifyEmail.vm", new HashMap<String, Object>(){{put("platformUrl", "hello");put("token", "some token");}});
 
-        authoritiesManager.getAuthoritiesByUsername("vladimirapolaiko@gmail.com");
         return "Success";
     }
 }
