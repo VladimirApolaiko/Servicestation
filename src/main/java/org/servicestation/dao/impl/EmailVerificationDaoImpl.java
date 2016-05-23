@@ -4,7 +4,6 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.IEmailVerificationDao;
 import org.servicestation.model.EmailVerification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -12,9 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class EmailVerificationDaoImpl implements IEmailVerificationDao {
@@ -24,9 +21,9 @@ public class EmailVerificationDaoImpl implements IEmailVerificationDao {
 
     private static final String CREATE_EMAIL_VERIFICATION_TOKEN = "insert into email_verification (username, token) values(:username, :token)";
 
-    private static final String DELETE_EMAIL_VERIFICATION_TOKEN_BY_USER = "delete from email_verification where username = :username";
+    private static final String DELETE_EMAIL_VERIFICATION_TOKEN = "delete from email_verification where token = :token";
 
-    private static final String GET_ALL_VERIFICATION_TOKENS = "select * from email_verification where token = :token";
+    private static final String GET_VERIFICATION_TOKEN = "select * from email_verification where token = :token";
 
     @Override
     public EmailVerification createEmailVerificationToken(String username, String token) {
@@ -41,10 +38,10 @@ public class EmailVerificationDaoImpl implements IEmailVerificationDao {
     }
 
     @Override
-    public void deleteAllVerificationTokens(String username) {
+    public void deleteEmailVerificationToken(String token) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("username", username);
-        jdbcTemplate.update(DELETE_EMAIL_VERIFICATION_TOKEN_BY_USER, params);
+        params.addValue("username", token);
+        jdbcTemplate.update(DELETE_EMAIL_VERIFICATION_TOKEN, params);
     }
 
     @Override
@@ -52,7 +49,7 @@ public class EmailVerificationDaoImpl implements IEmailVerificationDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("token", token);
 
-        return jdbcTemplate.queryForObject(GET_ALL_VERIFICATION_TOKENS, params, (rs, rowNum) -> {
+        return jdbcTemplate.queryForObject(GET_VERIFICATION_TOKEN, params, (rs, rowNum) -> {
             return getEmailVerification(rs);
         });
     }

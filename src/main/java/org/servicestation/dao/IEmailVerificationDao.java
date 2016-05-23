@@ -6,7 +6,7 @@ import org.servicestation.model.EmailVerification;
 public interface IEmailVerificationDao {
     EmailVerification createEmailVerificationToken(String username, String token);
 
-    void deleteAllVerificationTokens(String username);
+    void deleteEmailVerificationToken(String token);
 
     EmailVerification getVerification(String username);
 }

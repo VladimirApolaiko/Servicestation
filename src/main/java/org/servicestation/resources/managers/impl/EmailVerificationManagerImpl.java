@@ -8,7 +8,6 @@ import org.servicestation.model.EmailVerification;
 import org.servicestation.model.User;
 import org.servicestation.resources.exceptions.EmailConfirmationTokenException;
 import org.servicestation.resources.managers.EmailVerificationManager;
-import org.servicestation.resources.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class EmailVerificationManagerImpl implements EmailVerificationManager {
@@ -56,6 +53,7 @@ public class EmailVerificationManagerImpl implements EmailVerificationManager {
             User newUser = new User();
             newUser.enabled = true;
             userDao.changeUserByUsername(emailVerification.username, newUser);
+            emailVerificationDao.deleteEmailVerificationToken(token);
         } catch (EmptyResultDataAccessException e) {
             throw new EmailConfirmationTokenException("Email confirmation token not found");
         }
@@ -63,7 +61,6 @@ public class EmailVerificationManagerImpl implements EmailVerificationManager {
 
     @Override
     public void sendEmailConfirmation(String username) {
-        emailVerificationDao.deleteAllVerificationTokens(username);
         String emailVerificationToken = generateEmailVerificationToken();
         emailVerificationDao.createEmailVerificationToken(username, emailVerificationToken);
 
