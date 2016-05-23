@@ -18,7 +18,7 @@ public class UserDaoTest extends AbstractTest {
         final User newUser = new User();
         newUser.username = "test_new_user";
         newUser.password = "test_new_user";
-        newUser.enabled = true;
+        newUser.enabled = false;
         newUser.firstName = "test_new_user_firstname";
         newUser.lastName = "test_new_user_lastname";
 

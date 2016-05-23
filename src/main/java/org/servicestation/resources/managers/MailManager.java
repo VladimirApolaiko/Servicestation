@@ -10,10 +10,10 @@ public interface MailManager {
     void sendEmail(String to,
                    String subject,
                    String mailTemplate,
-                   Map<String, Object> templateModel) throws MessagingException;
+                   Map<String, Object> templateModel);
 
     void sendEmail(List<String> to,
                    String subject,
                    String mailTemplate,
-                   Map<String, Object> templateModel) throws MessagingException;
+                   Map<String, Object> templateModel);
 }

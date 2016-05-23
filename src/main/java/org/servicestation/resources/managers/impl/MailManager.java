@@ -49,7 +49,7 @@ public class MailManager implements org.servicestation.resources.managers.MailMa
     public void sendEmail(String to,
                           String subject,
                           String mailTemplate,
-                          Map<String, Object> templateModel) throws MessagingException {
+                          Map<String, Object> templateModel) {
 
         sendMessages(Collections.singletonList(to), subject, mailTemplate, templateModel);
     }
@@ -58,14 +58,14 @@ public class MailManager implements org.servicestation.resources.managers.MailMa
     public void sendEmail(List<String> to,
                           String subject,
                           String mailTemplate,
-                          Map<String, Object> templateModel) throws MessagingException {
+                          Map<String, Object> templateModel) {
         sendMessages(to, subject, mailTemplate, templateModel);
     }
 
     private void sendMessages(List<String> to,
                               String subject,
                               String mailTemplate,
-                              Map<String, Object> templateModel) throws MessagingException {
+                              Map<String, Object> templateModel)  {
 
         Properties props = new Properties();
         props.put("mail.smtp.port", smtpPort);
@@ -81,25 +81,31 @@ public class MailManager implements org.servicestation.resources.managers.MailMa
             }
         });
 
-        Message msg = new MimeMessage(session);
-        msg.setFrom(new InternetAddress(login));
-        List<InternetAddress> emailAddresses = to.stream().map(s -> {
-            try {
-                return new InternetAddress(s);
-            } catch (AddressException e) {
-                LOGGER.info("Incorrect email address");
-            }
-            return null;
-        }).filter(internetAddress -> internetAddress != null).collect(Collectors.toList());
+        try {
+            Message msg = new MimeMessage(session);
+            msg.setFrom(new InternetAddress(login));
+            List<InternetAddress> emailAddresses = to.stream().map(s -> {
+                try {
+                    return new InternetAddress(s);
+                } catch (AddressException e) {
+                    LOGGER.info("Incorrect email address");
+                }
+                return null;
+            }).filter(internetAddress -> internetAddress != null).collect(Collectors.toList());
 
-        InternetAddress[] addresses = new InternetAddress[emailAddresses.size()];
-        msg.setRecipients(Message.RecipientType.TO, emailAddresses.toArray(addresses));
-        msg.setSubject(subject);
+            InternetAddress[] addresses = new InternetAddress[emailAddresses.size()];
+            msg.setRecipients(Message.RecipientType.TO, emailAddresses.toArray(addresses));
+            msg.setSubject(subject);
 
-        String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, mailTemplate, encoding, templateModel);
+            String body = VelocityEngineUtils.mergeTemplateIntoString(velocityEngine, mailTemplate, encoding, templateModel);
 
-        msg.setContent(body, "text/html");
+            msg.setContent(body, "text/html; charset=UTF-8");
 
-        Transport.send(msg);
+            Transport.send(msg);
+
+        } catch(MessagingException e) {
+            LOGGER.warn("Failed attempt to send email for users {}", to.toString());
+        }
+
     }
 }

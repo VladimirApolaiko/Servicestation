@@ -7,11 +7,15 @@ import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
+import org.servicestation.resources.EmailVerificationResource;
+import org.servicestation.resources.impl.EmailVerificationResourceImpl;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.servicestation.resources.impl.UserResourceImpl;
+import org.servicestation.resources.managers.EmailVerificationManager;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.managers.impl.AuthoritiesManager;
+import org.servicestation.resources.managers.impl.EmailVerificationManagerImpl;
 import org.servicestation.resources.managers.impl.MailManager;
 import org.servicestation.resources.managers.impl.UserManager;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
@@ -39,7 +43,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 @Configuration
-@PropertySource({"classpath:database.properties", "classpath:mail.properties"})
+@PropertySource({"classpath:database.properties", "classpath:mail.properties", "classpath:app.properties"})
 public class ApplicationContextConfiguration {
 
     private static final Integer INITIAL_POOL_SIZE = 10;
@@ -114,9 +118,20 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public IEmailVerificationDao emailVerificationDao() {
+        return new EmailVerificationDaoImpl();
+    }
+
+    @Bean
     public UserResourceImpl userResource() {
         return new UserResourceImpl();
     }
+
+    @Bean
+    public EmailVerificationResource emailVerificationResource() {
+        return new EmailVerificationResourceImpl();
+    }
+
 
     @Bean(name = "springSecurityFilterChain")
     public DelegatingFilterProxy springSecurityFilterChain() {
@@ -148,6 +163,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public IAuthoritiesManager authoritiesManager() {
         return new AuthoritiesManager();
+    }
+
+    @Bean
+    public EmailVerificationManager emailVerificationManager() {
+        return new EmailVerificationManagerImpl();
     }
 
     @Bean

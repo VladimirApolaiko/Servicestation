@@ -42,7 +42,7 @@ public class UserDaoImpl implements IUserDao {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("username", user.username);
         params.addValue("password", user.password);
-        params.addValue("enabled", user.enabled);
+        params.addValue("enabled", false);
         params.addValue("firstname", user.firstName);
         params.addValue("lastname", user.lastName);
 

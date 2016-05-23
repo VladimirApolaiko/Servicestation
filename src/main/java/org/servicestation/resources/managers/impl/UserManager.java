@@ -3,6 +3,7 @@ package org.servicestation.resources.managers.impl;
 import org.servicestation.dao.IUserDao;
 import org.servicestation.model.User;
 import org.servicestation.resources.exceptions.*;
+import org.servicestation.resources.managers.EmailVerificationManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -17,6 +18,10 @@ public class UserManager implements IUserManager{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private EmailVerificationManager emailVerificationManager;
+
+
     @Override
     public User getUserByUsername(String username) throws UserNotFoundException {
        try {
@@ -30,7 +35,8 @@ public class UserManager implements IUserManager{
     public void registerNewUser(User newUser) throws UserAlreadyExists {
         try {
             newUser.password = passwordEncoder.encode(newUser.password);
-            userDao.createUser(newUser);
+            User user = userDao.createUser(newUser);
+            emailVerificationManager.sendEmailConfirmation(user.username);
         } catch(DuplicateKeyException e){
             throw new UserAlreadyExists("User with username " + newUser.username + " already exists", e);
         }
@@ -73,6 +79,5 @@ public class UserManager implements IUserManager{
             throw new UserDoesNotExists("User with username" + username + " not found", e);
         }
     }
-
 
 }

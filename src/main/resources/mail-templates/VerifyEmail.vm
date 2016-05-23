@@ -14,8 +14,7 @@
                         <td style="padding-bottom: 20px; padding-top: 10px; padding-left: 10px;"></td>
 
                         <!-- HEADER MESSAGE -->
-                        <td style="padding-left: 30px; padding-bottom: 20px; padding-top: 10px;"><h2>Email
-                            Verification</h2></td>
+                        <td style="padding-left: 30px; padding-bottom: 20px; padding-top: 10px;"><h2>Подтверждение адреса электронной почты</h2></td>
 
 
                         <td style="padding-bottom: 20px; padding-top: 10px; padding-left: 10px;">
@@ -33,35 +32,22 @@
                             <!-- MESSAGE -->
 
                             <p>
-                                To verify your email address for your
-                                <App Name> account click through on the link below within the next 48 hours.
+                                Для подтверждения адреса электронной почты для вашей
+                                <App Name> учетной записи нажмите на ссылку ниже в течении следующих ${expireHours} часов.
                             </p>
                             <p>
-                                <a href="${platformUrl}/emailconfirm/${token}">Verify my
-                                    Email Address</a>
+                                <a href="${platformUrl}/api/emailconfirm/${token}">Подтвердить мой адрес электронной почты</a>
                             </p>
 
                             <p>
-                                Thanks for using
+                                Спасибо за использование нашего сервиса
                                 <App Name>!
                             </p>
 
                             <!-- LEGALESE -->
 
                             <div style="font-size: 12px;">
-                                <p>Please don't reply to this automatically generated email.</p>
-
-                                <p>What is this doing in my mailbox?</p>
-
-                                <p>If you do not wish to sign up for
-                                    <App Name>, you do not need to click through on the link above, and we will not
-                                        contact you again unless you request it. As such, there is no need to
-                                        unsubscribe.
-                                </p>
-
-                                <p>Thanks for trying
-                                    <App Name>!
-                                </p>
+                                <p>Пожалуйста не отвечайте на это автоматически сгенерированное письмо.</p>
                             </div>
                         </td>
                     </tr>
