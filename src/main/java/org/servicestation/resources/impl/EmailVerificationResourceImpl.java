@@ -16,7 +16,6 @@ public class EmailVerificationResourceImpl implements EmailVerificationResource 
     @Override
     public Response confirmEmail(String token) throws EmailConfirmationTokenException {
         emailVerificationManager.verifyEmail(token);
-
         return Response.ok().build();
     }
 }
