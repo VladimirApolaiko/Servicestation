@@ -1,8 +1,7 @@
 package org.servicestation.resources.impl;
 
 import org.servicestation.dao.*;
-import org.servicestation.model.User;
-import org.servicestation.resources.TestResource;
+import org.servicestation.resources.ITestResource;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.impl.MailManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.HashMap;
 
 
-public class TestResourceImpl implements TestResource {
+public class TestResourceImpl implements ITestResource {
 
     @Autowired
     private IStationDao stationDao;

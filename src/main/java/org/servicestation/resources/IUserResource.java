@@ -9,7 +9,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 
 @Path("/user")
-public interface UserResource {
+public interface IUserResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

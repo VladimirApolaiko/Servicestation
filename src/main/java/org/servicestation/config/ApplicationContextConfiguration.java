@@ -2,22 +2,21 @@ package org.servicestation.config;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.velocity.app.VelocityEngine;
-import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
-import org.servicestation.resources.EmailVerificationResource;
+import org.servicestation.resources.IEmailVerificationResource;
+import org.servicestation.resources.IPasswordRecoveryResource;
 import org.servicestation.resources.impl.EmailVerificationResourceImpl;
+import org.servicestation.resources.impl.PasswordRecoveryResourceImpl;
 import org.servicestation.resources.impl.TestResourceImpl;
 import org.servicestation.resources.impl.UserResourceImpl;
-import org.servicestation.resources.managers.EmailVerificationManager;
+import org.servicestation.resources.managers.IEmailVerificationManager;
 import org.servicestation.resources.managers.IAuthoritiesManager;
+import org.servicestation.resources.managers.IPasswordRecoveryManager;
 import org.servicestation.resources.managers.IUserManager;
-import org.servicestation.resources.managers.impl.AuthoritiesManager;
-import org.servicestation.resources.managers.impl.EmailVerificationManagerImpl;
-import org.servicestation.resources.managers.impl.MailManager;
-import org.servicestation.resources.managers.impl.UserManager;
+import org.servicestation.resources.managers.impl.*;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
 import org.servicestation.resources.sokets.WebSocketExample;
 import org.servicestation.resources.sokets.handlers.GetAllOrdersWebSocketEventHandler;
@@ -123,15 +122,24 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public IPasswordRecoveryDao passwordRecoveryDao() {
+        return new PasswordDaoImpl();
+    }
+
+    @Bean
     public UserResourceImpl userResource() {
         return new UserResourceImpl();
     }
 
     @Bean
-    public EmailVerificationResource emailVerificationResource() {
+    public IEmailVerificationResource emailVerificationResource() {
         return new EmailVerificationResourceImpl();
     }
 
+    @Bean
+    public IPasswordRecoveryResource passwordRecoveryResource() {
+        return new PasswordRecoveryResourceImpl();
+    }
 
     @Bean(name = "springSecurityFilterChain")
     public DelegatingFilterProxy springSecurityFilterChain() {
@@ -166,8 +174,13 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
-    public EmailVerificationManager emailVerificationManager() {
+    public IEmailVerificationManager emailVerificationManager() {
         return new EmailVerificationManagerImpl();
+    }
+
+    @Bean
+    public IPasswordRecoveryManager passwordRecoveryManager() {
+        return new PasswordRecoveryManagerImpl();
     }
 
     @Bean

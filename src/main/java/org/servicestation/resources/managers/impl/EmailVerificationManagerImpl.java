@@ -1,13 +1,13 @@
 package org.servicestation.resources.managers.impl;
 
 
-import org.apache.commons.lang.RandomStringUtils;
 import org.servicestation.dao.IEmailVerificationDao;
 import org.servicestation.dao.IUserDao;
 import org.servicestation.model.EmailVerification;
 import org.servicestation.model.User;
 import org.servicestation.resources.exceptions.EmailConfirmationTokenException;
-import org.servicestation.resources.managers.EmailVerificationManager;
+import org.servicestation.resources.managers.IEmailVerificationManager;
+import org.servicestation.resources.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-public class EmailVerificationManagerImpl implements EmailVerificationManager {
+public class EmailVerificationManagerImpl implements IEmailVerificationManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EmailVerificationManagerImpl.class);
 
@@ -61,7 +61,7 @@ public class EmailVerificationManagerImpl implements EmailVerificationManager {
 
     @Override
     public void sendEmailConfirmation(String username) {
-        String emailVerificationToken = generateEmailVerificationToken();
+        String emailVerificationToken = Utils.generateRandomString(MIN_TOKEN_SIZE);
         emailVerificationDao.createEmailVerificationToken(username, emailVerificationToken);
 
         Map<String, Object> verificationEmailTemplateParameters = new HashMap<>();
@@ -72,8 +72,5 @@ public class EmailVerificationManagerImpl implements EmailVerificationManager {
         mailManager.sendEmail(username, "Email Confirmation", VERIFICATION_EMAIL_TEMPLATE, verificationEmailTemplateParameters);
     }
 
-    private String generateEmailVerificationToken() {
-        return RandomStringUtils.randomAlphanumeric(MIN_TOKEN_SIZE + (int) (Math.random() * 32));
-    }
 
 }

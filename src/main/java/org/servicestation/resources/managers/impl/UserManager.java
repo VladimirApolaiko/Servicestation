@@ -3,7 +3,7 @@ package org.servicestation.resources.managers.impl;
 import org.servicestation.dao.IUserDao;
 import org.servicestation.model.User;
 import org.servicestation.resources.exceptions.*;
-import org.servicestation.resources.managers.EmailVerificationManager;
+import org.servicestation.resources.managers.IEmailVerificationManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
@@ -19,7 +19,7 @@ public class UserManager implements IUserManager{
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private EmailVerificationManager emailVerificationManager;
+    private IEmailVerificationManager emailVerificationManager;
 
 
     @Override
@@ -53,16 +53,16 @@ public class UserManager implements IUserManager{
     }
 
     @Override
-    public void changeUserPassword(String username, String oldPassword, String newPassword) throws UserDoesNotExists, AccessDeniedException, ValidationException {
+    public void changeUserPassword(String username, String password, String confirmation) throws UserDoesNotExists, AccessDeniedException, ValidationException {
         try {
             User user = userDao.getUserByUsername(username);
-            if (!user.password.equals(passwordEncoder.encode(oldPassword))) {
-                throw new AccessDeniedException("Passwords does not equal");
+            if (!password.equals(confirmation)) {
+                throw new ValidationException("Password and confirmation does not match");
             }
-            if(!PASSWORD_PATTERN.matcher(newPassword).matches()) {
+            if(!PASSWORD_PATTERN.matcher(confirmation).matches()) {
                 throw new ValidationException("Password validation Exception");
             }
-            user.password = passwordEncoder.encode(newPassword);
+            user.password = passwordEncoder.encode(password);
             userDao.changeUserByUsername(username, user);
         } catch (EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username" + username + " not found", e);

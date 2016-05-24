@@ -7,7 +7,7 @@ import javax.ws.rs.core.MediaType;
 
 
 @Path("/test")
-public interface TestResource {
+public interface ITestResource {
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)

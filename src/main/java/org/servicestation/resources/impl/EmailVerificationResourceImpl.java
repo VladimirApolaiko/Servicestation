@@ -1,16 +1,16 @@
 package org.servicestation.resources.impl;
 
-import org.servicestation.resources.EmailVerificationResource;
+import org.servicestation.resources.IEmailVerificationResource;
 import org.servicestation.resources.exceptions.EmailConfirmationTokenException;
-import org.servicestation.resources.managers.EmailVerificationManager;
+import org.servicestation.resources.managers.IEmailVerificationManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Response;
 
-public class EmailVerificationResourceImpl implements EmailVerificationResource {
+public class EmailVerificationResourceImpl implements IEmailVerificationResource {
 
     @Autowired
-    private EmailVerificationManager emailVerificationManager;
+    private IEmailVerificationManager emailVerificationManager;
 
 
     @Override

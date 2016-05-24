@@ -8,7 +8,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 @Path("/emailconfirm/{token}")
-public interface EmailVerificationResource {
+public interface IEmailVerificationResource {
 
     @GET
     Response confirmEmail(@PathParam("token") String token) throws EmailConfirmationTokenException;

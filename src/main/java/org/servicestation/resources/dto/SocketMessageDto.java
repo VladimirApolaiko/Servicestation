@@ -1,7 +1,7 @@
-package org.servicestation.resources.sokets.dto;
+package org.servicestation.resources.dto;
 
 
-public class SocketMessage {
+public class SocketMessageDto {
     public String action;
     public String accessToken;
     public String data;

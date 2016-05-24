@@ -1,7 +1,7 @@
 package org.servicestation.resources.impl;
 
 import org.servicestation.model.User;
-import org.servicestation.resources.UserResource;
+import org.servicestation.resources.IUserResource;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.exceptions.ValidationException;
@@ -10,7 +10,7 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class UserResourceImpl implements UserResource {
+public class UserResourceImpl implements IUserResource {
 
     @Autowired
     private IUserManager userManager;

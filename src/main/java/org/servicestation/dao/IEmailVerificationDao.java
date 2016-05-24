@@ -8,5 +8,5 @@ public interface IEmailVerificationDao {
 
     void deleteEmailVerificationToken(String token);
 
-    EmailVerification getVerification(String username);
+    EmailVerification getVerification(String token);
 }
