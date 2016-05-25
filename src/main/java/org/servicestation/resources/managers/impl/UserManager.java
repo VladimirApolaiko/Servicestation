@@ -70,12 +70,13 @@ public class UserManager implements IUserManager{
     }
 
     @Override
-    public void changeUsername(String username, String newUsername) throws UserDoesNotExists {
-        try {
-            User user = userDao.getUserByUsername(username);
-            user.username = newUsername;
-            userDao.changeUserByUsername(username, user);
-        } catch(EmptyResultDataAccessException e) {
+    public void changeUser(String username, User newUser) throws UserDoesNotExists {
+        newUser.password = null;
+        newUser.username = null;
+
+        try{
+            userDao.changeUserByUsername(username, newUser);
+        }catch(EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username" + username + " not found", e);
         }
     }

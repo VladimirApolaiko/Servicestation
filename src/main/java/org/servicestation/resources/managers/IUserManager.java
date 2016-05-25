@@ -13,5 +13,5 @@ public interface IUserManager {
     void registerNewUser(User newUser) throws UserAlreadyExists;
     void deleteUserByUsername(String username) throws UserDoesNotExists;
     void changeUserPassword(String username, String oldPassword, String newPassword) throws UserDoesNotExists, AccessDeniedException, ValidationException;
-    void changeUsername(String username, String newUsername) throws UserDoesNotExists;
+    void changeUser(String username, User newUser) throws UserDoesNotExists;
 }

@@ -19,16 +19,18 @@ public class UserDaoTest extends AbstractTest {
         newUser.username = "test_new_user";
         newUser.password = "test_new_user";
         newUser.enabled = false;
-        newUser.firstName = "test_new_user_firstname";
-        newUser.lastName = "test_new_user_lastname";
+        newUser.firstname = "test_new_user_firstname";
+        newUser.lastname = "test_new_user_lastname";
+        newUser.phone_number = "+37588996688";
 
         final User createdUser = iUserDao.createUser(newUser);
 
         assertEquals(newUser.username, createdUser.username);
         assertEquals(newUser.password, createdUser.password);
         assertEquals(newUser.enabled, createdUser.enabled);
-        assertEquals(newUser.firstName, createdUser.firstName);
-        assertEquals(newUser.lastName, createdUser.lastName);
+        assertEquals(newUser.firstname, createdUser.firstname);
+        assertEquals(newUser.lastname, createdUser.lastname);
+        assertEquals(newUser.phone_number, createdUser.phone_number);
     }
 
     @Test
@@ -37,16 +39,18 @@ public class UserDaoTest extends AbstractTest {
         newUser.username = "test_change_user_username";
         newUser.password = "test_change_user_password";
         newUser.enabled = true;
-        newUser.firstName = "test_change_user_firstname";
-        newUser.lastName = "test_change_user_lastname";
+        newUser.firstname = "test_change_user_firstname";
+        newUser.lastname = "test_change_user_lastname";
+        newUser.phone_number = "+37533888999666";
 
         final String username = "test_change_user";
         final User changedUser = iUserDao.changeUserByUsername(username, newUser);
 
         assertEquals(newUser.password, changedUser.password);
         assertEquals(newUser.enabled, changedUser.enabled);
-        assertEquals(newUser.firstName, changedUser.firstName);
-        assertEquals(newUser.lastName, changedUser.lastName);
+        assertEquals(newUser.firstname, changedUser.firstname);
+        assertEquals(newUser.lastname, changedUser.lastname);
+        assertEquals(newUser.phone_number, changedUser.phone_number);
     }
 
     @Test
@@ -70,7 +74,7 @@ public class UserDaoTest extends AbstractTest {
         assertEquals(username, user.username);
         assertEquals(password, user.password);
         assertEquals(enabled, user.enabled);
-        assertEquals(firstName, user.firstName);
-        assertEquals(lastName, user.lastName);
+        assertEquals(firstName, user.firstname);
+        assertEquals(lastName, user.lastname);
     }
 }

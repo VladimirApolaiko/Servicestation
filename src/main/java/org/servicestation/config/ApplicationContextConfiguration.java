@@ -47,7 +47,6 @@ public class ApplicationContextConfiguration {
 
     private static final Integer INITIAL_POOL_SIZE = 10;
 
-
     @Value("${database.url}")
     private String databaseUrl;
 

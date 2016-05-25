@@ -10,6 +10,10 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.SecurityContext;
+import java.security.Principal;
+
 public class UserResourceImpl implements IUserResource {
 
     @Autowired
@@ -29,5 +33,10 @@ public class UserResourceImpl implements IUserResource {
 
         userManager.registerNewUser(user);
         authoritiesManager.grantAuthority(user.username, Authority.ROLE_USER);
+    }
+
+    @Override
+    public void changeUser(User user, SecurityContext securityContext) throws UserDoesNotExists {
+        userManager.changeUser(securityContext.getUserPrincipal().getName(), user);
     }
 }

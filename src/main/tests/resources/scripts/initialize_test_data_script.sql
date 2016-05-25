@@ -10,15 +10,15 @@ alter sequence station_id_seq restart with 1;
 
 
 /*Users*/
-insert into users values('test_change_user', 'test_change_user', true, 'Test1', 'User1');
-insert into users values('test_delete_user', 'test_delete_user', true, 'Test2', 'User2');
-insert into users values('test_user', 'test_user', true, 'Test3', 'User3');
-insert into users values('test_user_foreign_1', 'test_user_foreign_1', true, 'Test4', 'User4');
-insert into users values('test_user_foreign_2', 'test_user_foreign_2', true, 'Test5', 'User5');
-insert into users values('test_user_foreign_3', 'test_user_foreign_3', true, 'Test7', 'User7');
+insert into users values('test_change_user', 'test_change_user', true, 'Test1', 'User1', '+75333558865');
+insert into users values('test_delete_user', 'test_delete_user', true, 'Test2', 'User2', '+75333558865');
+insert into users values('test_user', 'test_user', true, 'Test3', 'User3', '+75333558865');
+insert into users values('test_user_foreign_1', 'test_user_foreign_1', true, 'Test4', 'User4', '+75333558865');
+insert into users values('test_user_foreign_2', 'test_user_foreign_2', true, 'Test5', 'User5', '+75333558865');
+insert into users values('test_user_foreign_3', 'test_user_foreign_3', true, 'Test7', 'User7', '+75333558865');
 
-insert into users values('test_user_foreign_4', 'test_user_foreign_4', true, 'Test8', 'User8');
-insert into users values('test_user_foreign_5', 'test_user_foreign_5', true, 'Test9', 'User9');
+insert into users values('test_user_foreign_4', 'test_user_foreign_4', true, 'Test8', 'User8', '+75333558865');
+insert into users values('test_user_foreign_5', 'test_user_foreign_5', true, 'Test9', 'User9', '+75333558865');
 
 
 /*Stations*/

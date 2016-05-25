@@ -79,8 +79,8 @@ public class TestResourceImpl implements ITestResource {
         user.username = "vladimirapolaiko@gmail.com";
         user.password = "123456789";
         user.enabled = true;
-        user.firstName = "Vladimir";
-        user.lastName = "Apolaiko";
+        user.firstname = "Vladimir";
+        user.lastname = "Apolaiko";
         User user1 = userDao.createUser(user);*/
 
        /* user.password = "hello";

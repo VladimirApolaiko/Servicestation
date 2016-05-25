@@ -23,7 +23,7 @@ public class UserDaoImpl implements IUserDao {
     private static final String DELIMITER = ", ";
 
     private static final String CREATE_NEW_USER =
-            "insert into users values(:username, :password, :enabled, :firstname, :lastname)";
+            "insert into users values(:username, :password, :enabled, :firstname, :lastname, :phone_number)";
 
     private static final String UPDATE_USER =
             "update users set ";
@@ -43,8 +43,9 @@ public class UserDaoImpl implements IUserDao {
         params.addValue("username", user.username);
         params.addValue("password", user.password);
         params.addValue("enabled", false);
-        params.addValue("firstname", user.firstName);
-        params.addValue("lastname", user.lastName);
+        params.addValue("firstname", user.firstname);
+        params.addValue("lastname", user.lastname);
+        params.addValue("phone_number", user.phone_number);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(CREATE_NEW_USER, params, keyHolder);
@@ -112,8 +113,9 @@ public class UserDaoImpl implements IUserDao {
         user.username = (String) keys.get("username");
         user.password = (String) keys.get("password");
         user.enabled = (boolean) keys.get("enabled");
-        user.firstName = (String) keys.get("firstname");
-        user.lastName = (String) keys.get("lastname");
+        user.firstname = (String) keys.get("firstname");
+        user.lastname = (String) keys.get("lastname");
+        user.phone_number = (String) keys.get("phone_number");
 
         return user;
     }
@@ -123,8 +125,9 @@ public class UserDaoImpl implements IUserDao {
         user.username = rs.getString("username");
         user.password = rs.getString("password");
         user.enabled = rs.getBoolean("enabled");
-        user.firstName = rs.getString("firstname");
-        user.lastName = rs.getString("lastname");
+        user.firstname = rs.getString("firstname");
+        user.lastname = rs.getString("lastname");
+        user.phone_number = rs.getString("phone_number");
 
         return user;
     }
