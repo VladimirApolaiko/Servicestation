@@ -32,6 +32,9 @@ public class EmailVerificationManagerImpl implements IEmailVerificationManager {
     @Value("${emailConfirmationTokenDaysExpire}")
     private int emailConfirmationTokenDaysExpire;
 
+    @Value("${protocole}")
+    private String protocole;
+
     @Autowired
     private IEmailVerificationDao emailVerificationDao;
 
@@ -65,7 +68,7 @@ public class EmailVerificationManagerImpl implements IEmailVerificationManager {
         emailVerificationDao.createEmailVerificationToken(username, emailVerificationToken);
 
         Map<String, Object> verificationEmailTemplateParameters = new HashMap<>();
-        verificationEmailTemplateParameters.put("platformUrl", platformUrl);
+        verificationEmailTemplateParameters.put("platformUrl", protocole + platformUrl);
         verificationEmailTemplateParameters.put("token", emailVerificationToken);
         verificationEmailTemplateParameters.put("expireHours", emailConfirmationTokenDaysExpire * 24);
 
