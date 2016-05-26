@@ -3,6 +3,7 @@ package org.servicestation.resources;
 import org.servicestation.model.User;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
+import org.servicestation.resources.exceptions.UserNotFoundException;
 import org.servicestation.resources.exceptions.ValidationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -22,5 +23,9 @@ public interface IUserResource {
     @PUT
     @PreAuthorize("hasRole('ROLE_USER')")
     void changeUser(User user, @Context SecurityContext securityContext) throws UserDoesNotExists;
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    User getUser(@Context SecurityContext securityContext) throws UserNotFoundException;
 
 }

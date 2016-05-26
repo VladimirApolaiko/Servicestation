@@ -4,6 +4,7 @@ import org.servicestation.model.User;
 import org.servicestation.resources.IUserResource;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
+import org.servicestation.resources.exceptions.UserNotFoundException;
 import org.servicestation.resources.exceptions.ValidationException;
 import org.servicestation.resources.managers.Authority;
 import org.servicestation.resources.managers.IAuthoritiesManager;
@@ -38,5 +39,10 @@ public class UserResourceImpl implements IUserResource {
     @Override
     public void changeUser(User user, SecurityContext securityContext) throws UserDoesNotExists {
         userManager.changeUser(securityContext.getUserPrincipal().getName(), user);
+    }
+
+    @Override
+    public User getUser(@Context SecurityContext securityContext) throws UserNotFoundException {
+        return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
     }
 }
