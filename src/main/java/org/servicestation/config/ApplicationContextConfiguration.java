@@ -6,17 +6,13 @@ import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
 import org.servicestation.dao.*;
 import org.servicestation.dao.impl.*;
+import org.servicestation.resources.ICarResource;
 import org.servicestation.resources.IEmailVerificationResource;
 import org.servicestation.resources.IPasswordRecoveryResource;
-import org.servicestation.resources.impl.EmailVerificationResourceImpl;
-import org.servicestation.resources.impl.PasswordRecoveryResourceImpl;
-import org.servicestation.resources.impl.TestResourceImpl;
-import org.servicestation.resources.impl.UserResourceImpl;
-import org.servicestation.resources.managers.IEmailVerificationManager;
-import org.servicestation.resources.managers.IAuthoritiesManager;
-import org.servicestation.resources.managers.IPasswordRecoveryManager;
-import org.servicestation.resources.managers.IUserManager;
+import org.servicestation.resources.impl.*;
+import org.servicestation.resources.managers.*;
 import org.servicestation.resources.managers.impl.*;
+import org.servicestation.resources.managers.impl.MailManager;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
 import org.servicestation.resources.sokets.WebSocketExample;
 import org.servicestation.resources.sokets.handlers.GetAllOrdersWebSocketEventHandler;
@@ -45,7 +41,7 @@ import java.net.URISyntaxException;
 @PropertySource({"classpath:database.properties", "classpath:mail.properties", "classpath:app.properties"})
 public class ApplicationContextConfiguration {
 
-    private static final Integer INITIAL_POOL_SIZE = 10;
+    private static final Integer INITIAL_POOL_SIZE = 1;
 
     @Value("${database.url}")
     private String databaseUrl;
@@ -116,6 +112,11 @@ public class ApplicationContextConfiguration {
     }
 
     @Bean
+    public CarResourceImpl carResource() {
+        return new CarResourceImpl();
+    }
+
+    @Bean
     public IEmailVerificationDao emailVerificationDao() {
         return new EmailVerificationDaoImpl();
     }
@@ -175,6 +176,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public IEmailVerificationManager emailVerificationManager() {
         return new EmailVerificationManagerImpl();
+    }
+
+    @Bean
+    public ICarManager carManager() {
+        return new CarManagerImpl();
     }
 
     @Bean

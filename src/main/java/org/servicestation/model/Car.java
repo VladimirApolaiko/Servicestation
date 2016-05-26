@@ -1,7 +1,7 @@
 package org.servicestation.model;
 
 public class Car {
-    public int id;
+    public Integer id;
     public String brand;
     public String model;
     public Double engine_volume;

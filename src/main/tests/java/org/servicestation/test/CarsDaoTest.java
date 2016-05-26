@@ -59,7 +59,7 @@ public class CarsDaoTest extends AbstractTest {
 
     @Test
     public void testDeleteCar() {
-        final int carId = 2;
+        final Integer carId = 2;
         Car car = carDao.deleteCar(carId);
 
         assertEquals(carId, car.id);

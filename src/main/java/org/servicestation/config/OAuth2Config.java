@@ -56,7 +56,8 @@ public class OAuth2Config {
         @Override
         public void configure(HttpSecurity http) throws Exception {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
-            http.authorizeRequests().antMatchers("/api/users").access("hasRole('ROLE_ANONYMOUS')");
+            http.authorizeRequests().antMatchers("/api/users").anonymous();
+            http.authorizeRequests().antMatchers("/api/car").access("hasRole('ROLE_USER')");
             /*http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");*/
         }
 
