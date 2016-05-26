@@ -2,6 +2,7 @@ package org.servicestation.resources;
 
 import org.servicestation.model.Station;
 import org.servicestation.resources.dto.StationDto;
+import org.servicestation.resources.exceptions.StationDoesNotExists;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -25,7 +26,7 @@ public interface IStationResource {
     @Path("/index")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    List<StationDto> getAllIndexStations(@Context SecurityContext securityContext);
+    StationDto getAllIndexStations(@Context SecurityContext securityContext);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -33,5 +34,5 @@ public interface IStationResource {
 
     @Path("/{stationId}")
     @DELETE
-    Response deleteStation(@Context SecurityContext securityContext, @PathParam("stationId") Integer stationId);
+    Response deleteStation(@Context SecurityContext securityContext, @PathParam("stationId") Integer stationId) throws StationDoesNotExists;
 }
