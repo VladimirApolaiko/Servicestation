@@ -141,6 +141,11 @@ public class ApplicationContextConfiguration {
         return new PasswordRecoveryResourceImpl();
     }
 
+    @Bean
+    public StationResourceImpl stationResource() {
+        return new StationResourceImpl();
+    }
+
     @Bean(name = "springSecurityFilterChain")
     public DelegatingFilterProxy springSecurityFilterChain() {
         return new DelegatingFilterProxy();
@@ -186,6 +191,11 @@ public class ApplicationContextConfiguration {
     @Bean
     public IPasswordRecoveryManager passwordRecoveryManager() {
         return new PasswordRecoveryManagerImpl();
+    }
+
+    @Bean
+    public IStationManager stationManager() {
+        return new StationManagerImpl();
     }
 
     @Bean

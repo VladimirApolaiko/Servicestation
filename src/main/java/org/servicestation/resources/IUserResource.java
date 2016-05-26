@@ -22,4 +22,5 @@ public interface IUserResource {
     @PUT
     @PreAuthorize("hasRole('ROLE_USER')")
     void changeUser(User user, @Context SecurityContext securityContext) throws UserDoesNotExists;
+
 }
