@@ -11,9 +11,7 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
 
 public class UserResourceImpl implements IUserResource {
 
