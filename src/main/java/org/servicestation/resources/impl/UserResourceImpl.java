@@ -42,7 +42,7 @@ public class UserResourceImpl implements IUserResource {
     }
 
     @Override
-    public User getUser(@Context SecurityContext securityContext) throws UserNotFoundException {
+    public User getUser(SecurityContext securityContext) throws UserNotFoundException {
         return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
     }
 }
