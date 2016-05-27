@@ -28,6 +28,7 @@ public class StationResourceImpl implements IStationResource {
     @Override
     public Response updateStation(SecurityContext securityContext, Station station, Integer stationId) throws Exception {
         stationManager.changeStation(stationId, station);
+
         return Response.ok().build();
     }
 
