@@ -1,18 +1,21 @@
 package org.servicestation.resources.managers;
 
-import org.servicestation.model.Station;
+import org.servicestation.resources.dto.MapStationDto;
+import org.servicestation.resources.dto.StationDto;
 import org.servicestation.resources.exceptions.StationDoesNotExists;
 
 import java.util.List;
 
 public interface IStationManager {
-    void createNewStation(Station newStation);
+    StationDto createNewStation(StationDto newStation);
 
     void deleteStation(Integer stationId) throws StationDoesNotExists;
 
-    List<Station> getStations();
+    List<StationDto> getStations();
 
-    void changeStation(Integer stationId, Station newStation) throws Exception;
+    MapStationDto getMapStations();
+
+    StationDto changeStation(Integer stationId, StationDto newStation) throws Exception;
 
 
 }
