@@ -1,18 +1,18 @@
 package org.servicestation.resources.managers;
 
-import org.servicestation.model.Car;
+import org.servicestation.resources.dto.CarDto;
 import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 
 import java.util.List;
 
 public interface ICarManager {
-    void createNewCar(String username, Car newCar) throws UserDoesNotExists;
+    CarDto createNewCar(String username, CarDto newCar) throws UserDoesNotExists;
 
     void deleteCar(String username, Integer carId) throws UserDoesNotExists, CarNotFoundException;
 
-    List<Car> getCars(String username) throws UserDoesNotExists, CarNotFoundException;
+    List<CarDto> getCars(String username) throws UserDoesNotExists, CarNotFoundException;
 
-    void changeCar(String username, Integer carId, Car newCar) throws Exception;
+    CarDto changeCar(String username, Integer carId, CarDto newCar) throws Exception;
 
 }

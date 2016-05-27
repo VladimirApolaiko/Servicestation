@@ -1,10 +1,10 @@
 package org.servicestation.resources.mappers;
 
-public interface IDtoMapper<DTO, SERVEROBJ> {
+public interface IDtoMapper<D, S> {
 
-    SERVEROBJ mapDtoToServerObject(DTO dto);
+    S mapDtoToServerObject(D dto);
 
-    DTO mapServerObjectToDto(SERVEROBJ serverObj);
+    D mapServerObjectToDto(S serverObj);
 
     Class getDtoType();
 

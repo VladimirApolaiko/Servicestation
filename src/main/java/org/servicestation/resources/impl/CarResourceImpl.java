@@ -2,6 +2,7 @@ package org.servicestation.resources.impl;
 
 import org.servicestation.model.Car;
 import org.servicestation.resources.ICarResource;
+import org.servicestation.resources.dto.CarDto;
 import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.managers.ICarManager;
@@ -18,22 +19,18 @@ public class CarResourceImpl implements ICarResource{
     private ICarManager carManager;
 
     @Override
-    public Response createNewCar(SecurityContext securityContext, Car car) throws UserDoesNotExists {
-        carManager.createNewCar(securityContext.getUserPrincipal().getName(), car);
-        return Response.ok().build();
+    public CarDto createNewCar(SecurityContext securityContext, CarDto car) throws UserDoesNotExists {
+        return carManager.createNewCar(securityContext.getUserPrincipal().getName(), car);
     }
 
     @Override
-    public List<Car> getCars(SecurityContext securityContext) throws UserDoesNotExists, CarNotFoundException {
-        List<Car> cars = carManager.getCars(securityContext.getUserPrincipal().getName());
-        return cars;
-        /*return cars.toArray(new Car[cars.size()]);*/
+    public List<CarDto> getCars(SecurityContext securityContext) throws UserDoesNotExists, CarNotFoundException {
+        return carManager.getCars(securityContext.getUserPrincipal().getName());
     }
 
     @Override
-    public Response updateCar(SecurityContext securityContext, Car car, Integer carId) throws Exception {
-        carManager.changeCar(securityContext.getUserPrincipal().getName(), carId, car );
-        return Response.ok().build();
+    public CarDto updateCar(SecurityContext securityContext, CarDto car, Integer carId) throws Exception {
+        return carManager.changeCar(securityContext.getUserPrincipal().getName(), carId, car);
     }
 
     @Override
