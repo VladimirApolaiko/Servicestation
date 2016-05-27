@@ -1,4 +1,4 @@
-package org.servicestation.config;
+package org.servicestation.config.app;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
