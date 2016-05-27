@@ -52,6 +52,9 @@ public class ApplicationContextConfiguration {
     @Value("${database.url}")
     private String databaseUrl;
 
+    @Value("${database.ssl}")
+    private boolean sllSupport;
+
     @Autowired
     private WebApplicationContext webAppContext;
 
@@ -61,7 +64,8 @@ public class ApplicationContextConfiguration {
     public BasicDataSource basicDataSource() throws URISyntaxException {
         BasicDataSource dataSource = new BasicDataSource();
         URI dbUri = new URI(databaseUrl);
-        dataSource.setUrl("jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath() + "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory");
+        dataSource.setUrl("jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath() +
+                (sllSupport ? "?ssl=true&sslfactory=org.postgresql.ssl.NonValidatingFactory" : ""));
         if (dbUri.getUserInfo() != null) {
             dataSource.setUsername(dbUri.getUserInfo().split(":")[0]);
             dataSource.setPassword(dbUri.getUserInfo().split(":")[1]);

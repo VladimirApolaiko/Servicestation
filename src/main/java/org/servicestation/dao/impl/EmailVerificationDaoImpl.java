@@ -40,7 +40,7 @@ public class EmailVerificationDaoImpl implements IEmailVerificationDao {
     @Override
     public void deleteEmailVerificationToken(String token) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("username", token);
+        params.addValue("token", token);
         jdbcTemplate.update(DELETE_EMAIL_VERIFICATION_TOKEN, params);
     }
 
