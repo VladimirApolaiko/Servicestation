@@ -3,9 +3,11 @@ package org.servicestation.resources.managers.impl;
 import org.servicestation.dao.ICarDao;
 import org.servicestation.dao.IUserDao;
 import org.servicestation.model.Car;
+import org.servicestation.resources.dto.CarDto;
 import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.managers.ICarManager;
+import org.servicestation.resources.mappers.IObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -20,15 +22,18 @@ public class CarManagerImpl implements ICarManager {
     @Autowired
     private IUserDao userDao;
 
+    @Autowired
+    private IObjectMapper mapper;
+
 
     @Override
-    public void createNewCar(String username, Car newCar) throws UserDoesNotExists {
+    public CarDto createNewCar(String username, CarDto newCar) throws UserDoesNotExists {
         try {
             userDao.getUserByUsername(username);
             newCar.id = null;
             newCar.username = null;
 
-            carDao.createCar(username, newCar);
+            return mapper.mapServerObjectToDto(carDao.createCar(username, mapper.mapDtoToServerObject(newCar)));
         } catch (EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username " + username + " does not exists");
         }
@@ -50,17 +55,19 @@ public class CarManagerImpl implements ICarManager {
     }
 
     @Override
-    public List<Car> getCars(String username) throws UserDoesNotExists, CarNotFoundException {
+    public List<CarDto> getCars(String username) throws UserDoesNotExists, CarNotFoundException {
         try {
             userDao.getUserByUsername(username);
         } catch (EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username " + username);
         }
-        return carDao.getCarsByUsername(username);
+        return carDao.getCarsByUsername(username).stream()
+                .map(car -> mapper.<CarDto, Car>mapServerObjectToDto(car))
+                .collect(Collectors.toList());
     }
 
     @Override
-    public void changeCar(String username, Integer carId, Car newCar) throws Exception {
+    public CarDto changeCar(String username, Integer carId, CarDto newCar) throws Exception {
         try {
             userDao.getUserByUsername(username);
         } catch (EmptyResultDataAccessException e) {
@@ -71,7 +78,7 @@ public class CarManagerImpl implements ICarManager {
             throw new CarNotFoundException("Car with id " + carId + " not found for user " + username);
         }
 
-        carDao.updateCar(carId, newCar);
+        return mapper.mapServerObjectToDto(carDao.updateCar(carId, mapper.mapDtoToServerObject(newCar)));
     }
 
     private boolean isCarExists(String username, Integer carId) throws CarNotFoundException {
