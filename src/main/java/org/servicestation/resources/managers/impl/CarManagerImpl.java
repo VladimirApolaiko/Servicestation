@@ -6,6 +6,7 @@ import org.servicestation.model.Car;
 import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.managers.ICarManager;
+import org.servicestation.resources.mappers.MapperManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
@@ -19,6 +20,9 @@ public class CarManagerImpl implements ICarManager {
 
     @Autowired
     private IUserDao userDao;
+
+    @Autowired
+    private MapperManager mapperManager;
 
 
     @Override
