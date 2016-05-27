@@ -16,11 +16,13 @@ public interface IStationResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     StationDto createNewStation(@Context SecurityContext securityContext, StationDto station);
 
     @Path("/{stationId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     StationDto updateStation(@Context SecurityContext securityContext, StationDto station, @PathParam("stationId") Integer stationId) throws Exception;
 
     @Path("/index")

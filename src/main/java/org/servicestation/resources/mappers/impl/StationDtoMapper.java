@@ -10,6 +10,7 @@ public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
     public Station mapDtoToServerObject(StationDto dto) {
         Station station = new Station();
         station.id = dto.id;
+        station.station_name = dto.station_name;
         station.address = dto.address;
         station.description = dto.description;
         station.longitude = dto.longitude;
@@ -22,6 +23,7 @@ public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
     public StationDto mapServerObjectToDto(Station serverObj) {
         StationDto dto = new StationDto();
         dto.id = serverObj.id;
+        dto.station_name = serverObj.station_name;
         dto.address = serverObj.address;
         dto.description = serverObj.description;
         dto.longitude = serverObj.longitude;
