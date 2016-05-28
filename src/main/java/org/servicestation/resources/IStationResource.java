@@ -1,6 +1,6 @@
 package org.servicestation.resources;
 
-import org.servicestation.model.Station;
+import org.servicestation.resources.dto.MapStationDto;
 import org.servicestation.resources.dto.StationDto;
 import org.servicestation.resources.exceptions.StationDoesNotExists;
 
@@ -16,21 +16,23 @@ public interface IStationResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    Response createNewStation(@Context SecurityContext securityContext, Station station);
+    @Produces(MediaType.APPLICATION_JSON)
+    StationDto createNewStation(@Context SecurityContext securityContext, StationDto station);
 
     @Path("/{stationId}")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
-    Response updateStation(@Context SecurityContext securityContext, Station station, @PathParam("stationId") Integer stationId) throws Exception;
+    @Produces(MediaType.APPLICATION_JSON)
+    StationDto updateStation(@Context SecurityContext securityContext, StationDto station, @PathParam("stationId") Integer stationId) throws Exception;
 
     @Path("/index")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    StationDto getAllIndexStations(@Context SecurityContext securityContext);
+    MapStationDto getAllIndexStations(@Context SecurityContext securityContext);
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    List<Station> getAllStations(@Context SecurityContext securityContext);
+    List<StationDto> getAllStations(@Context SecurityContext securityContext);
 
     @Path("/{stationId}")
     @DELETE

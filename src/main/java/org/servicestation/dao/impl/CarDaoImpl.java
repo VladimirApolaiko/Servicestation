@@ -3,6 +3,8 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.ICarDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Car;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CarDaoImpl implements ICarDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CarDaoImpl.class);
 
     private static final String DELIMITER = ", ";
 
@@ -51,19 +55,22 @@ public class CarDaoImpl implements ICarDao {
     }
 
     @Override
-    public Car updateCar(int carId, Car newCar) throws Exception {
+    public Car updateCar(int carId, Car newCar) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_CAR);
         boolean notNull = false;
-
         for (Field field : newCar.getClass().getFields()) {
             field.setAccessible(true);
-            Object value = field.get(newCar);
+            try {
+                Object value = field.get(newCar);
 
-            if (field.get(newCar) != null) {
-                params.addValue(field.getName(), value);
-                sql.append(getColumnMapping(field.getName()));
-                notNull = true;
+                if (field.get(newCar) != null) {
+                    params.addValue(field.getName(), value);
+                    sql.append(getColumnMapping(field.getName()));
+                    notNull = true;
+                }
+            } catch (IllegalAccessException e) {
+                LOGGER.debug("Can't get value of field " + field.getName(), e);
             }
         }
 

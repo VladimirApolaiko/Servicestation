@@ -67,7 +67,7 @@ public class CarManagerImpl implements ICarManager {
     }
 
     @Override
-    public CarDto changeCar(String username, Integer carId, CarDto newCar) throws Exception {
+    public CarDto changeCar(String username, Integer carId, CarDto newCar) throws UserDoesNotExists, CarNotFoundException {
         try {
             userDao.getUserByUsername(username);
         } catch (EmptyResultDataAccessException e) {

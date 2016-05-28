@@ -3,6 +3,8 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.IStationDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Station;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -17,6 +19,8 @@ import java.util.List;
 import java.util.Map;
 
 public class StationDaoImpl implements IStationDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StationDaoImpl.class);
 
     private static final String DELIMITER = ", ";
 
@@ -77,12 +81,16 @@ public class StationDaoImpl implements IStationDao {
 
         for (Field field : newStation.getClass().getFields()) {
             field.setAccessible(true);
-            Object value = field.get(newStation);
+            try {
+                Object value = field.get(newStation);
 
-            if (field.get(newStation) != null) {
-                params.addValue(field.getName(), value);
-                sql.append(getColumnMapping(field.getName()));
-                notNull = true;
+                if (field.get(newStation) != null) {
+                    params.addValue(field.getName(), value);
+                    sql.append(getColumnMapping(field.getName()));
+                    notNull = true;
+                }
+            } catch (IllegalAccessException e) {
+                LOGGER.debug("Can't get value of field " + field.getName(), e);
             }
         }
 

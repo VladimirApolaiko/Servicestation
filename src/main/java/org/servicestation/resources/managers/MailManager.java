@@ -1,8 +1,6 @@
 package org.servicestation.resources.managers;
 
 
-import javax.mail.MessagingException;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 

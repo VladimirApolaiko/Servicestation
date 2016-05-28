@@ -4,6 +4,8 @@ import org.servicestation.resources.mappers.IDtoMapper;
 import org.servicestation.resources.mappers.IObjectMapper;
 import org.servicestation.resources.mappers.impl.CarDtoMapper;
 import org.servicestation.resources.mappers.impl.ObjectMapperImpl;
+import org.servicestation.resources.mappers.impl.StationDtoMapper;
+import org.servicestation.resources.mappers.impl.UserDtoMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -18,6 +20,16 @@ public class ApplicationMapperConfiguration {
     @Bean
     public IDtoMapper carDtoMapper() {
         return new CarDtoMapper();
+    }
+
+    @Bean
+    public IDtoMapper stationDtoMapper() {
+        return new StationDtoMapper();
+    }
+
+    @Bean
+    public IDtoMapper userDtoMapper() {
+        return new UserDtoMapper();
     }
 
 }

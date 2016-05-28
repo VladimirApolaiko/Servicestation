@@ -1,9 +1,9 @@
-package org.servicestation.model;
+package org.servicestation.resources.dto;
 
-public class User {
+
+public class UserDto {
     public String username;
     public String password;
-    public Boolean enabled;
     public String firstname;
     public String lastname;
     public String phone_number;
