@@ -27,7 +27,7 @@ public class TestResourceImpl implements ITestResource {
     private IAuthoritiesDao iAuthoritiesDao;
 
     @Autowired
-    private IMechanicOrder mechanicOrderDao;
+    private IStationOrderDao mechanicOrderDao;
 
     @Autowired
     private IAuthoritiesManager authoritiesManager;

@@ -1,5 +1,6 @@
 package org.servicestation.dao.impl;
 
+import org.postgresql.util.PGobject;
 import org.servicestation.dao.IStationDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Station;
@@ -24,8 +25,8 @@ public class StationDaoImpl implements IStationDao {
 
     private static final String DELIMITER = ", ";
 
-    private static final String CREATE_STATION = "INSERT INTO station (station_name, address, description, latitude, longitude) " +
-            "VALUES(:station_name, :address, :description, :latitude, :longitude)";
+    private static final String CREATE_STATION = "INSERT INTO station (station_name, address, description, latitude, longitude, working_hours, weekends_working_hours) " +
+            "VALUES(:station_name, :address, :description, :latitude, :longitude, cast(:working_hours as int4range), cast(:weekends_working_hours as int4range))";
 
     private static final String SELECT_STATION = "SELECT * FROM station WHERE id=:id";
 
@@ -46,6 +47,8 @@ public class StationDaoImpl implements IStationDao {
         params.addValue("description", newStation.description);
         params.addValue("latitude", newStation.latitude);
         params.addValue("longitude", newStation.longitude);
+        params.addValue("working_hours", newStation.working_hours);
+        params.addValue("weekends_working_hours", newStation.weekends_working_hours);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(CREATE_STATION, params, keyHolder);
@@ -125,6 +128,8 @@ public class StationDaoImpl implements IStationDao {
         updatedStation.description = (String) keys.get("description");
         updatedStation.latitude = (Double) keys.get("latitude");
         updatedStation.longitude = (Double) keys.get("longitude");
+        updatedStation.working_hours = ((PGobject)keys.get("working_hours")).getValue();
+        updatedStation.weekends_working_hours = ((PGobject)keys.get("weekends_working_hours")).getValue();
 
         return updatedStation;
     }
@@ -137,6 +142,9 @@ public class StationDaoImpl implements IStationDao {
         station.description = rs.getString("description");
         station.latitude = rs.getDouble("latitude");
         station.longitude = rs.getDouble("longitude");
+        station.working_hours = ((PGobject)rs.getObject("working_hours")).getValue();
+        station.weekends_working_hours = ((PGobject)rs.getObject("weekends_working_hours")).getValue();
+
         return station;
     }
 

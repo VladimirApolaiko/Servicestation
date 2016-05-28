@@ -1,7 +1,7 @@
 package org.servicestation.test;
 
 import org.junit.Test;
-import org.servicestation.dao.IMechanicOrder;
+import org.servicestation.dao.IStationOrderDao;
 import org.servicestation.dao.IOrderDao;
 import org.servicestation.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +12,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 
-public class MechanicOrder extends AbstractTest {
+public class StationOrderTest extends AbstractTest {
 
     @Autowired
-    private IMechanicOrder iMechanicOrder;
+    private IStationOrderDao iMechanicOrder;
 
     @Autowired
     private IOrderDao iOrderDao;
@@ -23,22 +23,22 @@ public class MechanicOrder extends AbstractTest {
 
     @Test
     public void assignOrder() {
-        final int mechanicId = 5;
+        final int stationId = 1;
         final Long orderId = 3L;
 
-        iMechanicOrder.assignOrder(mechanicId, orderId);
-        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(mechanicId);
+        iMechanicOrder.assignOrder(stationId, orderId);
+        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
         assertTrue(mechanicOrders.size() > 0);
         assertEquals(orderId, mechanicOrders.get(0).id);
     }
 
     @Test
     public void unAssignOrder() {
-        final int mechanicId = 2;
+        final int stationId = 2;
         final Long orderId = 5L;
 
-        iMechanicOrder.unAssignOrder(mechanicId, orderId);
-        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(mechanicId);
+        iMechanicOrder.unAssignOrder(stationId, orderId);
+        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
         assertEquals(0, mechanicOrders.size());
     }
 }

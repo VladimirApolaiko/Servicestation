@@ -3,6 +3,7 @@ package org.servicestation.resources.mappers.impl;
 import org.servicestation.model.Station;
 import org.servicestation.resources.dto.StationDto;
 import org.servicestation.resources.mappers.IDtoMapper;
+import org.servicestation.resources.utils.Utils;
 
 public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
 
@@ -15,6 +16,8 @@ public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
         station.description = dto.description;
         station.longitude = dto.longitude;
         station.latitude = dto.latitude;
+        station.working_hours = Utils.transformWorkingTimeToDatabaseRange(dto.working_hours);
+        station.weekends_working_hours = Utils.transformWorkingTimeToDatabaseRange(dto.weekends_working_hours);
 
         return station;
     }
@@ -28,6 +31,8 @@ public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
         dto.description = serverObj.description;
         dto.longitude = serverObj.longitude;
         dto.latitude = serverObj.latitude;
+        dto.working_hours = Utils.transformWorkingTimeToDtoRange(serverObj.working_hours);
+        dto.weekends_working_hours = Utils.transformWorkingTimeToDtoRange(serverObj.weekends_working_hours);
 
         return dto;
     }
