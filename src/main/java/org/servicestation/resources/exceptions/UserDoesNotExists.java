@@ -1,7 +1,9 @@
 package org.servicestation.resources.exceptions;
 
 
-public class UserDoesNotExists extends Exception{
+public class UserDoesNotExists extends EntityNotFoundException {
+    public UserDoesNotExists() {
+    }
 
     public UserDoesNotExists(String message) {
         super(message);

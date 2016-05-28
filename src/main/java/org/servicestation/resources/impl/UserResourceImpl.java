@@ -4,7 +4,6 @@ import org.servicestation.resources.IUserResource;
 import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
-import org.servicestation.resources.exceptions.UserNotFoundException;
 import org.servicestation.resources.exceptions.ValidationException;
 import org.servicestation.resources.managers.Authority;
 import org.servicestation.resources.managers.IAuthoritiesManager;
@@ -43,7 +42,7 @@ public class UserResourceImpl implements IUserResource {
     }
 
     @Override
-    public UserDto getUser(SecurityContext securityContext) throws UserNotFoundException {
+    public UserDto getUser(SecurityContext securityContext) throws UserDoesNotExists {
         return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
     }
 }

@@ -45,7 +45,7 @@ public class PasswordRecoveryManagerImpl implements IPasswordRecoveryManager {
             userManager.changeUserPassword(passwordRecovery.username, password, confirmation);
         }catch(EmptyResultDataAccessException e) {
             throw new PasswordRecoveryTokenException("Password Recovery token not found");
-        }catch (UserDoesNotExists | AccessDeniedException | ValidationException e) {
+        }catch (UserDoesNotExists | ValidationException e) {
             throw new PasswordRecoveryTokenException(e.getMessage());
         }
     }
