@@ -15,3 +15,4 @@ public interface MailManager {
                    String mailTemplate,
                    Map<String, Object> templateModel);
 }
+
