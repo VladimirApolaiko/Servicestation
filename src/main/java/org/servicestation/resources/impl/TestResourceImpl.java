@@ -6,8 +6,6 @@ import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.impl.MailManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.HashMap;
-
 
 public class TestResourceImpl implements ITestResource {
 
@@ -27,7 +25,7 @@ public class TestResourceImpl implements ITestResource {
     private IAuthoritiesDao iAuthoritiesDao;
 
     @Autowired
-    private IStationOrderDao mechanicOrderDao;
+    private IStationOrderDao stationOrderDao;
 
     @Autowired
     private IAuthoritiesManager authoritiesManager;
@@ -91,7 +89,16 @@ public class TestResourceImpl implements ITestResource {
         /*iAuthoritiesDao.grantAuthority("vvvv", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.revokeAuthority("vladimir", Authority.ROLE_MECHANIC);*/
         /*iAuthoritiesDao.getAuthoritiesByUsername("vladimir");*/
-        mailManager.sendEmail("vladimirapolaiko@gmail.com", "Hello", "mail-templates/VerifyEmail.vm", new HashMap<String, Object>(){{put("platformUrl", "hello");put("token", "some token");}});
+        /*mailManager.sendEmail("vladimirapolaiko@gmail.com", "Hello", "mail-templates/VerifyEmail.vm", new HashMap<String, Object>(){{put("platformUrl", "hello");put("token", "some token");}});*/
+
+        stationOrderDao.assignOrder(16, 1L, "2016-05-30 16:20");
+        stationOrderDao.assignOrder(16, 2L, "2016-05-30 16:40");
+        stationOrderDao.assignOrder(16, 3L, "2016-05-30 17:00");
+        stationOrderDao.assignOrder(16, 4L, "2016-05-30 17:20");
+        stationOrderDao.assignOrder(16, 5L, "2016-05-30 17:40");
+
+        stationOrderDao.getStationOrders(16);
+        /*stationOrderDao.unAssignOrder(16, 1L);*/
 
         return "Success";
     }
