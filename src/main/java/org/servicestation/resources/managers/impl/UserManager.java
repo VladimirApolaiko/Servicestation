@@ -28,11 +28,11 @@ public class UserManager implements IUserManager {
 
 
     @Override
-    public UserDto getUserByUsername(String username) throws UserNotFoundException {
+    public UserDto getUserByUsername(String username) throws UserDoesNotExists {
         try {
             return mapper.mapServerObjectToDto(userDao.getUserByUsername(username));
         } catch (EmptyResultDataAccessException e) {
-            throw new UserNotFoundException("User with username" + username + " not found", e);
+            throw new UserDoesNotExists("User with username" + username + " not found", e);
         }
     }
 
@@ -59,7 +59,7 @@ public class UserManager implements IUserManager {
     }
 
     @Override
-    public void changeUserPassword(String username, String password, String confirmation) throws UserDoesNotExists, AccessDeniedException, ValidationException {
+    public void changeUserPassword(String username, String password, String confirmation) throws UserDoesNotExists, ValidationException {
         try {
             User user = userDao.getUserByUsername(username);
             if (!password.equals(confirmation)) {

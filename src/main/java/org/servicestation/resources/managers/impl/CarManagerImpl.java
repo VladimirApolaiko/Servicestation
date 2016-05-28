@@ -43,6 +43,7 @@ public class CarManagerImpl implements ICarManager {
     public void deleteCar(String username, Integer carId) throws UserDoesNotExists, CarNotFoundException {
         try {
             userDao.getUserByUsername(username);
+
         } catch (EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username " + username + " does not exists");
         }
@@ -50,6 +51,7 @@ public class CarManagerImpl implements ICarManager {
         if (!isCarExists(username, carId)) {
             throw new CarNotFoundException("Car with id " + carId + " not found for user " + username);
         }
+
 
         carDao.deleteCar(carId);
     }

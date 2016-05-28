@@ -3,7 +3,6 @@ package org.servicestation.resources;
 import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
-import org.servicestation.resources.exceptions.UserNotFoundException;
 import org.servicestation.resources.exceptions.ValidationException;
 import org.springframework.security.access.prepost.PreAuthorize;
 
@@ -26,6 +25,6 @@ public interface IUserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    UserDto getUser(@Context SecurityContext securityContext) throws UserNotFoundException;
+    UserDto getUser(@Context SecurityContext securityContext) throws UserDoesNotExists;
 
 }
