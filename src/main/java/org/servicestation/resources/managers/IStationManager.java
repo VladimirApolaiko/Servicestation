@@ -15,7 +15,7 @@ public interface IStationManager {
 
     MapStationDto getMapStations();
 
-    StationDto changeStation(Integer stationId, StationDto newStation) throws Exception;
+    StationDto changeStation(Integer stationId, StationDto newStation) throws StationDoesNotExists;
 
 
 }

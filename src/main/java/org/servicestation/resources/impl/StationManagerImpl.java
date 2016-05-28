@@ -54,7 +54,7 @@ public class StationManagerImpl implements IStationManager{
     }
 
     @Override
-    public StationDto changeStation(Integer stationId, StationDto newStation) throws Exception {
+    public StationDto changeStation(Integer stationId, StationDto newStation) throws StationDoesNotExists {
         try{
             stationDao.getStationById(stationId);
             return mapper.mapServerObjectToDto(stationDao.changeStation(stationId, mapper.mapDtoToServerObject(newStation)));

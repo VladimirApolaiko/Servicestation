@@ -8,7 +8,7 @@ import java.util.List;
 public interface ICarDao {
     Car createCar(final String username, final Car newCar);
 
-    Car updateCar(final int carId, final Car newCar) throws Exception;
+    Car updateCar(final int carId, final Car newCar);
 
     Car deleteCar(final int carId);
 

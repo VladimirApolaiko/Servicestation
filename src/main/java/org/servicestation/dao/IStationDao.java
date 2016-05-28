@@ -12,7 +12,7 @@ public interface IStationDao {
 
     List<Station> getAllStations();
 
-    Station changeStation(final Integer stationId, final Station newStation) throws Exception;
+    Station changeStation(final Integer stationId, final Station newStation);
 
     Station deleteStation(final Integer stationId);
 }
