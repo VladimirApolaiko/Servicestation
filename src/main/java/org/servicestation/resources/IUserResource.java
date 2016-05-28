@@ -1,6 +1,6 @@
 package org.servicestation.resources;
 
-import org.servicestation.model.User;
+import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.exceptions.UserNotFoundException;
@@ -11,21 +11,21 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
-import java.security.Principal;
 
 @Path("/user")
 @Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public interface IUserResource {
 
     @POST
-    void createNewUser(User user) throws ValidationException, UserAlreadyExists, UserDoesNotExists;
+    UserDto createNewUser(UserDto user) throws ValidationException, UserAlreadyExists, UserDoesNotExists;
 
     @PUT
     @PreAuthorize("hasRole('ROLE_USER')")
-    void changeUser(User user, @Context SecurityContext securityContext) throws UserDoesNotExists;
+    UserDto changeUser(UserDto user, @Context SecurityContext securityContext) throws UserDoesNotExists;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    User getUser(@Context SecurityContext securityContext) throws UserNotFoundException;
+    UserDto getUser(@Context SecurityContext securityContext) throws UserNotFoundException;
 
 }
