@@ -6,7 +6,6 @@ import org.servicestation.dao.impl.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 
 import java.net.URI;
@@ -75,8 +74,8 @@ public class ApplicationDaoConfiguration {
     }
 
     @Bean
-    public IMechanicOrder mechanicOrder() {
-        return new MechanicOrderImpl();
+    public IStationOrderDao mechanicOrder() {
+        return new StationOrderImpl();
     }
 
     @Bean
