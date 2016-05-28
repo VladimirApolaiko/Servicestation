@@ -74,7 +74,7 @@ public class StationDaoImpl implements IStationDao {
     }
 
     @Override
-    public Station changeStation(final Integer stationId, final Station newStation) throws Exception {
+    public Station changeStation(final Integer stationId, final Station newStation) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_STATION);
         boolean notNull = false;
