@@ -25,8 +25,9 @@ public class StationOrderTest extends AbstractTest {
     public void assignOrder() {
         final int stationId = 1;
         final Long orderId = 3L;
+        final String timestamp = "2016-05-30 16:20";
 
-        iMechanicOrder.assignOrder(stationId, orderId);
+        iMechanicOrder.assignOrder(stationId, orderId, timestamp);
         List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
         assertTrue(mechanicOrders.size() > 0);
         assertEquals(orderId, mechanicOrders.get(0).id);
@@ -36,6 +37,7 @@ public class StationOrderTest extends AbstractTest {
     public void unAssignOrder() {
         final int stationId = 2;
         final Long orderId = 5L;
+        final String timestamp = "2016-05-30 16:20";
 
         iMechanicOrder.unAssignOrder(stationId, orderId);
         List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
