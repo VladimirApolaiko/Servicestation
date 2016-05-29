@@ -42,6 +42,16 @@ public class ApplicationManagersConfiguration {
     }
 
     @Bean
+    public IStationOrderManager stationOrderManager() {
+        return new StationOrderManagerImpl();
+    }
+
+    @Bean
+    public ITimeManager timeManagerImpl() {
+        return new TimeManagerImpl();
+    }
+
+    @Bean
     public VelocityEngine velocityEngine() {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");

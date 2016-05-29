@@ -55,9 +55,10 @@ public class OAuth2Config {
         public void configure(HttpSecurity http) throws Exception {
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED);
             //TODO add security at method level for api/user, api/station
-            http.authorizeRequests().antMatchers("/api/users").permitAll();
-            http.authorizeRequests().antMatchers("/api/station").permitAll();
-            http.authorizeRequests().antMatchers("/api/car").access("hasRole('ROLE_USER')");
+            http.authorizeRequests().antMatchers("/api/users/**").permitAll();
+            http.authorizeRequests().antMatchers("/api/station/**").permitAll();
+            http.authorizeRequests().antMatchers("/api/car/**").access("hasRole('ROLE_USER')");
+            http.authorizeRequests().antMatchers("/api/busytime/**").access("hasRole('ROLE_USER')");
             /*http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");*/
         }
 

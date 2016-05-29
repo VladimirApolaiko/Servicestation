@@ -2,6 +2,7 @@ package org.servicestation.dao;
 
 import org.servicestation.model.StationOrder;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface IStationOrderDao {
@@ -9,5 +10,5 @@ public interface IStationOrderDao {
 
     void unAssignOrder(final Integer stationId, final Long orderId);
 
-    List<StationOrder> getStationOrders(final Integer stationId);
+    List<StationOrder> getStationOrders(final Integer stationId, final LocalDate localDate);
 }

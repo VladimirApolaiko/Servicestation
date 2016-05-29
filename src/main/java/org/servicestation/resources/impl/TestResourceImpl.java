@@ -1,10 +1,15 @@
 package org.servicestation.resources.impl;
 
 import org.servicestation.dao.*;
+import org.servicestation.model.StationOrder;
 import org.servicestation.resources.ITestResource;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.impl.MailManager;
+import org.servicestation.resources.mappers.IObjectMapper;
+import org.servicestation.resources.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 
 public class TestResourceImpl implements ITestResource {
@@ -32,6 +37,9 @@ public class TestResourceImpl implements ITestResource {
 
     @Autowired
     private MailManager mailManager;
+
+    @Autowired
+    private IObjectMapper objectMapper;
 
     public String test() throws Exception {
         /*Station DAO*/
@@ -91,14 +99,14 @@ public class TestResourceImpl implements ITestResource {
         /*iAuthoritiesDao.getAuthoritiesByUsername("vladimir");*/
         /*mailManager.sendEmail("vladimirapolaiko@gmail.com", "Hello", "mail-templates/VerifyEmail.vm", new HashMap<String, Object>(){{put("platformUrl", "hello");put("token", "some token");}});*/
 
-        stationOrderDao.assignOrder(16, 1L, "2016-05-30 16:20");
+       /* stationOrderDao.assignOrder(16, 1L, "2016-05-30 16:20");
         stationOrderDao.assignOrder(16, 2L, "2016-05-30 16:40");
         stationOrderDao.assignOrder(16, 3L, "2016-05-30 17:00");
         stationOrderDao.assignOrder(16, 4L, "2016-05-30 17:20");
-        stationOrderDao.assignOrder(16, 5L, "2016-05-30 17:40");
+        stationOrderDao.assignOrder(16, 5L, "2016-05-30 17:40");*/
 
-        stationOrderDao.getStationOrders(16);
-        /*stationOrderDao.unAssignOrder(16, 1L);*/
+        List<StationOrder> stationOrders = stationOrderDao.getStationOrders(16, Utils.getLocalDate("2016-06-01"));
+        objectMapper.mapServerObjectToDto(stationOrders.get(0));
 
         return "Success";
     }

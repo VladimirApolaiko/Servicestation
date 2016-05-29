@@ -2,6 +2,7 @@ package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IStationOrderDao;
 import org.servicestation.model.StationOrder;
+import org.servicestation.resources.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -9,6 +10,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +21,8 @@ public class StationOrderImpl implements IStationOrderDao {
 
     private static String UNASSIGN_ORDER = "delete from order_station where station_id=:station_id and order_id=:order_id";
 
-    private static String GET_ALL_STATION_ORDERS = "select * from order_station where station_id=:station_id";
-
+    private static String GET_ALL_STATION_ORDERS = "select * from order_station " +
+            "where station_id=:station_id and date_time >= cast(:date_time as timestamp) and date_time < cast(:next_date as timestamp)";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -45,9 +47,11 @@ public class StationOrderImpl implements IStationOrderDao {
     }
 
     @Override
-    public List<StationOrder> getStationOrders(Integer stationId) {
+    public List<StationOrder> getStationOrders(Integer stationId, LocalDate localDate) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
+        params.addValue("date_time", Utils.getStringLocalDateFormat(localDate));
+        params.addValue("next_date", Utils.getStringLocalDateFormat(localDate.plusDays(1)));
 
         List<StationOrder> stationOrders = new ArrayList<>();
 
@@ -61,7 +65,7 @@ public class StationOrderImpl implements IStationOrderDao {
         StationOrder stationOrder = new StationOrder();
         stationOrder.orderId = rs.getLong("station_id");
         stationOrder.stationId = rs.getInt("order_id");
-        stationOrder.timestamp = rs.getObject("date_time").toString();
+        stationOrder.localDateTime = ((Timestamp)rs.getObject("date_time")).toLocalDateTime();
 
         return stationOrder;
     }
