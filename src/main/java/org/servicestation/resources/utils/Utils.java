@@ -2,6 +2,7 @@ package org.servicestation.resources.utils;
 
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.servicestation.resources.dto.StationWorkTime;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +39,18 @@ public class Utils {
         Matcher matcher = TIME_RANGE_PATTERN.matcher(workingTime);
         if (matcher.find()) {
             return matcher.group(1) + "-" + (Integer.parseInt(matcher.group(2)) - 1);
+        }
+        return null;
+    }
+
+    public static StationWorkTime transformWorkingTimeToTimeFormat(String workingTime) {
+        StationWorkTime stationWorkTime = new StationWorkTime();
+        Matcher matcher = TIME_RANGE_PATTERN.matcher(workingTime);
+        if (matcher.find()) {
+            stationWorkTime.minTime = matcher.group(1) + ":" + "00";
+            stationWorkTime.maxTime = matcher.group(2) + ":" + "00";
+
+            return stationWorkTime;
         }
         return null;
     }
