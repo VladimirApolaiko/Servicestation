@@ -63,6 +63,7 @@ public class StationOrderImpl implements IStationOrderDao {
 
     private StationOrder getStationOrder(ResultSet rs) throws SQLException {
         StationOrder stationOrder = new StationOrder();
+        stationOrder.id = rs.getLong("id");
         stationOrder.orderId = rs.getLong("station_id");
         stationOrder.stationId = rs.getInt("order_id");
         stationOrder.localDateTime = ((Timestamp)rs.getObject("date_time")).toLocalDateTime();

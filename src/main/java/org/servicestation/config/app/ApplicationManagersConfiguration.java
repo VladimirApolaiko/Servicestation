@@ -52,6 +52,11 @@ public class ApplicationManagersConfiguration {
     }
 
     @Bean
+    public IServiceManager serviceManager() {
+        return new ServiceManagerImpl();
+    }
+
+    @Bean
     public VelocityEngine velocityEngine() {
         VelocityEngine velocityEngine = new VelocityEngine();
         velocityEngine.setProperty("resource.loader", "class");

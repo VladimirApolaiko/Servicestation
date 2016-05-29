@@ -10,7 +10,6 @@ public class StationDtoMapper implements IDtoMapper<StationDto, Station> {
     @Override
     public Station mapDtoToServerObject(StationDto dto) {
         Station station = new Station();
-        station.id = dto.id;
         station.station_name = dto.station_name;
         station.address = dto.address;
         station.description = dto.description;
