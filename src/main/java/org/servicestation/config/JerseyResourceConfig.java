@@ -21,6 +21,7 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(UnknowExceptionHandler.class);
         register(UserResourceImpl.class);
         register(TimeResourceImpl.class);
+        register(ServiceResourceImpl.class);
         register(StationOrderResourceImpl.class);
         register(EmailVerificationResourceImpl.class);
         register(PasswordRecoveryResourceImpl.class);

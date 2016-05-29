@@ -9,7 +9,6 @@ public class CarDtoMapper implements IDtoMapper<CarDto, Car>{
     @Override
     public Car mapDtoToServerObject(CarDto dto) {
         Car car = new Car();
-        car.id = dto.id;
         car.brand = dto.brand;
         car.model = dto.model;
         car.engine_volume = dto.engine_volume;

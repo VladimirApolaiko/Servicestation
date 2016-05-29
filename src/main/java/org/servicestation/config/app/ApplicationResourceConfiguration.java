@@ -2,6 +2,7 @@ package org.servicestation.config.app;
 
 import org.servicestation.resources.IEmailVerificationResource;
 import org.servicestation.resources.IPasswordRecoveryResource;
+import org.servicestation.resources.IServiceResource;
 import org.servicestation.resources.ITimeResource;
 import org.servicestation.resources.impl.*;
 import org.servicestation.resources.managers.impl.StationResourceImpl;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ApplicationResourceConfiguration {
+
     @Bean
     public TestResourceImpl helloResource() {
         return new TestResourceImpl();
@@ -49,5 +51,10 @@ public class ApplicationResourceConfiguration {
     @Bean
     public ITimeResource timeResource() {
         return new TimeResourceImpl();
+    }
+
+    @Bean
+    public IServiceResource serviceResource() {
+        return new ServiceResourceImpl();
     }
 }

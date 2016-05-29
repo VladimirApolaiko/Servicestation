@@ -88,4 +88,9 @@ public class ApplicationDaoConfiguration {
         return new PasswordDaoImpl();
     }
 
+    @Bean
+    public IServiceDao serviceDao() {
+        return new ServiceDaoImpl();
+    }
+
 }

@@ -22,6 +22,7 @@ public class StationOrderDtoMapper implements IDtoMapper<StationOrderDto, Statio
     public StationOrderDto mapServerObjectToDto(StationOrder serverObj) {
         StationOrderDto dto = new StationOrderDto();
 
+        dto.id = serverObj.id;
         dto.orderId = serverObj.orderId;
         dto.stationId = serverObj.stationId;
         dto.timestamp = Utils.getStringLocalDateTimeFormat(serverObj.localDateTime);
