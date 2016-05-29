@@ -105,7 +105,7 @@ public class TestResourceImpl implements ITestResource {
         stationOrderDao.assignOrder(16, 4L, "2016-05-30 17:20");
         stationOrderDao.assignOrder(16, 5L, "2016-05-30 17:40");*/
 
-        List<StationOrder> stationOrders = stationOrderDao.getStationOrders(16, Utils.getLocalDate("2016-06-01"));
+        List<StationOrder> stationOrders = stationOrderDao.getStationOrders(16, Utils.getLocalDate("2016-05-30"));
         objectMapper.mapServerObjectToDto(stationOrders.get(0));
 
         return "Success";
