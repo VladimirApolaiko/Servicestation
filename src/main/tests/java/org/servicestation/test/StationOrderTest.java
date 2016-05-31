@@ -21,7 +21,7 @@ public class StationOrderTest extends AbstractTest {
     private IOrderDao iOrderDao;
 
 
-    @Test
+    /*@Test
     public void assignOrder() {
         final int stationId = 1;
         final Long orderId = 3L;
@@ -42,5 +42,5 @@ public class StationOrderTest extends AbstractTest {
         iMechanicOrder.unAssignOrder(stationId, orderId);
         List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
         assertEquals(0, mechanicOrders.size());
-    }
+    }*/
 }

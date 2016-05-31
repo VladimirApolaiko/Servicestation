@@ -12,4 +12,5 @@ public interface ITestResource {
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     String test() throws Exception;
+
 }

@@ -14,7 +14,4 @@ public interface IOrderDao {
 
     Order getOrderById(final Long orderId);
 
-    List<Order> getAllOrders(final Integer stationId);
-
-    List<Order> getMechanicOrders(final Integer mechanicId);
 }

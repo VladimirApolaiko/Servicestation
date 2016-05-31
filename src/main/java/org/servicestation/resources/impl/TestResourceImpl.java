@@ -1,7 +1,9 @@
 package org.servicestation.resources.impl;
 
 import org.servicestation.dao.*;
+import org.servicestation.model.Order;
 import org.servicestation.model.StationOrder;
+import org.servicestation.model.Status;
 import org.servicestation.resources.ITestResource;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.impl.MailManager;
@@ -9,6 +11,7 @@ import org.servicestation.resources.mappers.IObjectMapper;
 import org.servicestation.resources.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -40,6 +43,7 @@ public class TestResourceImpl implements ITestResource {
 
     @Autowired
     private IObjectMapper objectMapper;
+
 
     public String test() throws Exception {
         /*Station DAO*/
@@ -105,9 +109,17 @@ public class TestResourceImpl implements ITestResource {
         stationOrderDao.assignOrder(16, 4L, "2016-05-30 17:20");
         stationOrderDao.assignOrder(16, 5L, "2016-05-30 17:40");*/
 
-        List<StationOrder> stationOrders = stationOrderDao.getStationOrders(16, Utils.getLocalDate("2016-05-30"));
-        objectMapper.mapServerObjectToDto(stationOrders.get(0));
+        Order newOrder = orderDao.createNewOrder();
 
+        Order order = new Order();
+        order.status = Status.INIT;
+        order.end_date = LocalDateTime.now();
+        order.planned_cost = 50000.0;
+        order.planned_end_date = LocalDateTime.now();
+        order.total_cost = 60000.0;
+        order.work_description = "some work description";
+
+        orderDao.changeOrder(newOrder.id, order);
         return "Success";
     }
 }

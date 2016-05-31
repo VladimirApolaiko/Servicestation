@@ -5,6 +5,7 @@ import org.servicestation.dao.IOrderDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
+import org.servicestation.resources.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -14,7 +15,9 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,11 +34,6 @@ public class OrderDaoImpl implements IOrderDao {
     private static String DELETE_ORDER = "delete from \"order\" where id=:id";
 
     private static String SELECT_ORDER = "select * from \"order\" where id=:id";
-
-    private static String SELECT_ORDERS_BY_STATION_ID = "select * from \"order\" where station_id=:station_id";
-
-    private static String GET_MECHANIC_ORDERS = "select * from \"order\" where id in " +
-            "(select order_id from mechanic_order where mechanic_id=:mechanic_id)";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -68,18 +66,13 @@ public class OrderDaoImpl implements IOrderDao {
                     }
                     break;
 
-                    case "initial_date": {
-                        addFieldToQuery(params, sql, field, DaoUtil.localDateToDate((LocalDate) value));
-                    }
-                    break;
-
                     case "planned_end_date": {
-                        addFieldToQuery(params, sql, field, DaoUtil.localDateToDate((LocalDate) value));
+                        getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime)value));
                     }
                     break;
 
                     case "end_date": {
-                        addFieldToQuery(params, sql, field, DaoUtil.localDateToDate((LocalDate) value));
+                        getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime)value));
                     }
                     break;
 
@@ -124,42 +117,22 @@ public class OrderDaoImpl implements IOrderDao {
         });
     }
 
-    @Override
-    public List<Order> getAllOrders(final Integer stationId) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("station_id", stationId);
-        List<Order> orders = new ArrayList<>();
-
-        namedParameterJdbcTemplate.query(SELECT_ORDERS_BY_STATION_ID, params, rs -> {
-            orders.add(getOrder(rs));
-        });
-        return orders;
-    }
-
-    @Override
-    public List<Order> getMechanicOrders(Integer mechanicId) {
-        MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("mechanic_id", mechanicId);
-        List<Order> orders = new ArrayList<>();
-        namedParameterJdbcTemplate.query(GET_MECHANIC_ORDERS, params, rs -> {
-            orders.add(getOrder(rs));
-        });
-
-        return orders;
-    }
-
     private Order getOrder(final Map<String, Object> keys){
         if(keys == null) return null;
         Order order = new Order();
         order.id = (Long)keys.get("id");
-        order.initial_date = DaoUtil.dateToLocalDate((Date) keys.get("initial_date"));
         order.work_description = (String) keys.get("work_description");
         order.status = Status.valueOf((String)keys.get("status"));
         order.planned_cost = (Double) keys.get("planned_cost");
-        order.planned_end_date = DaoUtil.dateToLocalDate((Date) keys.get("planned_end_date"));
+        Timestamp plannedEndDate = ((Timestamp)keys.get("planned_end_date"));
+        if(plannedEndDate != null) {
+            order.planned_end_date = plannedEndDate.toLocalDateTime();
+        }
         order.total_cost = (Double) keys.get("total_cost");
-        order.end_date = DaoUtil.dateToLocalDate((Date) keys.get("end_date"));
-        order.station_id = (Long) keys.get("station_id");
+        Timestamp endDate = ((Timestamp)keys.get("end_date"));
+        if(endDate != null) {
+            order.end_date = endDate.toLocalDateTime();
+        }
 
         return order;
     }
@@ -167,15 +140,18 @@ public class OrderDaoImpl implements IOrderDao {
     private Order getOrder(final ResultSet rs) throws SQLException {
         Order order = new Order();
         order.id = rs.getLong("id");
-        order.initial_date = DaoUtil.dateToLocalDate(rs.getDate("initial_date"));
         order.work_description = rs.getString("work_description");
         order.status = Status.valueOf(rs.getString("status"));
         order.planned_cost = rs.getDouble("planned_cost");
-        order.planned_end_date = DaoUtil.dateToLocalDate(rs.getDate("planned_end_date"));
+        Timestamp plannedEndDate = ((Timestamp)rs.getObject("planned_end_date"));
+        if(plannedEndDate != null) {
+            order.planned_end_date = plannedEndDate.toLocalDateTime();
+        }
         order.total_cost = rs.getDouble("total_cost");
-        order.end_date = DaoUtil.dateToLocalDate(rs.getDate("end_date"));
-        order.station_id = rs.getLong("station_id");
-
+        Timestamp endDate = ((Timestamp)rs.getObject("end_date"));
+        if(plannedEndDate != null) {
+            order.planned_end_date = endDate.toLocalDateTime();
+        }
         return order;
     }
 
@@ -186,6 +162,11 @@ public class OrderDaoImpl implements IOrderDao {
     private <T> void addFieldToQuery(MapSqlParameterSource params, StringBuilder sql, Field field, T value) {
         params.addValue(field.getName(), value);
         sql.append(getColumnMapping(field.getName()));
+    }
+
+    private <T> void getDateFieldToQuery(MapSqlParameterSource params, StringBuilder sql, Field field, T value) {
+        params.addValue(field.getName(), value);
+        sql.append(field.getName()).append(" = cast( :").append(field.getName()).append(" as timestamp").append(")").append(DELIMITER);
     }
 
 }

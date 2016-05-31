@@ -39,4 +39,9 @@ public class ApplicationMapperConfiguration {
         return new ServiceDtoMapper();
     }
 
+    @Bean
+    public IDtoMapper orderDtoMapper() {
+        return new OrderMapper();
+    }
+
 }
