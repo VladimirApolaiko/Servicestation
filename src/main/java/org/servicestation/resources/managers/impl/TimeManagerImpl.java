@@ -10,6 +10,7 @@ import org.servicestation.resources.utils.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,8 +37,9 @@ public class TimeManagerImpl implements ITimeManager {
     }
 
     @Override
-    public StationWorkTime getStationWorkTime(Integer stationId) {
-        if(LocalDateTime.now().getDayOfWeek().getValue() == 6 || LocalDateTime.now().getDayOfWeek().getValue() == 7) {
+    public StationWorkTime getStationWorkTime(Integer stationId, String timestamp) {
+        LocalDate date = Utils.getLocalDate(timestamp);
+        if(date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
             return Utils.transformWorkingTimeToTimeFormat(stationDao.getStationById(stationId).weekends_working_hours);
         }else {
             return Utils.transformWorkingTimeToTimeFormat(stationDao.getStationById(stationId).working_hours);
