@@ -17,8 +17,8 @@ public interface ITimeResource {
     @Produces(MediaType.APPLICATION_JSON)
     BusyTime getBusyTime(@PathParam("stationId") Integer stationId, @PathParam("timestamp") String timestamp);
 
-    @Path("worktime/{stationId}")
+    @Path("worktime/{stationId}/{timestamp}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    StationWorkTime getStationWorkTime(@PathParam("stationId") Integer stationId);
+    StationWorkTime getStationWorkTime(@PathParam("stationId") Integer stationId, @PathParam("timestamp") String timestamp);
 }

@@ -18,7 +18,7 @@ public class TimeResourceImpl implements ITimeResource{
     }
 
     @Override
-    public StationWorkTime getStationWorkTime(Integer stationId) {
-        return timeManager.getStationWorkTime(stationId);
+    public StationWorkTime getStationWorkTime(Integer stationId, String timestamp) {
+        return timeManager.getStationWorkTime(stationId, timestamp);
     }
 }

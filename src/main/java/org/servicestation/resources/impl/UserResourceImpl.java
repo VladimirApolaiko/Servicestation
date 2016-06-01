@@ -9,6 +9,7 @@ import org.servicestation.resources.managers.Authority;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.ws.rs.core.SecurityContext;
 
