@@ -68,6 +68,7 @@ public class StationOrderDaoImpl implements IStationOrderDao {
         stationOrder.id = rs.getLong("id");
         stationOrder.orderId = rs.getLong("station_id");
         stationOrder.stationId = rs.getInt("order_id");
+        stationOrder.carId = rs.getInt("car_id");
         stationOrder.localDateTime = ((Timestamp)rs.getObject("date_time")).toLocalDateTime();
 
         return stationOrder;
