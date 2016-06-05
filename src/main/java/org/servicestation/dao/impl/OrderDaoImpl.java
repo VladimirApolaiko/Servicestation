@@ -1,11 +1,12 @@
 package org.servicestation.dao.impl;
 
-import org.servicestation.dao.DaoUtil;
 import org.servicestation.dao.IOrderDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
 import org.servicestation.resources.utils.Utils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -16,14 +17,12 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 public class OrderDaoImpl implements IOrderDao {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderDaoImpl.class);
 
     private static final String DELIMITER = ", ";
 
@@ -50,37 +49,41 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public Order changeOrder(final Long orderId, final Order newOrder) throws Exception {
+    public Order changeOrder(final Long orderId, final Order newOrder) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_ORDER);
         boolean notNull = false;
 
-        for(Field field : newOrder.getClass().getFields()) {
+        for (Field field : newOrder.getClass().getFields()) {
             field.setAccessible(true);
-            Object value = field.get(newOrder);
-            if(value != null) {
-                switch (field.getName()) {
-                    case "status": {
-                        params.addValue(field.getName(), value.toString());
-                        sql.append("status = cast(:status as order_status)" + DELIMITER);
-                    }
-                    break;
+            try {
+                Object value = field.get(newOrder);
+                if (value != null) {
+                    switch (field.getName()) {
+                        case "status": {
+                            params.addValue(field.getName(), value.toString());
+                            sql.append("status = cast(:status as order_status)" + DELIMITER);
+                        }
+                        break;
 
-                    case "planned_end_date": {
-                        getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime)value));
-                    }
-                    break;
+                        case "planned_end_date": {
+                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
+                        }
+                        break;
 
-                    case "end_date": {
-                        getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime)value));
-                    }
-                    break;
+                        case "end_date": {
+                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
+                        }
+                        break;
 
-                    default: {
-                        addFieldToQuery(params, sql, field, value);
+                        default: {
+                            addFieldToQuery(params, sql, field, value);
+                        }
                     }
+                    notNull = true;
                 }
-                notNull = true;
+            } catch (IllegalAccessException e) {
+                LOGGER.debug("Can't get value of field " + field.getName(), e);
             }
         }
 
@@ -117,20 +120,20 @@ public class OrderDaoImpl implements IOrderDao {
         });
     }
 
-    private Order getOrder(final Map<String, Object> keys){
-        if(keys == null) return null;
+    private Order getOrder(final Map<String, Object> keys) {
+        if (keys == null) return null;
         Order order = new Order();
-        order.id = (Long)keys.get("id");
+        order.id = (Long) keys.get("id");
         order.work_description = (String) keys.get("work_description");
-        order.status = Status.valueOf((String)keys.get("status"));
+        order.status = Status.valueOf((String) keys.get("status"));
         order.planned_cost = (Double) keys.get("planned_cost");
-        Timestamp plannedEndDate = ((Timestamp)keys.get("planned_end_date"));
-        if(plannedEndDate != null) {
+        Timestamp plannedEndDate = ((Timestamp) keys.get("planned_end_date"));
+        if (plannedEndDate != null) {
             order.planned_end_date = plannedEndDate.toLocalDateTime();
         }
         order.total_cost = (Double) keys.get("total_cost");
-        Timestamp endDate = ((Timestamp)keys.get("end_date"));
-        if(endDate != null) {
+        Timestamp endDate = ((Timestamp) keys.get("end_date"));
+        if (endDate != null) {
             order.end_date = endDate.toLocalDateTime();
         }
 
@@ -143,13 +146,13 @@ public class OrderDaoImpl implements IOrderDao {
         order.work_description = rs.getString("work_description");
         order.status = Status.valueOf(rs.getString("status"));
         order.planned_cost = rs.getDouble("planned_cost");
-        Timestamp plannedEndDate = ((Timestamp)rs.getObject("planned_end_date"));
-        if(plannedEndDate != null) {
+        Timestamp plannedEndDate = ((Timestamp) rs.getObject("planned_end_date"));
+        if (plannedEndDate != null) {
             order.planned_end_date = plannedEndDate.toLocalDateTime();
         }
         order.total_cost = rs.getDouble("total_cost");
-        Timestamp endDate = ((Timestamp)rs.getObject("end_date"));
-        if(plannedEndDate != null) {
+        Timestamp endDate = ((Timestamp) rs.getObject("end_date"));
+        if (plannedEndDate != null) {
             order.planned_end_date = endDate.toLocalDateTime();
         }
         return order;

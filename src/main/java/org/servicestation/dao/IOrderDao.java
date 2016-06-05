@@ -8,7 +8,7 @@ public interface IOrderDao {
 
     Order createNewOrder();
 
-    Order changeOrder(final Long orderId, final Order newOrder) throws Exception;
+    Order changeOrder(final Long orderId, final Order newOrder);
 
     Order deleteOrder(final Long orderId);
 

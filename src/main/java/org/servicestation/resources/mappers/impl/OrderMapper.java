@@ -2,14 +2,14 @@ package org.servicestation.resources.mappers.impl;
 
 import org.servicestation.model.Order;
 import org.servicestation.model.Status;
-import org.servicestation.resources.dto.OrderDto;
+import org.servicestation.resources.dto.FullOrderDto;
 import org.servicestation.resources.mappers.IDtoMapper;
 import org.servicestation.resources.utils.Utils;
 
-public class OrderMapper implements IDtoMapper<OrderDto, Order> {
+public class OrderMapper implements IDtoMapper<FullOrderDto, Order> {
 
     @Override
-    public Order mapDtoToServerObject(OrderDto dto) {
+    public Order mapDtoToServerObject(FullOrderDto dto) {
         Order order = new Order();
         order.status = Status.valueOf(dto.status);
         order.planned_cost = dto.planned_cost;
@@ -22,8 +22,8 @@ public class OrderMapper implements IDtoMapper<OrderDto, Order> {
     }
 
     @Override
-    public OrderDto mapServerObjectToDto(Order serverObj) {
-        OrderDto orderDto = new OrderDto();
+    public FullOrderDto mapServerObjectToDto(Order serverObj) {
+        FullOrderDto orderDto = new FullOrderDto();
         orderDto.id = serverObj.id;
         orderDto.status = serverObj.status.toString();
         orderDto.planned_cost = serverObj.planned_cost;
@@ -37,7 +37,7 @@ public class OrderMapper implements IDtoMapper<OrderDto, Order> {
 
     @Override
     public Class getDtoType() {
-        return OrderDto.class;
+        return FullOrderDto.class;
     }
 
     @Override

@@ -17,15 +17,6 @@ public class StationOrderManagerImpl implements IStationOrderManager {
     @Autowired
     private IObjectMapper mapper;
 
-    @Override
-    public StationOrderDto createStationOrder(Integer stationId, StationOrderDto newStationOrder) {
-        return null;
-    }
-
-    @Override
-    public void deleteStationOrder(Integer stationId, Long orderId) {
-
-    }
 
     @Override
     public List<StationOrderDto> getAllStationOrders(Integer stationId, String timestamp) {
