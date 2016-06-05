@@ -11,13 +11,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StationOrderImpl implements IStationOrderDao {
+public class StationOrderDaoImpl implements IStationOrderDao {
 
     private static String ASSIGN_ORDER = "insert into order_station " +
-            "(order_id, station_id, date_time) values(:order_id, :station_id, cast(:date_time as timestamp));";
+            "(order_id, station_id, date_time, car_id) values(:order_id, :station_id, cast(:date_time as timestamp), :car_id);";
 
     private static String UNASSIGN_ORDER = "delete from order_station where station_id=:station_id and order_id=:order_id";
 
@@ -28,11 +29,12 @@ public class StationOrderImpl implements IStationOrderDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public void assignOrder(final Integer stationId, final Long orderId, final String timestamp) {
+    public void assignOrder(final Integer stationId, final Long orderId, final LocalDateTime timestamp, final Integer carId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
         params.addValue("order_id", orderId);
-        params.addValue("date_time", timestamp);
+        params.addValue("date_time", Utils.getStringLocalDateTimeFormat(timestamp));
+        params.addValue("car_id", carId);
 
         namedParameterJdbcTemplate.update(ASSIGN_ORDER, params);
     }

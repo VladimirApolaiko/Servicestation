@@ -75,7 +75,7 @@ public class ApplicationConfigTest {
 
     @Bean
     public IStationOrderDao mechanicOrder() {
-        return new StationOrderImpl();
+        return new StationOrderDaoImpl();
     }
 
     @Bean
