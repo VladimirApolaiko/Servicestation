@@ -17,7 +17,10 @@ import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class OrderDaoImpl implements IOrderDao {
@@ -26,7 +29,9 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static final String DELIMITER = ", ";
 
-    private static String CREATE_ORDER = "insert into \"order\" (status) values(cast(:status as order_status))";
+    private static String CREATE_ORDER = "insert into \"order\" " +
+            "(status,username, station_id, order_date_time, car_id ) " +
+            "values(cast(:status as order_status), :username, :station_id, cast(:order_date_time as timestamp), :car_id)";
 
     private static String UPDATE_ORDER = "update \"order\" set ";
 
@@ -34,13 +39,21 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static String SELECT_ORDER = "select * from \"order\" where id=:id";
 
+    private static String GET_ALL_STATION_ORDERS = "select * from \"order\" " +
+            "where station_id=:station_id and order_date_time >= cast(:order_date_time as timestamp) " +
+            "and order_date_time < cast(:next_date as timestamp)";
+
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Order createNewOrder() {
+    public Order createNewOrder(Status status, String username, Integer stationId, LocalDateTime orderDateTime, Integer carId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("status", Status.INIT.toString());
+        params.addValue("username", username);
+        params.addValue("station_id", stationId);
+        params.addValue("order_date_time", Utils.getStringLocalDateTimeFormat(orderDateTime));
+        params.addValue("car_id", carId);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(CREATE_ORDER, params, keyHolder);
@@ -72,6 +85,11 @@ public class OrderDaoImpl implements IOrderDao {
                         break;
 
                         case "end_date": {
+                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
+                        }
+                        break;
+
+                        case "order_date_time": {
                             getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
                         }
                         break;
@@ -120,6 +138,21 @@ public class OrderDaoImpl implements IOrderDao {
         });
     }
 
+    @Override
+    public List<Order> getOrdersByStationAndDate(Integer stationId, LocalDate orderDateTime) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("station_id", stationId);
+        params.addValue("order_date_time", Utils.getStringLocalDateFormat(orderDateTime));
+        params.addValue("next_date", Utils.getStringLocalDateFormat(orderDateTime.plusDays(1)));
+
+        List<Order> stationOrders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_ALL_STATION_ORDERS, params, rs -> {
+            stationOrders.add(getOrder(rs));
+        });
+        return stationOrders;
+    }
+
     private Order getOrder(final Map<String, Object> keys) {
         if (keys == null) return null;
         Order order = new Order();
@@ -136,6 +169,10 @@ public class OrderDaoImpl implements IOrderDao {
         if (endDate != null) {
             order.end_date = endDate.toLocalDateTime();
         }
+        order.username = (String) keys.get("username");
+        order.station_id = (Integer) keys.get("station_id");
+        order.order_date_time = ((Timestamp) keys.get("order_date_time")).toLocalDateTime();
+        order.car_id = (Integer) keys.get("car_id");
 
         return order;
     }
@@ -155,6 +192,12 @@ public class OrderDaoImpl implements IOrderDao {
         if (plannedEndDate != null) {
             order.planned_end_date = endDate.toLocalDateTime();
         }
+
+        order.username = rs.getString("username");
+        order.station_id = rs.getInt("station_id");
+        order.order_date_time = ((Timestamp) rs.getObject("order_date_time")).toLocalDateTime();
+        order.car_id =  rs.getInt("car_id");
+
         return order;
     }
 

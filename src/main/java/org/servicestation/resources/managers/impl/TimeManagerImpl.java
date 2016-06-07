@@ -1,8 +1,8 @@
 package org.servicestation.resources.managers.impl;
 
+import org.servicestation.dao.IOrderDao;
 import org.servicestation.dao.IStationDao;
-import org.servicestation.dao.IStationOrderDao;
-import org.servicestation.model.StationOrder;
+import org.servicestation.model.Order;
 import org.servicestation.resources.dto.BusyTime;
 import org.servicestation.resources.dto.StationWorkTime;
 import org.servicestation.resources.managers.ITimeManager;
@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TimeManagerImpl implements ITimeManager {
 
@@ -21,7 +22,7 @@ public class TimeManagerImpl implements ITimeManager {
     private Integer orderRange;
 
     @Autowired
-    private IStationOrderDao stationOrderDao;
+    private IOrderDao stationOrderDao;
 
     @Autowired
     private  IStationDao stationDao;
@@ -30,9 +31,11 @@ public class TimeManagerImpl implements ITimeManager {
     public BusyTime getBusyTime(Integer stationId, String timestamp) {
         BusyTime busyTime = new BusyTime();
 
-        for (StationOrder stationOrder : stationOrderDao.getStationOrders(stationId, Utils.getLocalDate(timestamp))) {
-            busyTime.busyTime.add(createBusyTime(stationOrder.localDateTime));
-        }
+        busyTime.busyTime.addAll(
+                stationOrderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(timestamp)).stream()
+                        .map(order -> createBusyTime(order.order_date_time))
+                        .collect(Collectors.toList()));
+
         return busyTime;
     }
 

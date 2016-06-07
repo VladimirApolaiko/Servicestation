@@ -6,14 +6,14 @@ import java.util.List;
 
 public class FullOrderDto {
     public Long id = null;
-    public String work_description = null;
+    public String workDescription = null;
     public String status = null;
-    public Double planned_cost = null;
-    public String planned_end_date = null;
-    public Double total_cost = null;
-    public String end_date = null;
+    public Double plannedCost = null;
+    public String plannedEndDate = null;
+    public Double totalCost = null;
+    public String endDate = null;
     public List<Integer> servicesIds = new ArrayList<>();
     public Integer carId = null;
     public Integer stationId = null;
-    public String order_date = null;
+    public String orderDate = null;
 }

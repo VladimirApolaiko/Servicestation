@@ -59,8 +59,9 @@ public class OAuth2Config {
             http.authorizeRequests().antMatchers("/api/users/**").permitAll();
             http.authorizeRequests().antMatchers("/api/station/**").permitAll();
             http.authorizeRequests().antMatchers("/api/car/**").access("hasRole('ROLE_USER')");
-            http.authorizeRequests().antMatchers("/api/busytime/**").access("hasRole('ROLE_USER')");
+            http.authorizeRequests().antMatchers("/api/time/**").access("hasRole('ROLE_USER')");
             http.authorizeRequests().antMatchers("/api/service/**").access("hasRole('ROLE_USER')");
+            /*http.authorizeRequests().antMatchers("/api/order*//**").access("hasRole('ROLE_USER'");*/
             /*http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");*/
         }
 

@@ -30,11 +30,6 @@ public class ApplicationMapperConfiguration {
     }
 
     @Bean
-    public IDtoMapper stationOrderDtoMapper() {
-        return new StationOrderDtoMapper();
-    }
-
-    @Bean
     public IDtoMapper serviceDtoMapper() {
         return new ServiceDtoMapper();
     }
@@ -43,5 +38,6 @@ public class ApplicationMapperConfiguration {
     public IDtoMapper orderDtoMapper() {
         return new OrderMapper();
     }
+
 
 }

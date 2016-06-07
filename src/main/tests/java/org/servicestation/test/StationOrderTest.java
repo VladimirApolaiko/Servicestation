@@ -1,12 +1,7 @@
 package org.servicestation.test;
 
-import org.junit.Test;
-import org.servicestation.dao.IStationOrderDao;
 import org.servicestation.dao.IOrderDao;
-import org.servicestation.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -14,8 +9,6 @@ import static org.junit.Assert.assertTrue;
 
 public class StationOrderTest extends AbstractTest {
 
-    @Autowired
-    private IStationOrderDao iMechanicOrder;
 
     @Autowired
     private IOrderDao iOrderDao;
