@@ -73,10 +73,6 @@ public class ApplicationDaoConfiguration {
         return new AuthorityDaoImpl();
     }
 
-    @Bean
-    public IStationOrderDao mechanicOrder() {
-        return new StationOrderImpl();
-    }
 
     @Bean
     public IEmailVerificationDao emailVerificationDao() {
@@ -91,6 +87,11 @@ public class ApplicationDaoConfiguration {
     @Bean
     public IServiceDao serviceDao() {
         return new ServiceDaoImpl();
+    }
+
+    @Bean
+    public IOrderServiceDao orderServiceDao() {
+        return new OrderServiceDaoImpl();
     }
 
 }

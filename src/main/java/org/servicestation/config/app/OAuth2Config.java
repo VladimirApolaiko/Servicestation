@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -58,8 +59,9 @@ public class OAuth2Config {
             http.authorizeRequests().antMatchers("/api/users/**").permitAll();
             http.authorizeRequests().antMatchers("/api/station/**").permitAll();
             http.authorizeRequests().antMatchers("/api/car/**").access("hasRole('ROLE_USER')");
-            http.authorizeRequests().antMatchers("/api/busytime/**").access("hasRole('ROLE_USER')");
+            http.authorizeRequests().antMatchers("/api/time/**").access("hasRole('ROLE_USER')");
             http.authorizeRequests().antMatchers("/api/service/**").access("hasRole('ROLE_USER')");
+            /*http.authorizeRequests().antMatchers("/api/order*//**").access("hasRole('ROLE_USER'");*/
             /*http.authorizeRequests().antMatchers("/api/websocket").access("hasRole('ROLE_USER')");*/
         }
 

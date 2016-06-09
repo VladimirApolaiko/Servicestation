@@ -6,6 +6,6 @@ import org.servicestation.resources.dto.StationWorkTime;
 public interface ITimeManager {
     BusyTime getBusyTime(Integer stationId, String timestamp);
 
-    StationWorkTime getStationWorkTime(Integer stationId);
+    StationWorkTime getStationWorkTime(Integer stationId, String timestamp);
 
 }

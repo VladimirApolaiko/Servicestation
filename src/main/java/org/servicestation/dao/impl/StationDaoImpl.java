@@ -1,6 +1,7 @@
 package org.servicestation.dao.impl;
 
 import org.postgresql.util.PGobject;
+import org.servicestation.dao.DaoUtil;
 import org.servicestation.dao.IStationDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Station;
@@ -15,6 +16,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -82,20 +84,35 @@ public class StationDaoImpl implements IStationDao {
         StringBuilder sql = new StringBuilder(UPDATE_STATION);
         boolean notNull = false;
 
-        for (Field field : newStation.getClass().getFields()) {
+        for(Field field : newStation.getClass().getFields()) {
             field.setAccessible(true);
             try {
                 Object value = field.get(newStation);
 
-                if (field.get(newStation) != null) {
-                    params.addValue(field.getName(), value);
-                    sql.append(getColumnMapping(field.getName()));
+                if(value != null) {
+                    switch (field.getName()) {
+                        case "working_hours": {
+                            addRangeFieldToQuery(params, sql, field, value);
+                        }
+                        break;
+
+                        case "weekends_working_hours": {
+                            addRangeFieldToQuery(params, sql, field, value);
+                        }
+                        break;
+
+                        default: {
+                            addFieldToQuery(params, sql, field, value);
+                        }
+                    }
                     notNull = true;
                 }
             } catch (IllegalAccessException e) {
                 LOGGER.debug("Can't get value of field " + field.getName(), e);
             }
+
         }
+
 
         if(!notNull) throw new NullPropertiesException("At least one property should be not null");
 
@@ -150,5 +167,19 @@ public class StationDaoImpl implements IStationDao {
 
     private String getColumnMapping(final String columnName) {
         return columnName + "=:" + columnName + DELIMITER;
+    }
+
+    private String getWorkingHoursRange(final String columnName) {
+        return columnName + "= cast(:" + columnName + " as int4range)" + DELIMITER;
+    }
+
+    private <T> void addFieldToQuery(MapSqlParameterSource params, StringBuilder sql, Field field, T value) {
+        params.addValue(field.getName(), value);
+        sql.append(getColumnMapping(field.getName()));
+    }
+
+    private <T> void addRangeFieldToQuery(MapSqlParameterSource params, StringBuilder sql, Field field, T value) {
+        params.addValue(field.getName(), value);
+        sql.append(getWorkingHoursRange(field.getName()));
     }
 }

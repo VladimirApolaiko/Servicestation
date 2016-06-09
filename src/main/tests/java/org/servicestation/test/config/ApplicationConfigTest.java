@@ -74,11 +74,6 @@ public class ApplicationConfigTest {
     }
 
     @Bean
-    public IStationOrderDao mechanicOrder() {
-        return new StationOrderImpl();
-    }
-
-    @Bean
     public NamedParameterJdbcTemplate jdbcTemplate() throws URISyntaxException {
         return new NamedParameterJdbcTemplate(testBasicDataSource());
     }

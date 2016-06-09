@@ -6,4 +6,5 @@ public class StationOrderDto {
     public Integer stationId;
     public Long orderId;
     public String timestamp;
+    public Integer carId;
 }

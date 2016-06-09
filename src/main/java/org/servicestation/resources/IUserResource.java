@@ -25,6 +25,7 @@ public interface IUserResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @PreAuthorize("hasRole('ROLE_USER')")
     UserDto getUser(@Context SecurityContext securityContext) throws UserDoesNotExists;
 
 }

@@ -56,22 +56,27 @@ public class Utils {
     }
 
     public static LocalDate getLocalDate(String localDateTime) {
+        if(localDateTime == null) return null;
         return LocalDate.parse(localDateTime, DATE_FORMATTER);
     }
 
     public static LocalDateTime getLocalDateTime(String localDateTime) {
+        if(localDateTime == null) return null;
         return LocalDateTime.parse(localDateTime, DATE_TIME_FORMATTER);
     }
 
     public static String getStringLocalDateTimeFormat(LocalDateTime localDateTime) {
+        if(localDateTime == null) return null;
         return localDateTime.format(DATE_TIME_FORMATTER);
     }
 
     public static String getStringLocalDateFormat(LocalDate localDate) {
+        if(localDate == null) return null;
         return localDate.format(DATE_FORMATTER);
     }
 
     public static String getTime(LocalDateTime localDateTime) {
+        if(localDateTime == null) return null;
         return localDateTime.format(HOURS_MINUTES);
     }
 

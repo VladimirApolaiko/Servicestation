@@ -42,11 +42,6 @@ public class ApplicationManagersConfiguration {
     }
 
     @Bean
-    public IStationOrderManager stationOrderManager() {
-        return new StationOrderManagerImpl();
-    }
-
-    @Bean
     public ITimeManager timeManagerImpl() {
         return new TimeManagerImpl();
     }
@@ -67,5 +62,10 @@ public class ApplicationManagersConfiguration {
     @Bean
     public MailManager mailManager() {
         return new MailManager();
+    }
+
+    @Bean
+    public IOrderManager orderManager(){
+        return new OrderManagerImpl();
     }
 }
