@@ -7,7 +7,6 @@ import org.servicestation.model.Order;
 import org.servicestation.model.OrderService;
 import org.servicestation.model.Status;
 import org.servicestation.resources.dto.FullOrderDto;
-import org.servicestation.resources.dto.OrderDto;
 import org.servicestation.resources.managers.IOrderManager;
 import org.servicestation.resources.mappers.IObjectMapper;
 import org.servicestation.resources.utils.Utils;
@@ -15,8 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,9 +44,9 @@ public class OrderManagerImpl implements IOrderManager {
 
         Double plannedCost = 0.0;
         for (Integer serviceId : orderDto.servicesIds) {
-            if(servicePrices.get(serviceId) != null) {
+            if (servicePrices.get(serviceId) != null) {
                 plannedCost += servicePrices.get(serviceId);
-            }else{
+            } else {
                 LOGGER.info("Service with service id {} not found", serviceId);
             }
         }
@@ -63,45 +60,49 @@ public class OrderManagerImpl implements IOrderManager {
                         .map(serviceId -> orderServiceDao.assignService(newOrder.id, serviceId))
                         .collect(Collectors.toList());
 
-        FullOrderDto fullOrderDto = new FullOrderDto();
-        fullOrderDto.id = changedOrder.id;
-        fullOrderDto.workDescription = changedOrder.work_description;
-        fullOrderDto.status = changedOrder.status.toString();
-        fullOrderDto.plannedCost = changedOrder.planned_cost;
-        fullOrderDto.plannedEndDate =
-                Utils.getStringLocalDateTimeFormat(changedOrder.planned_end_date);
-        fullOrderDto.totalCost = changedOrder.total_cost;
-        fullOrderDto.endDate = Utils.getStringLocalDateTimeFormat(changedOrder.end_date);
+        FullOrderDto dto = mapper.mapServerObjectToDto(changedOrder);
+        dto.servicesIds = getServiceIds(orderServiceList);
 
-        fullOrderDto.servicesIds = orderServiceList.stream()
-                .map(orderService -> orderService.serviceId)
-                .collect(Collectors.toList());
-        fullOrderDto.carId = changedOrder.car_id;
-        fullOrderDto.stationId = changedOrder.station_id;
-        fullOrderDto.orderDate = Utils.getStringLocalDateTimeFormat(changedOrder.order_date_time);
-
-        return fullOrderDto;
+        return dto;
     }
 
     @Override
-    public OrderDto changeOrder(Long orderId, OrderDto newOrder) {
-        return mapper.mapServerObjectToDto(orderDao.changeOrder(orderId, mapper.mapDtoToServerObject(newOrder)));
+    public FullOrderDto getOrderById(Long orderId) {
+        Order order = orderDao.getOrderById(orderId);
+
+        List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
+
+        FullOrderDto dto = mapper.mapServerObjectToDto(order);
+        dto.servicesIds = getServiceIds(services);
+        return dto;
+    }
+
+    @Override
+    public FullOrderDto changeOrder(Long orderId, FullOrderDto newOrder) {
+        return null;
     }
 
     @Override
     public void deleteOrder(Long orderId) {
+        orderServiceDao.unassignServices(orderId);
         orderDao.deleteOrder(orderId);
     }
 
     @Override
-    public OrderDto getOrderById(Long orderId) {
-        return mapper.mapServerObjectToDto(orderDao.getOrderById(orderId));
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String timestamp) {
+        List<Order> orders = orderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(timestamp));
+
+        return orders.stream().map(order -> {
+            List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
+
+            FullOrderDto dto = mapper.mapServerObjectToDto(order);
+            dto.servicesIds = getServiceIds(services);
+
+            return dto;
+        }).collect(Collectors.toList());
     }
 
-    @Override
-    public List<OrderDto> getOrdersByStationId(Integer stationId, String timestamp) {
-        return orderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(timestamp)).stream()
-                .map(order -> (OrderDto)mapper.mapServerObjectToDto(order))
-                .collect(Collectors.toList());
+    private List<Integer> getServiceIds(List<OrderService> services) {
+        return services.stream().map(orderService -> orderService.serviceId).collect(Collectors.toList());
     }
 }

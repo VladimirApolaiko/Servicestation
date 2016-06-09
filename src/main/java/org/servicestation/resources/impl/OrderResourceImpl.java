@@ -2,7 +2,6 @@ package org.servicestation.resources.impl;
 
 import org.servicestation.resources.IOrderResource;
 import org.servicestation.resources.dto.FullOrderDto;
-import org.servicestation.resources.dto.OrderDto;
 import org.servicestation.resources.managers.IOrderManager;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -20,7 +19,7 @@ public class OrderResourceImpl implements IOrderResource {
     }
 
     @Override
-    public List<OrderDto> getAllOrdersByStationIdAndDate(Integer stationId, String timestamp) {
+    public List<FullOrderDto> getAllOrdersByStationIdAndDate(Integer stationId, String timestamp) {
         return orderManager.getOrdersByStationId(stationId, timestamp);
     }
 

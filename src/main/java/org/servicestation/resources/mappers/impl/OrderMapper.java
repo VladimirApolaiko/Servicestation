@@ -1,54 +1,59 @@
 package org.servicestation.resources.mappers.impl;
 
 import org.servicestation.model.Order;
+import org.servicestation.model.OrderService;
 import org.servicestation.model.Status;
 import org.servicestation.resources.dto.FullOrderDto;
 import org.servicestation.resources.dto.OrderDto;
 import org.servicestation.resources.mappers.IDtoMapper;
 import org.servicestation.resources.utils.Utils;
 
-public class OrderMapper implements IDtoMapper<OrderDto, Order> {
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class OrderMapper implements IDtoMapper<FullOrderDto, Order> {
 
     @Override
-    public Order mapDtoToServerObject(OrderDto dto) {
+    public Order mapDtoToServerObject(FullOrderDto dto) {
         Order order = new Order();
+        order.work_description = dto.workDescription;
         order.status = Status.valueOf(dto.status);
         order.planned_cost = dto.plannedCost;
         order.planned_end_date = Utils.getLocalDateTime(dto.plannedEndDate);
         order.total_cost = dto.totalCost;
         order.end_date = Utils.getLocalDateTime(dto.endDate);
-        order.work_description = dto.workDescription;
-        order.order_date_time = Utils.getLocalDateTime(dto.orderDateTime);
-        order.station_id = dto.stationId;
         order.car_id = dto.carId;
+        order.station_id = dto.stationId;
+        order.order_date_time = Utils.getLocalDateTime(dto.orderDate);
 
         return order;
     }
 
     @Override
-    public OrderDto mapServerObjectToDto(Order serverObj) {
-        OrderDto orderDto = new OrderDto();
-        orderDto.id = serverObj.id;
-        orderDto.status = serverObj.status.toString();
-        orderDto.plannedCost = serverObj.planned_cost;
-        orderDto.plannedEndDate = Utils.getStringLocalDateTimeFormat(serverObj.planned_end_date);
-        orderDto.totalCost = serverObj.total_cost;
-        orderDto.endDate = Utils.getStringLocalDateTimeFormat(serverObj.end_date);
-        orderDto.workDescription = serverObj.work_description;
-        orderDto.orderDateTime = Utils.getStringLocalDateTimeFormat(serverObj.order_date_time);
-        orderDto.stationId = serverObj.station_id;
-        orderDto.carId = serverObj.car_id;
+    public FullOrderDto mapServerObjectToDto(Order order) {
+        FullOrderDto dto = new FullOrderDto();
+        dto.id = order.id;
+        dto.workDescription = order.work_description;
+        dto.status = order.status.toString();
+        dto.plannedCost = order.planned_cost;
+        dto.plannedEndDate = Utils.getStringLocalDateTimeFormat(order.planned_end_date);
+        dto.totalCost = order.total_cost;
+        dto.endDate = Utils.getStringLocalDateTimeFormat(order.end_date);
+        dto.carId = order.car_id;
+        dto.stationId = order.station_id;
+        dto.orderDate = Utils.getStringLocalDateTimeFormat(order.order_date_time);
 
-        return orderDto;
+        return dto;
     }
 
     @Override
     public Class getDtoType() {
-        return OrderDto.class;
+        return FullOrderDto.class;
     }
 
     @Override
     public Class getServerObjectType() {
         return Order.class;
     }
+
 }

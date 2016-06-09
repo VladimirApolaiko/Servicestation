@@ -20,5 +20,5 @@ public interface IOrderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{stationId}/{timestamp}")
-    List<OrderDto> getAllOrdersByStationIdAndDate(@PathParam("stationId") Integer stationId, @PathParam("timestamp") String timestamp);
+    List<FullOrderDto> getAllOrdersByStationIdAndDate(@PathParam("stationId") Integer stationId, @PathParam("timestamp") String timestamp);
 }

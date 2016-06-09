@@ -3,7 +3,6 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.IOrderServiceDao;
 import org.servicestation.model.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -24,6 +23,9 @@ public class OrderServiceDaoImpl implements IOrderServiceDao {
             "select * from order_service where order_id = :order_id";
 
     private static final String UNASSIGN_SERVICE =
+            "delete from order_service where order_id = :order_id and service_id = :service_id";
+
+    private static final String UNASSIGN_SERVICES =
             "delete from order_service where order_id = :order_id";
 
 
@@ -48,6 +50,14 @@ public class OrderServiceDaoImpl implements IOrderServiceDao {
         params.addValue("service_id", serviceId);
 
         jdbcTemplate.update(UNASSIGN_SERVICE, params);
+    }
+
+    @Override
+    public void unassignServices(Long orderId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("order_id", orderId);
+
+        jdbcTemplate.update(UNASSIGN_SERVICES, params);
     }
 
     @Override
