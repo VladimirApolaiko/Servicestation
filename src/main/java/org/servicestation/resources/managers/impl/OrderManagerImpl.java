@@ -7,12 +7,14 @@ import org.servicestation.model.Order;
 import org.servicestation.model.OrderService;
 import org.servicestation.model.Status;
 import org.servicestation.resources.dto.FullOrderDto;
+import org.servicestation.resources.exceptions.OrderNotFoundException;
 import org.servicestation.resources.managers.IOrderManager;
 import org.servicestation.resources.mappers.IObjectMapper;
 import org.servicestation.resources.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 
 import java.util.List;
 import java.util.Map;
@@ -67,7 +69,11 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public FullOrderDto getOrderById(Long orderId) {
+    public FullOrderDto getOrderById(String username, Long orderId) throws OrderNotFoundException {
+        if(!isOrderExist(username, orderId)) {
+            throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + username);
+        }
+
         Order order = orderDao.getOrderById(orderId);
 
         List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
@@ -78,8 +84,23 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public FullOrderDto changeOrder(Long orderId, FullOrderDto newOrder) {
-        return null;
+    public FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException {
+
+        if(!isOrderExist(username, orderId)){
+            throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + username);
+        }
+
+        Order order = orderDao.changeOrder(orderId, mapper.mapDtoToServerObject(newOrder));
+        orderServiceDao.unassignServices(orderId);
+
+        FullOrderDto dto = mapper.mapServerObjectToDto(order);
+
+        dto.servicesIds = newOrder.servicesIds.stream()
+                .map(serviceId -> orderServiceDao.assignService(orderId, serviceId))
+                .map(orderService -> orderService.serviceId).collect(Collectors.toList());
+
+
+        return dto;
     }
 
     @Override
@@ -89,9 +110,20 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String timestamp) {
-        List<Order> orders = orderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(timestamp));
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp) {
+        return getDto(orderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp)));
+    }
 
+    @Override
+    public List<FullOrderDto> getOrdersByUsername(String username) {
+        return getDto(orderDao.getOrdersByUsername(username));
+    }
+
+    private List<Integer> getServiceIds(List<OrderService> services) {
+        return services.stream().map(orderService -> orderService.serviceId).collect(Collectors.toList());
+    }
+
+    private List<FullOrderDto> getDto(List<Order> orders) {
         return orders.stream().map(order -> {
             List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
 
@@ -102,7 +134,14 @@ public class OrderManagerImpl implements IOrderManager {
         }).collect(Collectors.toList());
     }
 
-    private List<Integer> getServiceIds(List<OrderService> services) {
-        return services.stream().map(orderService -> orderService.serviceId).collect(Collectors.toList());
+    private boolean isOrderExist(String username, Long orderId) throws OrderNotFoundException {
+        List<Long> orders;
+        try{
+            orders = orderDao.getOrdersByUsername(username).stream().map(order -> order.id).collect(Collectors.toList());
+        }catch(EmptyResultDataAccessException e) {
+            throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + username);
+        }
+
+        return orders.contains(orderId);
     }
 }

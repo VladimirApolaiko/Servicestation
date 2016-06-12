@@ -39,9 +39,11 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static String SELECT_ORDER = "select * from \"order\" where id=:id";
 
-    private static String GET_ALL_STATION_ORDERS = "select * from \"order\" " +
+    private static String GET_ALL_STATION_ORDERS_BY_DATE_RANGE = "select * from \"order\" " +
             "where station_id=:station_id and order_date_time >= cast(:order_date_time as timestamp) " +
-            "and order_date_time < cast(:next_date as timestamp)";
+            "and order_date_time <= cast(:next_date as timestamp)";
+
+    private static String GET_ALL_ORDERS_BY_USERNAME = "select * from \"order\" where username = :username";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -139,18 +141,33 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public List<Order> getOrdersByStationAndDate(Integer stationId, LocalDate orderDateTime) {
+    public List<Order> getOrdersByStationAndDate(Integer stationId, LocalDate startDateTimestamp, LocalDate endDateTimestamp) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
-        params.addValue("order_date_time", Utils.getStringLocalDateFormat(orderDateTime));
-        params.addValue("next_date", Utils.getStringLocalDateFormat(orderDateTime.plusDays(1)));
+        params.addValue("order_date_time", Utils.getStringLocalDateFormat(startDateTimestamp));
+        params.addValue("next_date", Utils.getStringLocalDateFormat(endDateTimestamp.plusDays(1)));
 
         List<Order> stationOrders = new ArrayList<>();
 
-        namedParameterJdbcTemplate.query(GET_ALL_STATION_ORDERS, params, rs -> {
+        namedParameterJdbcTemplate.query(GET_ALL_STATION_ORDERS_BY_DATE_RANGE, params, rs -> {
             stationOrders.add(getOrder(rs));
         });
+
         return stationOrders;
+    }
+
+    @Override
+    public List<Order> getOrdersByUsername(String username) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+
+        List<Order> orders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_USERNAME, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
+        return orders;
     }
 
     private Order getOrder(final Map<String, Object> keys) {
