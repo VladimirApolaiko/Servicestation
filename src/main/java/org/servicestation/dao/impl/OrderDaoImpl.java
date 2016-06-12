@@ -29,6 +29,8 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static final String DELIMITER = ", ";
 
+    private static final String ALL_STATUSES = "ALL";
+
     private static String CREATE_ORDER = "insert into \"order\" " +
             "(status,username, station_id, order_date_time, car_id ) " +
             "values(cast(:status as order_status), :username, :station_id, cast(:order_date_time as timestamp), :car_id)";
@@ -41,6 +43,10 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static String GET_ALL_STATION_ORDERS_BY_DATE_RANGE = "select * from \"order\" " +
             "where station_id=:station_id and order_date_time >= cast(:order_date_time as timestamp) " +
+            "and order_date_time <= cast(:next_date as timestamp)";
+
+    private static String GET_ALL_ORDERS_BY_USERNAME_AND_DATE_RANGE = "select * from \"order\" " +
+            "where username= :username and order_date_time >= cast(:order_date_time as timestamp) " +
             "and order_date_time <= cast(:next_date as timestamp)";
 
     private static String GET_ALL_ORDERS_BY_USERNAME = "select * from \"order\" where username = :username";
@@ -141,19 +147,50 @@ public class OrderDaoImpl implements IOrderDao {
     }
 
     @Override
-    public List<Order> getOrdersByStationAndDate(Integer stationId, LocalDate startDateTimestamp, LocalDate endDateTimestamp) {
+    public List<Order> getOrdersByStationIdAndDateAndStatus(Integer stationId, LocalDate startDateTimestamp, LocalDate endDateTimestamp, String status) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
+
+        String sql = GET_ALL_STATION_ORDERS_BY_DATE_RANGE;
+
+        if (!status.equals(ALL_STATUSES)) {
+            params.addValue("status", status);
+            sql = sql + " and status = cast(:status as order_status)";
+        }
         params.addValue("order_date_time", Utils.getStringLocalDateFormat(startDateTimestamp));
         params.addValue("next_date", Utils.getStringLocalDateFormat(endDateTimestamp.plusDays(1)));
 
         List<Order> stationOrders = new ArrayList<>();
 
-        namedParameterJdbcTemplate.query(GET_ALL_STATION_ORDERS_BY_DATE_RANGE, params, rs -> {
+        namedParameterJdbcTemplate.query(sql, params, rs -> {
             stationOrders.add(getOrder(rs));
         });
 
         return stationOrders;
+    }
+
+    @Override
+    public List<Order> getOrdersByUsernameAndDateAndStatus(String username, LocalDate startDateTimestamp, LocalDate endDateTimestamp, String status) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+
+        String sql = GET_ALL_ORDERS_BY_USERNAME_AND_DATE_RANGE;
+
+        if (!status.equals(ALL_STATUSES)) {
+            params.addValue("status", status);
+            sql = sql + " and status = cast(:status as order_status)";
+        }
+
+        params.addValue("order_date_time", Utils.getStringLocalDateFormat(startDateTimestamp));
+        params.addValue("next_date", Utils.getStringLocalDateFormat(endDateTimestamp.plusDays(1)));
+
+        List<Order> orders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(sql, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
+        return orders;
     }
 
     @Override
@@ -213,7 +250,7 @@ public class OrderDaoImpl implements IOrderDao {
         order.username = rs.getString("username");
         order.station_id = rs.getInt("station_id");
         order.order_date_time = ((Timestamp) rs.getObject("order_date_time")).toLocalDateTime();
-        order.car_id =  rs.getInt("car_id");
+        order.car_id = rs.getInt("car_id");
 
         return order;
     }

@@ -21,8 +21,13 @@ public class OrderResourceImpl implements IOrderResource {
     }
 
     @Override
-    public List<FullOrderDto> getAllOrdersByStationIdAndDate(Integer stationId, String startDateTimestamp, String endDateTimestamp) {
-        return orderManager.getOrdersByStationId(stationId, startDateTimestamp, endDateTimestamp);
+    public List<FullOrderDto> getAllOrdersByStationIdAndDate(Integer stationId, String startDateTimestamp, String endDateTimestamp, String status) {
+        return orderManager.getOrdersByStationId(stationId, startDateTimestamp, endDateTimestamp, status);
+    }
+
+    @Override
+    public List<FullOrderDto> getAllOrdersByUsernameAndDate(SecurityContext securityContext, String startDateTimeStamp, String endDateTimestamp, String status) {
+        return orderManager.getOrdersByUsername(securityContext.getUserPrincipal().getName(), startDateTimeStamp, endDateTimestamp, status);
     }
 
     @Override

@@ -110,8 +110,13 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp) {
-        return getDto(orderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp)));
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp, String status) {
+        return getDto(orderDao.getOrdersByStationIdAndDateAndStatus(stationId, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp), status));
+    }
+
+    @Override
+    public List<FullOrderDto> getOrdersByUsername(String username, String startDateTimestamp, String endDateTimestamp, String status) {
+        return getDto(orderDao.getOrdersByUsernameAndDateAndStatus(username, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp), status));
     }
 
     @Override

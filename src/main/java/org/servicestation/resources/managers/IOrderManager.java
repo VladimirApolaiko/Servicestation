@@ -15,7 +15,9 @@ public interface IOrderManager {
 
     FullOrderDto getOrderById(String username, Long orderId) throws OrderNotFoundException;
 
-    List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp);
+    List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp, String status);
+
+    List<FullOrderDto> getOrdersByUsername(String username, String startDateTimestamp, String endDateTimestamp, String status);
 
     List<FullOrderDto> getOrdersByUsername(String username);
 }

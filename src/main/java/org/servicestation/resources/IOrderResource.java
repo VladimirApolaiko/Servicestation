@@ -21,10 +21,19 @@ public interface IOrderResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/{stationId}/{startDateTimestamp}/{endDateTimestamp}")
+    @Path("/{stationId}/{startDateTimestamp}/{endDateTimestamp}/{status}")
     List<FullOrderDto> getAllOrdersByStationIdAndDate(@PathParam("stationId") Integer stationId,
                                                       @PathParam("startDateTimestamp") String startDateTimeStamp,
-                                                      @PathParam("endDateTimestamp") String endDateTimestamp);
+                                                      @PathParam("endDateTimestamp") String endDateTimestamp,
+                                                      @PathParam("status") String status);
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{startDateTimestamp}/{endDateTimestamp}/{status}")
+    List<FullOrderDto> getAllOrdersByUsernameAndDate(@Context SecurityContext securityContext,
+                                                     @PathParam("startDateTimestamp") String startDateTimeStamp,
+                                                     @PathParam("endDateTimestamp") String endDateTimestamp,
+                                                     @PathParam("status") String status);
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)

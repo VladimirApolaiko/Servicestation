@@ -17,7 +17,9 @@ public interface IOrderDao {
 
     Order getOrderById(final Long orderId);
 
-    List<Order> getOrdersByStationAndDate(final Integer stationId, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp);
+    List<Order> getOrdersByStationIdAndDateAndStatus(final Integer stationId, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp, String status);
+
+    List<Order> getOrdersByUsernameAndDateAndStatus(final String username, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp, String status);
 
     List<Order> getOrdersByUsername(final String username);
 
