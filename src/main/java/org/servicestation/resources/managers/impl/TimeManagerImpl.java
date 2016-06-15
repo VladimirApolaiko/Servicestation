@@ -2,7 +2,6 @@ package org.servicestation.resources.managers.impl;
 
 import org.servicestation.dao.IOrderDao;
 import org.servicestation.dao.IStationDao;
-import org.servicestation.model.Order;
 import org.servicestation.resources.dto.BusyTime;
 import org.servicestation.resources.dto.StationWorkTime;
 import org.servicestation.resources.managers.ITimeManager;
@@ -32,7 +31,7 @@ public class TimeManagerImpl implements ITimeManager {
         BusyTime busyTime = new BusyTime();
 
         busyTime.busyTime.addAll(
-                stationOrderDao.getOrdersByStationAndDate(stationId, Utils.getLocalDate(timestamp), Utils.getLocalDate(timestamp)).stream()
+                stationOrderDao.getOrdersByStationId(stationId, Utils.getLocalDate(timestamp), Utils.getLocalDate(timestamp)).stream()
                         .map(order -> createBusyTime(order.order_date_time))
                         .collect(Collectors.toList()));
 

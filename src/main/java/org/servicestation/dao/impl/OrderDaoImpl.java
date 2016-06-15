@@ -8,6 +8,7 @@ import org.servicestation.resources.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowCallbackHandler;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -29,6 +30,8 @@ public class OrderDaoImpl implements IOrderDao {
 
     private static final String DELIMITER = ", ";
 
+    private static final String ALL_STATUSES = "ALL";
+
     private static String CREATE_ORDER = "insert into \"order\" " +
             "(status,username, station_id, order_date_time, car_id ) " +
             "values(cast(:status as order_status), :username, :station_id, cast(:order_date_time as timestamp), :car_id)";
@@ -43,7 +46,17 @@ public class OrderDaoImpl implements IOrderDao {
             "where station_id=:station_id and order_date_time >= cast(:order_date_time as timestamp) " +
             "and order_date_time <= cast(:next_date as timestamp)";
 
+    private static String GET_ALL_ORDERS_BY_USERNAME_AND_DATE_RANGE = "select * from \"order\" " +
+            "where username= :username and order_date_time >= cast(:order_date_time as timestamp) " +
+            "and order_date_time <= cast(:next_date as timestamp)";
+
+    private static String GET_ALL_ORDERS_BY_USERNAME_AND_STATUS = "select * from \"order\" where status = cast(:status as order_status)";
+
+    private static String GET_ALL_ORDERS_BY_STATION_ID_AND_STATUS = "select * from \"order\" where status = cast(:status as order_status)";
+
     private static String GET_ALL_ORDERS_BY_USERNAME = "select * from \"order\" where username = :username";
+
+    private static String GET_ALL_ORDERS_BY_STATION_ID = "select * from \"order\" where station_id = :station_id";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -140,8 +153,7 @@ public class OrderDaoImpl implements IOrderDao {
         });
     }
 
-    @Override
-    public List<Order> getOrdersByStationAndDate(Integer stationId, LocalDate startDateTimestamp, LocalDate endDateTimestamp) {
+    public List<Order> getOrdersByStationId(Integer stationId, LocalDate startDateTimestamp, LocalDate endDateTimestamp) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
         params.addValue("order_date_time", Utils.getStringLocalDateFormat(startDateTimestamp));
@@ -156,6 +168,22 @@ public class OrderDaoImpl implements IOrderDao {
         return stationOrders;
     }
 
+    public List<Order> getOrdersByUsername(String username, LocalDate startDateTimestamp, LocalDate endDateTimestamp) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+
+        params.addValue("order_date_time", Utils.getStringLocalDateFormat(startDateTimestamp));
+        params.addValue("next_date", Utils.getStringLocalDateFormat(endDateTimestamp.plusDays(1)));
+
+        List<Order> orders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_USERNAME_AND_DATE_RANGE, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
+        return orders;
+    }
+
     @Override
     public List<Order> getOrdersByUsername(String username) {
         MapSqlParameterSource params = new MapSqlParameterSource();
@@ -164,6 +192,52 @@ public class OrderDaoImpl implements IOrderDao {
         List<Order> orders = new ArrayList<>();
 
         namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_USERNAME, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
+        return orders;
+    }
+
+    @Override
+    public List<Order> getOrdersByUsername(String username, Status status) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("username", username);
+        params.addValue("status", status.toString());
+
+        List<Order> orders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_USERNAME_AND_STATUS, params, new RowCallbackHandler() {
+            @Override
+            public void processRow(ResultSet rs) throws SQLException {
+                orders.add(getOrder(rs));
+            }
+        });
+
+        return orders;
+    }
+
+    @Override
+    public List<Order> getOrdersByStationId(Integer stationId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("station_id", stationId);
+
+        List<Order> orders = new ArrayList<>();
+        namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_STATION_ID, params, rs -> {
+            orders.add(getOrder(rs));
+        });
+
+        return orders;
+    }
+
+    @Override
+    public List<Order> getOrdersByStationId(Integer stationId, Status status) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("station_id", stationId);
+        params.addValue("status", status.toString());
+
+        List<Order> orders = new ArrayList<>();
+
+        namedParameterJdbcTemplate.query(GET_ALL_ORDERS_BY_STATION_ID_AND_STATUS, params, rs -> {
             orders.add(getOrder(rs));
         });
 
@@ -213,7 +287,7 @@ public class OrderDaoImpl implements IOrderDao {
         order.username = rs.getString("username");
         order.station_id = rs.getInt("station_id");
         order.order_date_time = ((Timestamp) rs.getObject("order_date_time")).toLocalDateTime();
-        order.car_id =  rs.getInt("car_id");
+        order.car_id = rs.getInt("car_id");
 
         return order;
     }

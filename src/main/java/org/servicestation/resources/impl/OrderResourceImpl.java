@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
+import java.io.IOException;
 import java.util.List;
 
 public class OrderResourceImpl implements IOrderResource {
@@ -16,17 +17,12 @@ public class OrderResourceImpl implements IOrderResource {
     private IOrderManager orderManager;
 
     @Override
-    public FullOrderDto createNewOrder(SecurityContext securityContext, FullOrderDto orderDto) {
+    public FullOrderDto createNewOrder(SecurityContext securityContext, FullOrderDto orderDto) throws IOException {
         return orderManager.createNewOrder(securityContext.getUserPrincipal().getName(), orderDto);
     }
 
     @Override
-    public List<FullOrderDto> getAllOrdersByStationIdAndDate(Integer stationId, String startDateTimestamp, String endDateTimestamp) {
-        return orderManager.getOrdersByStationId(stationId, startDateTimestamp, endDateTimestamp);
-    }
-
-    @Override
-    public FullOrderDto changeOrderById(SecurityContext securityContext, Long orderId, FullOrderDto dto) throws OrderNotFoundException {
+    public FullOrderDto changeOrderById(SecurityContext securityContext, Long orderId, FullOrderDto dto) throws OrderNotFoundException, IOException {
         return orderManager.changeOrder(securityContext.getUserPrincipal().getName(), orderId, dto);
     }
 

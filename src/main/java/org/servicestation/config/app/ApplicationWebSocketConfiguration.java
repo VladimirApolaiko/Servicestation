@@ -2,9 +2,14 @@ package org.servicestation.config.app;
 
 import org.eclipse.jetty.websocket.jsr356.server.AnnotatedServerEndpointConfig;
 import org.eclipse.jetty.websocket.jsr356.server.ServerContainer;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.servicestation.resources.sokets.WebSocketEndPoint;
+import org.servicestation.resources.sokets.WebSocketEvent;
 import org.servicestation.resources.sokets.WebSocketEventEmitter;
-import org.servicestation.resources.sokets.WebSocketExample;
-import org.servicestation.resources.sokets.handlers.GetAllOrdersWebSocketEventHandler;
+import org.servicestation.resources.sokets.WebSocketEventHandler;
+import org.servicestation.resources.sokets.handlers.OrderChangedWebSocketEventHandler;
+import org.servicestation.resources.sokets.handlers.StationOrdersWebSocketEventHandler;
+import org.servicestation.resources.sokets.handlers.UserOrdersWebSocketEventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,8 +30,8 @@ public class ApplicationWebSocketConfiguration {
     private WebApplicationContext webAppContext;
 
     @Bean
-    public WebSocketExample toUpper356Socket() {
-        return new WebSocketExample();
+    public WebSocketEndPoint toUpper356Socket() {
+        return new WebSocketEndPoint();
     }
 
     @Bean
@@ -49,8 +54,8 @@ public class ApplicationWebSocketConfiguration {
         container.addEndpoint(
                 new AnnotatedServerEndpointConfig(
                         container,
-                        WebSocketExample.class,
-                        WebSocketExample.class.getAnnotation(ServerEndpoint.class)) {
+                        WebSocketEndPoint.class,
+                        WebSocketEndPoint.class.getAnnotation(ServerEndpoint.class)) {
                     @Override
                     public Configurator getConfigurator() {
                         return configurator();
@@ -65,8 +70,28 @@ public class ApplicationWebSocketConfiguration {
 
     @Bean
     @Scope("prototype")
-    public GetAllOrdersWebSocketEventHandler getAllOrdersWebSocketEventHandler() {
-        return new GetAllOrdersWebSocketEventHandler();
+    public WebSocketEventHandler getAllStationOrdersWebSocketEventHandler() {
+        WebSocketEventHandler webSocketEventHandler = new StationOrdersWebSocketEventHandler();
+        webSocketEventHandler.setAction(WebSocketEvent.GET_ALL_STATION_ORDERS);
+        return webSocketEventHandler;
+    }
+
+
+    @Bean
+    @Scope("prototype")
+    public WebSocketEventHandler getAllUserOrdersWebSocketEventHandler() {
+        WebSocketEventHandler webSocketEventHandler = new UserOrdersWebSocketEventHandler();
+        webSocketEventHandler.setAction(WebSocketEvent.GET_ALL_USER_ORDERS);
+        return webSocketEventHandler;
+    }
+
+    @Bean
+    @Scope("prototype")
+    public WebSocketEventHandler orderChangedWebSocketEventHandler() {
+        WebSocketEventHandler webSocketEventHandler = new OrderChangedWebSocketEventHandler();
+        webSocketEventHandler.setAction(WebSocketEvent.ORDERS_CHANGED);
+
+        return webSocketEventHandler;
     }
 
 

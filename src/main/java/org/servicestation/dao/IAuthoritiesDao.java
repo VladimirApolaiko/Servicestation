@@ -8,6 +8,8 @@ public interface IAuthoritiesDao {
 
     void grantAuthority(String username, Authority authority);
 
+    List<String> getUsernamesByAuthority(String authority);
+
     void revokeAuthority(String username, Authority authority);
 
     List<Authority> getAuthoritiesByUsername(String username);

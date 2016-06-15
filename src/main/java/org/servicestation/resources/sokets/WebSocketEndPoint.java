@@ -22,9 +22,9 @@ import java.io.IOException;
 import java.util.Map;
 
 @ServerEndpoint("/api/websocket")
-public class WebSocketExample {
+public class WebSocketEndPoint {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketExample.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(WebSocketEndPoint.class);
 
     @Autowired
     private IAuthoritiesDao iAuthoritiesDao;
@@ -53,17 +53,16 @@ public class WebSocketExample {
             if (oAuth2Authentication == null)
                 throw new WebSocketAuthenticationFailed("Authentication with access token " + socketMessage.accessToken + " not found");
 
-            WebSocketEvent webSocketEvent = WebSocketEvent.valueOf(socketMessage.action);
 
             String username = oAuth2Authentication.getName();
 
             Map<String, WebSocketEventHandler> webSocketEventListeners = applicationContext.getBeansOfType(WebSocketEventHandler.class);
 
             for (WebSocketEventHandler listener : webSocketEventListeners.values()) {
-                eventEmitter.registerEventHandler(username, session, WebSocketEvent.GET_ALL_ORDERS, listener);
+                eventEmitter.registerEventHandler(username, session, listener.getAction(), listener);
             }
 
-            eventEmitter.emit(oAuth2Authentication.getName(), webSocketEvent, socketMessage.data);
+            eventEmitter.emit(oAuth2Authentication.getName(), WebSocketEvent.valueOf(socketMessage.action), socketMessage.data);
         } catch (IllegalArgumentException e) {
             final String errorMessage = "Can't find specified action";
             session.close(new CloseReason(CloseCodes.CANNOT_ACCEPT, errorMessage));

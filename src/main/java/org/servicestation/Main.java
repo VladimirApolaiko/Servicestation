@@ -30,7 +30,7 @@ public class Main {
 
         //Create web socket container
         ServerContainer serverContainer = WebSocketServerContainerInitializer.configureContext(root);
-        /*serverContainer.addEndpoint(WebSocketExample.class);*/
+        /*serverContainer.addEndpoint(WebSocketEndPoint.class);*/
 
         server.start();
         LOGGER.info("Start application on port {}", webPort);
