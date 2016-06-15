@@ -2,6 +2,7 @@ package org.servicestation.resources.sokets.handlers;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.servicestation.resources.dto.FullOrderDto;
+import org.servicestation.resources.dto.ResponseSocketMessageDto;
 import org.servicestation.resources.dto.WebSocketOrderStationDto;
 import org.servicestation.resources.managers.IOrderManager;
 import org.servicestation.resources.sokets.WebSocketEvent;
@@ -30,6 +31,10 @@ public class StationOrdersWebSocketEventHandler extends WebSocketEventHandler {
             orders = orderManager.getOrdersByStationId(dto.stationId);
         }
 
-        session.getBasicRemote().sendText(mapper.writeValueAsString(orders));
+        ResponseSocketMessageDto response = new ResponseSocketMessageDto();
+        response.action = event.toString();
+        response.data = orders;
+
+        session.getBasicRemote().sendText(mapper.writeValueAsString(response));
     }
 }

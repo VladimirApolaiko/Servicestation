@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.servicestation.dao.IAuthoritiesDao;
-import org.servicestation.resources.dto.SocketMessageDto;
+import org.servicestation.resources.dto.RequestSocketMessageDto;
 import org.servicestation.resources.sokets.exception.WebSocketAuthenticationFailed;
 import org.servicestation.resources.sokets.exception.WebSocketEventNotFound;
 import org.servicestation.resources.sokets.exception.WebSocketMessageParseException;
@@ -47,7 +47,7 @@ public class WebSocketEndPoint {
     public void onMessage(String message, Session session) throws IOException {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            SocketMessageDto socketMessage = objectMapper.readValue(message, SocketMessageDto.class);
+            RequestSocketMessageDto socketMessage = objectMapper.readValue(message, RequestSocketMessageDto.class);
 
             OAuth2Authentication oAuth2Authentication = tokenStore.readAuthentication(socketMessage.accessToken);
             if (oAuth2Authentication == null)
