@@ -1,5 +1,10 @@
 package org.servicestation.resources.sokets;
 
+import org.servicestation.dao.IAuthoritiesDao;
+import org.servicestation.dao.IUserDao;
+import org.servicestation.resources.managers.Authority;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.websocket.Session;
 import java.io.IOException;
 import java.util.HashMap;
@@ -9,8 +14,10 @@ import java.util.stream.Collectors;
 
 public class WebSocketEventEmitter implements IWebSocketEventEmitter {
 
-    private Map<String, HashMap<EventKey, WebSocketEventHandler>> eventHandlers = new HashMap<>();
+    @Autowired
+    private IAuthoritiesDao authoritiesDao;
 
+    private Map<String, HashMap<EventKey, WebSocketEventHandler>> eventHandlers = new HashMap<>();
 
     @Override
     public void registerEventHandler(String username, Session session, WebSocketEvent event, WebSocketEventHandler handler) {
@@ -40,17 +47,20 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
     @Override
     public <T> void emit(String username, WebSocketEvent event, T data) throws IOException {
         HashMap<EventKey, WebSocketEventHandler> eventKeyWebSocketEventHandlerMultimap = eventHandlers.get(username);
+
         List<WebSocketEventHandler> webSocketEventHandlers = eventKeyWebSocketEventHandlerMultimap.entrySet().stream()
                 .filter(e -> e.getKey().event.equals(event))
                 .map(Map.Entry::getValue).collect(Collectors.toList());
 
         for (WebSocketEventHandler webSocketEventHandler : webSocketEventHandlers) {
-            webSocketEventHandler.handle(event, webSocketEventHandler.getSession(), data);
+            webSocketEventHandler.handle(username, event, webSocketEventHandler.getSession(), data);
         }
     }
 
-    @Override
-    public boolean isHandlerExists(String username, WebSocketEvent webSocketEvent) {
-        return eventHandlers.get(new EventKey(username, webSocketEvent)) != null;
+    public <T> void emitForAuthorities(Authority authority, WebSocketEvent event, T data) throws IOException {
+        for (String username : authoritiesDao.getUsernamesByAuthority(authority.toString())) {
+            emit(username, event, data);
+        }
     }
+
 }

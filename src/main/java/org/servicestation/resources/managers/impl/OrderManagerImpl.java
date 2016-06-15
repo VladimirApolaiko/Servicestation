@@ -8,14 +8,18 @@ import org.servicestation.model.OrderService;
 import org.servicestation.model.Status;
 import org.servicestation.resources.dto.FullOrderDto;
 import org.servicestation.resources.exceptions.OrderNotFoundException;
+import org.servicestation.resources.managers.Authority;
 import org.servicestation.resources.managers.IOrderManager;
 import org.servicestation.resources.mappers.IObjectMapper;
+import org.servicestation.resources.sokets.IWebSocketEventEmitter;
+import org.servicestation.resources.sokets.WebSocketEvent;
 import org.servicestation.resources.utils.Utils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -36,8 +40,11 @@ public class OrderManagerImpl implements IOrderManager {
     @Autowired
     private IObjectMapper mapper;
 
+    @Autowired
+    private IWebSocketEventEmitter webSocketEventEmitter;
+
     @Override
-    public FullOrderDto createNewOrder(String username, FullOrderDto orderDto) {
+    public FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException {
         Order newOrder = orderDao.createNewOrder(
                 Status.valueOf(orderDto.status), username, orderDto.stationId, Utils.getLocalDateTime(orderDto.orderDate), orderDto.carId);
         newOrder.work_description = orderDto.workDescription;
@@ -65,6 +72,8 @@ public class OrderManagerImpl implements IOrderManager {
         FullOrderDto dto = mapper.mapServerObjectToDto(changedOrder);
         dto.servicesIds = getServiceIds(orderServiceList);
 
+        webSocketEventEmitter.emit(username, WebSocketEvent.ORDERS_CHANGED, null);
+        webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
         return dto;
     }
 
@@ -84,7 +93,7 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException {
+    public FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException {
 
         if(!isOrderExist(username, orderId)){
             throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + username);
@@ -99,29 +108,50 @@ public class OrderManagerImpl implements IOrderManager {
                 .map(serviceId -> orderServiceDao.assignService(orderId, serviceId))
                 .map(orderService -> orderService.serviceId).collect(Collectors.toList());
 
-
+        webSocketEventEmitter.emit(username, WebSocketEvent.ORDERS_CHANGED, null);
+        webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
         return dto;
     }
 
     @Override
-    public void deleteOrder(Long orderId) {
+    public void deleteOrder(Long orderId) throws IOException {
+        Order orderById = orderDao.getOrderById(orderId);
         orderServiceDao.unassignServices(orderId);
         orderDao.deleteOrder(orderId);
+
+        webSocketEventEmitter.emit(orderById.username, WebSocketEvent.ORDERS_CHANGED, null);
+        webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
+
     }
 
     @Override
-    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp, String status) {
-        return getDto(orderDao.getOrdersByStationIdAndDateAndStatus(stationId, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp), status));
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String startDateTimestamp, String endDateTimestamp) {
+        return getDto(orderDao.getOrdersByStationId(stationId, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp)));
     }
 
     @Override
-    public List<FullOrderDto> getOrdersByUsername(String username, String startDateTimestamp, String endDateTimestamp, String status) {
-        return getDto(orderDao.getOrdersByUsernameAndDateAndStatus(username, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp), status));
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId) {
+        return getDto(orderDao.getOrdersByStationId(stationId));
+    }
+
+    @Override
+    public List<FullOrderDto> getOrdersByStationId(Integer stationId, String status) {
+        return getDto(orderDao.getOrdersByStationId(stationId, Status.valueOf(status)));
+    }
+
+    @Override
+    public List<FullOrderDto> getOrdersByUsername(String username, String startDateTimestamp, String endDateTimestamp) {
+        return getDto(orderDao.getOrdersByUsername(username, Utils.getLocalDate(startDateTimestamp), Utils.getLocalDate(endDateTimestamp)));
     }
 
     @Override
     public List<FullOrderDto> getOrdersByUsername(String username) {
         return getDto(orderDao.getOrdersByUsername(username));
+    }
+
+    @Override
+    public List<FullOrderDto> getOrdersByUsername(String username, String status) {
+        return getDto(orderDao.getOrdersByUsername(username, Status.valueOf(status)));
     }
 
     private List<Integer> getServiceIds(List<OrderService> services) {

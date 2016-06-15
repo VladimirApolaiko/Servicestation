@@ -17,10 +17,16 @@ public interface IOrderDao {
 
     Order getOrderById(final Long orderId);
 
-    List<Order> getOrdersByStationIdAndDateAndStatus(final Integer stationId, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp, String status);
+    List<Order> getOrdersByStationId(final Integer stationId);
 
-    List<Order> getOrdersByUsernameAndDateAndStatus(final String username, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp, String status);
+    List<Order> getOrdersByStationId(final Integer stationId, final Status status);
+
+    List<Order> getOrdersByStationId(final Integer stationId, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp);
 
     List<Order> getOrdersByUsername(final String username);
+
+    List<Order> getOrdersByUsername(final String username, final Status status);
+
+    List<Order> getOrdersByUsername(final String username, final LocalDate startDateTimestamp, final LocalDate endDateTimestamp);
 
 }

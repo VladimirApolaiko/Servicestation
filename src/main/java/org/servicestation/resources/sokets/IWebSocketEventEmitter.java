@@ -1,8 +1,9 @@
 package org.servicestation.resources.sokets;
 
+import org.servicestation.resources.managers.Authority;
+
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.function.BiConsumer;
 
 public interface IWebSocketEventEmitter {
     void registerEventHandler(String username, Session session, WebSocketEvent event, WebSocketEventHandler handler);
@@ -11,5 +12,6 @@ public interface IWebSocketEventEmitter {
 
     <T> void emit(String username, WebSocketEvent event, T data) throws IOException;
 
-    boolean isHandlerExists(String username, WebSocketEvent webSocketEvent);
+    <T> void emitForAuthorities(Authority authority, WebSocketEvent event, T data) throws IOException;
+
 }

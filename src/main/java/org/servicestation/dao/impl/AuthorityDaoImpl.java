@@ -18,7 +18,7 @@ public class AuthorityDaoImpl implements IAuthoritiesDao {
     private static final String GRANT_AUTHORITY = "insert into authorities values(:username, :authority);";
     private static final String GET_AUTHORITY = "select authority from authorities where username = :username";
     private static final String REVOKE_AUTHORITY = "delete from authorities where username = :username AND authority = :authority";
-
+    private static final String GET_USERNAMES_BY_AUTHORITY = "select username from authorities where authority = (:authority)";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -30,6 +30,15 @@ public class AuthorityDaoImpl implements IAuthoritiesDao {
         params.addValue("authority", authority.toString());
 
         namedParameterJdbcTemplate.update(GRANT_AUTHORITY, params);
+    }
+
+    @Override
+    public List<String> getUsernamesByAuthority(String authority) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("authority", authority);
+
+
+        return namedParameterJdbcTemplate.queryForList(GET_USERNAMES_BY_AUTHORITY, params, String.class);
     }
 
     @Override

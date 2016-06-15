@@ -31,7 +31,7 @@ public class TimeManagerImpl implements ITimeManager {
         BusyTime busyTime = new BusyTime();
 
         busyTime.busyTime.addAll(
-                stationOrderDao.getOrdersByStationIdAndDateAndStatus(stationId, Utils.getLocalDate(timestamp), Utils.getLocalDate(timestamp), "ALL").stream()
+                stationOrderDao.getOrdersByStationId(stationId, Utils.getLocalDate(timestamp), Utils.getLocalDate(timestamp)).stream()
                         .map(order -> createBusyTime(order.order_date_time))
                         .collect(Collectors.toList()));
 
