@@ -13,7 +13,7 @@ public abstract class WebSocketEventHandler {
 
     public void setSession(Session session) {
         this.session = session;
-    };
+    }
 
     public void setAction(WebSocketEvent action) {
         this.action = action;
@@ -21,7 +21,7 @@ public abstract class WebSocketEventHandler {
 
     public Session getSession() {
         return this.session;
-    };
+    }
 
     public WebSocketEvent getAction() {
         return action;

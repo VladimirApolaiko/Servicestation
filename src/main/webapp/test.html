@@ -20,10 +20,14 @@ Access token<input type="text" id="accessToken">
     };
 
     socket.onmessage = function (event) {
-        var div = document.createElement('div');
-        div.className = "alert alert-success";
-        div.innerHTML = "<strong>" + event.data + "</strong>";
-        document.body.appendChild(div);
+        var data = document.createElement('div');
+        var action = document.createElement('div');
+        data.className = "alert alert-success";
+        data.innerHTML = "<strong>" + JSON.parse(event.data).data + "</strong>";
+        action.className = "alert alert-success";
+        action.innerHtml = "<i>" + JSON.parse(event.data).action +"</i>";
+        document.body.appendChild(data);
+        document.body.appendChild(action);
     };
 
     var sendMessage = function() {
