@@ -1,3 +1,4 @@
+/*
 package org.servicestation.test;
 
 import org.junit.Test;
@@ -74,3 +75,4 @@ public class MechanicDaoTest extends AbstractTest {
 
 
 }
+*/

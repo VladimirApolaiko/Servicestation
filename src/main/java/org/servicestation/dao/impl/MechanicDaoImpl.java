@@ -3,6 +3,8 @@ package org.servicestation.dao.impl;
 import org.servicestation.dao.IMechanicDao;
 import org.servicestation.dao.exceptions.NullPropertiesException;
 import org.servicestation.model.Mechanic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -18,17 +20,18 @@ import java.util.Map;
 
 public class MechanicDaoImpl implements IMechanicDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(MechanicDaoImpl.class);
+
     private static final String DELIMITER = ", ";
 
-    private static final String INSERT_MECHANIC = "insert into mechanic (username, station_id) values(:username, :station_id);";
+    private static final String INSERT_MECHANIC =
+            "insert into mechanic (station_id, firstname, lastname) values(:station_id, :firstname, :lastname);";
 
     private static final String UPDATE_MECHANIC = "update mechanic set ";
 
     private static final String SELECT_MECHANIC_BY_ID = "select * from mechanic where id=:id";
 
-    private static final String SELECT_MECHANIC_BY_USERNAME = "select * from mechanic where username=:username";
-
-    private static final String DELETE_MECHANIC = "delete from mechanic where username=:username";
+    private static final String DELETE_MECHANIC = "delete from mechanic where id=:id";
 
     private static final String SELECT_ALL_MECHANICS = "select * from mechanic where station_id = :station_id";
 
@@ -36,34 +39,37 @@ public class MechanicDaoImpl implements IMechanicDao {
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Override
-    public Mechanic createMechanic(final String username, final Integer stationId) {
+    public Mechanic createMechanic(final Mechanic mechanic) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("username", username);
-        params.addValue("station_id", stationId);
+        params.addValue("station_id", mechanic.station_id);
+        params.addValue("firstname", mechanic.firstname);
+        params.addValue("lastname", mechanic.lastname);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
-        namedParameterJdbcTemplate.update(INSERT_MECHANIC,
-                params,
-                keyHolder,
-                new String[]{"id", "username", "station_id"});
+        namedParameterJdbcTemplate.update(INSERT_MECHANIC, params, keyHolder);
 
         return getMechanic(keyHolder.getKeys());
     }
 
     @Override
-    public Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic) throws Exception {
+    public Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         StringBuilder sql = new StringBuilder(UPDATE_MECHANIC);
         boolean notNull = false;
 
-        for(Field field : newMechanic.getClass().getFields()) {
+        for (Field field : newMechanic.getClass().getFields()) {
             field.setAccessible(true);
-            Object value = field.get(newMechanic);
-            if(value != null) {
-                params.addValue(field.getName(), value);
-                sql.append(getColumnMapping(field.getName()));
-                notNull = true;
+            try {
+                Object value = field.get(newMechanic);
+
+                if (field.get(newMechanic) != null) {
+                    params.addValue(field.getName(), value);
+                    sql.append(getColumnMapping(field.getName()));
+                    notNull = true;
+                }
+            } catch (IllegalAccessException e) {
+                LOGGER.debug("Can't get value of field " + field.getName(), e);
             }
         }
 
@@ -80,19 +86,19 @@ public class MechanicDaoImpl implements IMechanicDao {
     }
 
     @Override
-    public Mechanic getMechanicByUsername(String username) {
+    public Mechanic getMechanicById(final Integer mechanicId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("username", username);
+        params.addValue("id", mechanicId);
 
-        return namedParameterJdbcTemplate.queryForObject(SELECT_MECHANIC_BY_USERNAME, params, (rs, rowNum) -> {
+        return namedParameterJdbcTemplate.queryForObject(SELECT_MECHANIC_BY_ID, params, (rs, rowNum) -> {
             return getMechanic(rs);
         });
     }
 
     @Override
-    public Mechanic deleteMechanic(final String username) {
+    public Mechanic deleteMechanicById(final Integer mechanicId) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("username", username);
+        params.addValue("id", mechanicId);
 
         KeyHolder keyHolder = new GeneratedKeyHolder();
         namedParameterJdbcTemplate.update(DELETE_MECHANIC, params, keyHolder);
@@ -102,9 +108,9 @@ public class MechanicDaoImpl implements IMechanicDao {
 
     @Override
     public List<Mechanic> getAllMechanics(final Integer stationId) {
-        List<Mechanic> mechanics = new ArrayList<>();
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("station_id", stationId);
+        List<Mechanic> mechanics = new ArrayList<>();
 
         namedParameterJdbcTemplate.query(SELECT_ALL_MECHANICS, params, rs -> {
             mechanics.add(getMechanic(rs));
@@ -117,7 +123,8 @@ public class MechanicDaoImpl implements IMechanicDao {
 
         Mechanic mechanic = new Mechanic();
         mechanic.id = (int) keys.get("id");
-        mechanic.username = (String) keys.get("username");
+        mechanic.firstname = (String) keys.get("firstname");
+        mechanic.lastname = (String) keys.get("lastname");
         mechanic.station_id = (int) keys.get("station_Id");
         return mechanic;
     }
@@ -125,7 +132,8 @@ public class MechanicDaoImpl implements IMechanicDao {
     private Mechanic getMechanic(final ResultSet rs) throws SQLException {
         Mechanic mechanic = new Mechanic();
         mechanic.id = rs.getInt("id");
-        mechanic.username = rs.getString("username");
+        mechanic.firstname = rs.getString("firstname");
+        mechanic.lastname = rs.getString("lastname");
         mechanic.station_id = rs.getInt("station_id");
 
         return mechanic;
