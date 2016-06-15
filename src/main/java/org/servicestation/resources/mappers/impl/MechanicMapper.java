@@ -19,6 +19,7 @@ public class MechanicMapper implements IDtoMapper<MechanicDto, Mechanic>{
     @Override
     public MechanicDto mapServerObjectToDto(Mechanic serverObj) {
         MechanicDto dto = new MechanicDto();
+        dto.id = serverObj.id;
         dto.firstname = serverObj.firstname;
         dto.lastname = serverObj.lastname;
         dto.stationId = serverObj.station_id;
