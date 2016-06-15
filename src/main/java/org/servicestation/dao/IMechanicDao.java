@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface IMechanicDao {
 
-    Mechanic createMechanic(final String username, final Integer stationId);
+    Mechanic createMechanic(final Mechanic mechanic);
 
-    Mechanic getMechanicByUsername(final String username);
+    Mechanic getMechanicById(final Integer mechanicId);
 
-    Mechanic deleteMechanic(final String username);
+    Mechanic deleteMechanicById(final Integer mechanicId);
 
-    Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic) throws Exception;
+    Mechanic changeMechanic(final Integer mechanicId, final Mechanic newMechanic);
 
     List<Mechanic> getAllMechanics(final Integer stationId);
 }

@@ -68,4 +68,9 @@ public class ApplicationManagersConfiguration {
     public IOrderManager orderManager(){
         return new OrderManagerImpl();
     }
+
+    @Bean
+    public IMechanicManager mechanicManager() {
+        return new MechanicManagerImpl();
+    }
 }

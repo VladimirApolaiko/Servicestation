@@ -16,24 +16,24 @@ public class StationOrderTest extends AbstractTest {
 
     /*@Test
     public void assignOrder() {
-        final int stationId = 1;
+        final int station_id = 1;
         final Long orderId = 3L;
         final String timestamp = "2016-05-30 16:20";
 
-        iMechanicOrder.assignOrder(stationId, orderId, timestamp);
-        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
+        iMechanicOrder.assignOrder(station_id, orderId, timestamp);
+        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(station_id);
         assertTrue(mechanicOrders.size() > 0);
         assertEquals(orderId, mechanicOrders.get(0).id);
     }
 
     @Test
     public void unAssignOrder() {
-        final int stationId = 2;
+        final int station_id = 2;
         final Long orderId = 5L;
         final String timestamp = "2016-05-30 16:20";
 
-        iMechanicOrder.unAssignOrder(stationId, orderId);
-        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(stationId);
+        iMechanicOrder.unAssignOrder(station_id, orderId);
+        List<Order> mechanicOrders = iOrderDao.getMechanicOrders(station_id);
         assertEquals(0, mechanicOrders.size());
     }*/
 }

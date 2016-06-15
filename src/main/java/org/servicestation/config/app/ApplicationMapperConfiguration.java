@@ -39,5 +39,10 @@ public class ApplicationMapperConfiguration {
         return new OrderMapper();
     }
 
+    @Bean
+    public IDtoMapper mechanicDtoMapper() {
+        return new MechanicMapper();
+    }
+
 
 }
