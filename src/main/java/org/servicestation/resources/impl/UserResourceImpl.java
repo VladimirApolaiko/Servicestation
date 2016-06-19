@@ -32,7 +32,7 @@ public class UserResourceImpl implements IUserResource {
         }
 
         UserDto userDto = userManager.registerNewUser(user);
-        authoritiesManager.grantAuthority(userManager.registerNewUser(user).username, Authority.ROLE_USER);
+        authoritiesManager.grantAuthority(userDto.username, Authority.ROLE_USER);
         return userDto;
     }
 
