@@ -28,6 +28,9 @@ public class OrderServiceDaoImpl implements IOrderServiceDao {
     private static final String UNASSIGN_SERVICES =
             "delete from order_service where order_id = :order_id";
 
+    private static final String UNASSIGN_SERVICES_BY_SERVICE_ID =
+            "delete from order_service where service_id = :service_id";
+
 
     @Autowired
     private NamedParameterJdbcTemplate jdbcTemplate;
@@ -58,6 +61,15 @@ public class OrderServiceDaoImpl implements IOrderServiceDao {
         params.addValue("order_id", orderId);
 
         jdbcTemplate.update(UNASSIGN_SERVICES, params);
+    }
+
+    @Override
+    public void unassignService(Integer serviceId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("service_id", serviceId);
+
+        jdbcTemplate.update(UNASSIGN_SERVICES_BY_SERVICE_ID, params);
+
     }
 
     @Override

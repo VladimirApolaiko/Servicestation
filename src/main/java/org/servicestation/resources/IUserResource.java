@@ -19,6 +19,10 @@ public interface IUserResource {
     @POST
     UserDto createNewUser(UserDto user) throws ValidationException, UserAlreadyExists, UserDoesNotExists;
 
+    @POST
+    @Path("/admin")
+    UserDto createNewStationAdmin(UserDto user) throws UserDoesNotExists, UserAlreadyExists, ValidationException;
+
     @PUT
     @PreAuthorize("hasRole('ROLE_USER')")
     UserDto changeUser(UserDto user, @Context SecurityContext securityContext) throws UserDoesNotExists;

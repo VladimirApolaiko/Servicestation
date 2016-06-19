@@ -40,8 +40,9 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
     }
 
     @Override
-    public void unregisterEventHandler(String username, WebSocketEvent event, WebSocketEventHandler handler) {
-        eventHandlers.remove(new EventKey(username, event), handler);
+    public void unregisterEventHandler(String username, String sessionId, WebSocketEvent event, WebSocketEventHandler handler) {
+        HashMap<EventKey, WebSocketEventHandler> usersEventHandlers = eventHandlers.get(username);
+        usersEventHandlers.remove(new EventKey(sessionId, event), handler);
     }
 
     @Override
@@ -55,8 +56,16 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
 
             for (WebSocketEventHandler webSocketEventHandler : webSocketEventHandlers) {
                 webSocketEventHandler.handle(username, event, webSocketEventHandler.getSession(), data);
+                unregisterAllSessionEvents(username, webSocketEventHandler.getSession().getId());
             }
+
         }
+    }
+
+    private void unregisterAllSessionEvents(String username, String sessionId) {
+        eventHandlers.get(username).entrySet().stream()
+                .filter(e -> e.getKey().sessionId.equals(sessionId))
+                .forEach(e -> unregisterEventHandler(username, sessionId, e.getKey().event, e.getValue()));
     }
 
     public <T> void emitForAuthorities(Authority authority, WebSocketEvent event, T data) throws IOException {

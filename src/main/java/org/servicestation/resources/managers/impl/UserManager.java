@@ -4,6 +4,7 @@ import org.servicestation.dao.IUserDao;
 import org.servicestation.model.User;
 import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.*;
+import org.servicestation.resources.managers.IAdminStationManager;
 import org.servicestation.resources.managers.IEmailVerificationManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.servicestation.resources.mappers.IObjectMapper;
@@ -26,6 +27,8 @@ public class UserManager implements IUserManager {
     @Autowired
     private IObjectMapper mapper;
 
+    @Autowired
+    private IAdminStationManager adminStationManager;
 
     @Override
     public UserDto getUserByUsername(String username) throws UserDoesNotExists {
@@ -46,6 +49,15 @@ public class UserManager implements IUserManager {
         } catch (DuplicateKeyException e) {
             throw new UserAlreadyExists("User with username " + newUser.username + " already exists", e);
         }
+    }
+
+    @Override
+    public UserDto registerNemAdmin(UserDto newUser) throws UserAlreadyExists {
+        UserDto user = registerNewUser(newUser);
+        adminStationManager.assignAdmin(user.username, newUser.stationId);
+        user.stationId = newUser.stationId;
+
+        return user;
     }
 
     @Override

@@ -73,4 +73,9 @@ public class ApplicationManagersConfiguration {
     public IMechanicManager mechanicManager() {
         return new MechanicManagerImpl();
     }
+
+    @Bean
+    public IAdminStationManager adminStationManager() {
+        return new AdminStationManagerImpl();
+    }
 }

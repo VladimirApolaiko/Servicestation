@@ -94,4 +94,9 @@ public class ApplicationDaoConfiguration {
         return new OrderServiceDaoImpl();
     }
 
+    @Bean
+    public IAdminStationDao adminStationDao() {
+        return new AdminStationDaoImpl();
+    }
+
 }
