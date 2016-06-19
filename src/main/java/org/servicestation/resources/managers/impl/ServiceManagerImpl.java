@@ -1,6 +1,7 @@
 package org.servicestation.resources.managers.impl;
 
 
+import org.servicestation.dao.IOrderServiceDao;
 import org.servicestation.dao.IServiceDao;
 import org.servicestation.model.Service;
 import org.servicestation.resources.dto.ServiceDto;
@@ -15,6 +16,9 @@ public class ServiceManagerImpl implements IServiceManager {
 
     @Autowired
     private IServiceDao serviceDao;
+
+    @Autowired
+    private IOrderServiceDao orderServiceDao;
 
     @Autowired
     private IObjectMapper mapper;

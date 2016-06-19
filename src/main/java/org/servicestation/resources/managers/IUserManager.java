@@ -13,6 +13,8 @@ public interface IUserManager {
 
     UserDto registerNewUser(UserDto newUser) throws UserAlreadyExists;
 
+    UserDto registerNemAdmin(UserDto newUser) throws UserAlreadyExists;
+
     void deleteUserByUsername(String username) throws UserDoesNotExists;
 
     void changeUserPassword(String username, String oldPassword, String newPassword) throws UserDoesNotExists, ValidationException;

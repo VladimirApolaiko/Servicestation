@@ -12,5 +12,7 @@ public interface IOrderServiceDao {
 
     void unassignServices(Long orderId);
 
+    void unassignService(Integer serviceId);
+
     List<OrderService> getServicesByOrderId(Long orderId);
 }

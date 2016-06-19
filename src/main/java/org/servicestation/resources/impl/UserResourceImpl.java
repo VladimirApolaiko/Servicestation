@@ -24,6 +24,27 @@ public class UserResourceImpl implements IUserResource {
 
     @Override
     public UserDto createNewUser(UserDto user) throws ValidationException, UserAlreadyExists, UserDoesNotExists {
+        UserDto userDto = userManager.registerNewUser(user);
+        authoritiesManager.grantAuthority(userManager.registerNewUser(user).username, Authority.ROLE_USER);
+        return userDto;
+    }
+
+    @Override
+    public UserDto createNewStationAdmin(UserDto user) throws UserDoesNotExists, UserAlreadyExists, ValidationException {
+        return userManager.registerNemAdmin(user);
+    }
+
+    @Override
+    public UserDto changeUser(UserDto user, SecurityContext securityContext) throws UserDoesNotExists {
+        return userManager.changeUser(securityContext.getUserPrincipal().getName(), user);
+    }
+
+    @Override
+    public UserDto getUser(SecurityContext securityContext) throws UserDoesNotExists {
+        return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
+    }
+
+    private UserDto registerNewUser(UserDto user, Authority authority) throws ValidationException, UserAlreadyExists, UserDoesNotExists {
         if (!IUserManager.USERNAME_PATTERN.matcher(user.username).matches())
             throw new ValidationException("Username validation Exception");
 
@@ -35,15 +56,5 @@ public class UserResourceImpl implements IUserResource {
         authoritiesManager.grantAuthority(user.username, Authority.ROLE_USER);
 
         return userDto;
-    }
-
-    @Override
-    public UserDto changeUser(UserDto user, SecurityContext securityContext) throws UserDoesNotExists {
-        return userManager.changeUser(securityContext.getUserPrincipal().getName(), user);
-    }
-
-    @Override
-    public UserDto getUser(SecurityContext securityContext) throws UserDoesNotExists {
-        return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
     }
 }
