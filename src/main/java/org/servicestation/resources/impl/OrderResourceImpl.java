@@ -2,6 +2,7 @@ package org.servicestation.resources.impl;
 
 import org.servicestation.resources.IOrderResource;
 import org.servicestation.resources.dto.FullOrderDto;
+import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.OrderNotFoundException;
 import org.servicestation.resources.managers.IOrderManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,7 @@ public class OrderResourceImpl implements IOrderResource {
     private IOrderManager orderManager;
 
     @Override
-    public FullOrderDto createNewOrder(SecurityContext securityContext, FullOrderDto orderDto) throws IOException {
+    public FullOrderDto createNewOrder(SecurityContext securityContext, FullOrderDto orderDto) throws IOException, CarNotFoundException {
         return orderManager.createNewOrder(securityContext.getUserPrincipal().getName(), orderDto);
     }
 

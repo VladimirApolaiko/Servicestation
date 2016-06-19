@@ -7,5 +7,4 @@ public class CarDto {
     public Double engine_volume;
     public String vin;
     public String registration_number;
-    public String username;
 }

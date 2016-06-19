@@ -14,7 +14,6 @@ public class CarDtoMapper implements IDtoMapper<CarDto, Car>{
         car.engine_volume = dto.engine_volume;
         car.vin = dto.vin;
         car.registration_number = dto.registration_number;
-        car.username = dto.username;
 
         return car;
     }
@@ -28,7 +27,6 @@ public class CarDtoMapper implements IDtoMapper<CarDto, Car>{
         carDto.engine_volume = serverObj.engine_volume;
         carDto.vin = serverObj.vin;
         carDto.registration_number = serverObj.registration_number;
-        carDto.username = serverObj.username;
 
         return carDto;
     }

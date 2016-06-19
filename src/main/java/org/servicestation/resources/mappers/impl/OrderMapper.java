@@ -22,7 +22,7 @@ public class OrderMapper implements IDtoMapper<FullOrderDto, Order> {
         order.planned_end_date = Utils.getLocalDateTime(dto.plannedEndDate);
         order.total_cost = dto.totalCost;
         order.end_date = Utils.getLocalDateTime(dto.endDate);
-        order.car_id = dto.carId;
+        order.car_id = dto.carInfo.id;
         order.station_id = dto.stationId;
         order.order_date_time = Utils.getLocalDateTime(dto.orderDate);
 
@@ -39,7 +39,6 @@ public class OrderMapper implements IDtoMapper<FullOrderDto, Order> {
         dto.plannedEndDate = Utils.getStringLocalDateTimeFormat(order.planned_end_date);
         dto.totalCost = order.total_cost;
         dto.endDate = Utils.getStringLocalDateTimeFormat(order.end_date);
-        dto.carId = order.car_id;
         dto.stationId = order.station_id;
         dto.orderDate = Utils.getStringLocalDateTimeFormat(order.order_date_time);
 

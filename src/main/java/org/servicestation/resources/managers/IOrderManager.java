@@ -2,13 +2,14 @@ package org.servicestation.resources.managers;
 
 import org.servicestation.resources.dto.FullOrderDto;
 import org.servicestation.resources.dto.OrderDto;
+import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.OrderNotFoundException;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface IOrderManager {
-    FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException;
+    FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException, CarNotFoundException;
 
     FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException;
 

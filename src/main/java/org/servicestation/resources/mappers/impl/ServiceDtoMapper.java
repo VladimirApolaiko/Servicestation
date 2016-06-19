@@ -9,6 +9,7 @@ public class ServiceDtoMapper implements IDtoMapper<ServiceDto, Service>{
     @Override
     public Service mapDtoToServerObject(ServiceDto dto) {
         Service service = new Service();
+        service.id = dto.id;
         service.service_name = dto.service_name;
         service.price = dto.price;
 

@@ -52,8 +52,8 @@ public class TestResourceImpl implements ITestResource {
         fullOrderDto.status = Status.INIT.toString();
         fullOrderDto.stationId = 17;
         fullOrderDto.orderDate = "2016-06-01 14:40";
-        fullOrderDto.carId = 11;
-        fullOrderDto.servicesIds = asList(2,3);
+        /*fullOrderDto.carId = 11;*/
+        /*fullOrderDto.servicesIds = asList(2,3);*/
 
         orderManager.createNewOrder("vladimirapolaiko@gmail.com", fullOrderDto);
 
