@@ -30,8 +30,6 @@ public class CarManagerImpl implements ICarManager {
     public CarDto createNewCar(String username, CarDto newCar) throws UserDoesNotExists {
         try {
             userDao.getUserByUsername(username);
-            newCar.id = null;
-            newCar.username = null;
 
             return mapper.mapServerObjectToDto(carDao.createCar(username, mapper.mapDtoToServerObject(newCar)));
         } catch (EmptyResultDataAccessException e) {

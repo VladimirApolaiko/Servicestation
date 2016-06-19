@@ -2,6 +2,7 @@ package org.servicestation.resources;
 
 import org.servicestation.resources.dto.FullOrderDto;
 import org.servicestation.resources.dto.OrderDto;
+import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.OrderNotFoundException;
 
 import javax.ws.rs.*;
@@ -18,7 +19,7 @@ public interface IOrderResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     FullOrderDto createNewOrder(@Context SecurityContext securityContext,
-                                FullOrderDto orderDto) throws IOException;
+                                FullOrderDto orderDto) throws IOException, CarNotFoundException;
 
     @PUT
     @Produces(MediaType.APPLICATION_JSON)

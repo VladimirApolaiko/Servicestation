@@ -12,8 +12,8 @@ public class FullOrderDto {
     public String plannedEndDate = null;
     public Double totalCost = null;
     public String endDate = null;
-    public List<Integer> servicesIds = new ArrayList<>();
-    public Integer carId = null;
+    public List<ServiceDto> services = new ArrayList<>();
+    public CarDto carInfo = null;
     public Integer stationId = null;
     public String orderDate = null;
 }

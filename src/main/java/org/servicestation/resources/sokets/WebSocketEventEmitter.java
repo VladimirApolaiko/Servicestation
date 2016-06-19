@@ -48,12 +48,14 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
     public <T> void emit(String username, WebSocketEvent event, T data) throws IOException {
         HashMap<EventKey, WebSocketEventHandler> eventKeyWebSocketEventHandlerMultimap = eventHandlers.get(username);
 
-        List<WebSocketEventHandler> webSocketEventHandlers = eventKeyWebSocketEventHandlerMultimap.entrySet().stream()
-                .filter(e -> e.getKey().event.equals(event))
-                .map(Map.Entry::getValue).collect(Collectors.toList());
+        if(eventKeyWebSocketEventHandlerMultimap != null){
+            List<WebSocketEventHandler> webSocketEventHandlers = eventKeyWebSocketEventHandlerMultimap.entrySet().stream()
+                    .filter(e -> e.getKey().event.equals(event))
+                    .map(Map.Entry::getValue).collect(Collectors.toList());
 
-        for (WebSocketEventHandler webSocketEventHandler : webSocketEventHandlers) {
-            webSocketEventHandler.handle(username, event, webSocketEventHandler.getSession(), data);
+            for (WebSocketEventHandler webSocketEventHandler : webSocketEventHandlers) {
+                webSocketEventHandler.handle(username, event, webSocketEventHandler.getSession(), data);
+            }
         }
     }
 

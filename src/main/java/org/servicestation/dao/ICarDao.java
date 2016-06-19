@@ -14,4 +14,6 @@ public interface ICarDao {
 
     List<Car> getCarsByUsername(final String username);
 
+    Car getCarById(final Integer carId);
+
 }

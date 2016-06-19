@@ -25,5 +25,6 @@ public class JerseyResourceConfig extends ResourceConfig {
         register(EmailVerificationResourceImpl.class);
         register(PasswordRecoveryResourceImpl.class);
         register(MechanicResourceImpl.class);
+        register(AuthoritiesResourceImpl.class);
     }
 }

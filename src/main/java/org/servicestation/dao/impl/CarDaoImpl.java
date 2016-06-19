@@ -6,6 +6,7 @@ import org.servicestation.model.Car;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -32,6 +33,8 @@ public class CarDaoImpl implements ICarDao {
     private static final String UPDATE_CAR = "update car set ";
 
     private static final String DELETE_CAR = "delete from car where id=:id";
+
+    private static final String GET_CAR_BY_ID = "select * from car where id = :id";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -108,6 +111,16 @@ public class CarDaoImpl implements ICarDao {
         });
 
         return cars;
+    }
+
+    @Override
+    public Car getCarById(Integer carId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("id", carId);
+
+        return namedParameterJdbcTemplate.queryForObject(GET_CAR_BY_ID, params, (rs, rowNum) -> {
+            return getCar(rs);
+        });
     }
 
     private Car getCar(Map<String, Object> keys) {

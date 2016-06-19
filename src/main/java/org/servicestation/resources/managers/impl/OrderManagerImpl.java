@@ -1,12 +1,13 @@
 package org.servicestation.resources.managers.impl;
 
+import org.servicestation.dao.ICarDao;
 import org.servicestation.dao.IOrderDao;
 import org.servicestation.dao.IOrderServiceDao;
 import org.servicestation.dao.IServiceDao;
-import org.servicestation.model.Order;
-import org.servicestation.model.OrderService;
-import org.servicestation.model.Status;
+import org.servicestation.model.*;
 import org.servicestation.resources.dto.FullOrderDto;
+import org.servicestation.resources.dto.ServiceDto;
+import org.servicestation.resources.exceptions.CarNotFoundException;
 import org.servicestation.resources.exceptions.OrderNotFoundException;
 import org.servicestation.resources.managers.Authority;
 import org.servicestation.resources.managers.IOrderManager;
@@ -22,6 +23,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class OrderManagerImpl implements IOrderManager {
@@ -35,6 +37,9 @@ public class OrderManagerImpl implements IOrderManager {
     private IOrderServiceDao orderServiceDao;
 
     @Autowired
+    private ICarDao carDao;
+
+    @Autowired
     private IServiceDao serviceDao;
 
     @Autowired
@@ -44,15 +49,21 @@ public class OrderManagerImpl implements IOrderManager {
     private IWebSocketEventEmitter webSocketEventEmitter;
 
     @Override
-    public FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException {
+    public FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException, CarNotFoundException {
+        Optional<Car> carById = carDao.getCarsByUsername(username).stream().filter(car -> car.id.equals(orderDto.carInfo.id)).findFirst();
+
+        if(!carById.isPresent()){
+            throw new CarNotFoundException("Car with id " + orderDto.carInfo.id + " not found");
+        }
+
         Order newOrder = orderDao.createNewOrder(
-                Status.valueOf(orderDto.status), username, orderDto.stationId, Utils.getLocalDateTime(orderDto.orderDate), orderDto.carId);
+                Status.valueOf(orderDto.status), username, orderDto.stationId, Utils.getLocalDateTime(orderDto.orderDate), orderDto.carInfo.id);
         newOrder.work_description = orderDto.workDescription;
         Map<Integer, Double> servicePrices =
                 serviceDao.getAllServices().stream().collect(Collectors.toMap(service -> service.id, service -> service.price));
 
         Double plannedCost = 0.0;
-        for (Integer serviceId : orderDto.servicesIds) {
+        for (Integer serviceId : orderDto.services.stream().map(serviceDto -> serviceDto.id).collect(Collectors.toList())) {
             if (servicePrices.get(serviceId) != null) {
                 plannedCost += servicePrices.get(serviceId);
             } else {
@@ -65,12 +76,13 @@ public class OrderManagerImpl implements IOrderManager {
         Order changedOrder = orderDao.changeOrder(newOrder.id, newOrder);
 
         List<OrderService> orderServiceList =
-                orderDto.servicesIds.stream()
-                        .map(serviceId -> orderServiceDao.assignService(newOrder.id, serviceId))
+                orderDto.services.stream()
+                        .map(service -> orderServiceDao.assignService(newOrder.id, service.id))
                         .collect(Collectors.toList());
 
         FullOrderDto dto = mapper.mapServerObjectToDto(changedOrder);
-        dto.servicesIds = getServiceIds(orderServiceList);
+        dto.services = getServiceDto(orderServiceList);
+        dto.carInfo = mapper.mapServerObjectToDto(carById.get());
 
         webSocketEventEmitter.emit(username, WebSocketEvent.ORDERS_CHANGED, null);
         webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
@@ -84,11 +96,13 @@ public class OrderManagerImpl implements IOrderManager {
         }
 
         Order order = orderDao.getOrderById(orderId);
+        Car car = carDao.getCarById(order.car_id);
 
         List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
 
         FullOrderDto dto = mapper.mapServerObjectToDto(order);
-        dto.servicesIds = getServiceIds(services);
+        dto.services = getServices(services).stream().map(service -> mapper.<ServiceDto, Service>mapServerObjectToDto(service)).collect(Collectors.toList());
+        dto.carInfo = mapper.mapServerObjectToDto(car);
         return dto;
     }
 
@@ -100,14 +114,15 @@ public class OrderManagerImpl implements IOrderManager {
         }
 
         Order order = orderDao.changeOrder(orderId, mapper.mapDtoToServerObject(newOrder));
+        Car car = carDao.getCarById(order.car_id);
+
         orderServiceDao.unassignServices(orderId);
 
         FullOrderDto dto = mapper.mapServerObjectToDto(order);
 
-        dto.servicesIds = newOrder.servicesIds.stream()
-                .map(serviceId -> orderServiceDao.assignService(orderId, serviceId))
-                .map(orderService -> orderService.serviceId).collect(Collectors.toList());
-
+        dto.services = getServiceDto(newOrder.services.stream()
+                .map(service -> orderServiceDao.assignService(orderId, service.id)).collect(Collectors.toList()));
+        dto.carInfo = mapper.mapServerObjectToDto(car);
         webSocketEventEmitter.emit(username, WebSocketEvent.ORDERS_CHANGED, null);
         webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
         return dto;
@@ -154,19 +169,24 @@ public class OrderManagerImpl implements IOrderManager {
         return getDto(orderDao.getOrdersByUsername(username, Status.valueOf(status)));
     }
 
-    private List<Integer> getServiceIds(List<OrderService> services) {
-        return services.stream().map(orderService -> orderService.serviceId).collect(Collectors.toList());
+    private List<Service> getServices(List<OrderService> services) {
+        return services.stream().map(orderService -> serviceDao.getServiceById(orderService.serviceId)).collect(Collectors.toList());
     }
 
     private List<FullOrderDto> getDto(List<Order> orders) {
         return orders.stream().map(order -> {
-            List<OrderService> services = orderServiceDao.getServicesByOrderId(order.id);
+            Car car = carDao.getCarById(order.car_id);
 
             FullOrderDto dto = mapper.mapServerObjectToDto(order);
-            dto.servicesIds = getServiceIds(services);
+            dto.services = getServiceDto(orderServiceDao.getServicesByOrderId(order.id));
+            dto.carInfo = mapper.mapServerObjectToDto(car);
 
             return dto;
         }).collect(Collectors.toList());
+    }
+
+    private List<ServiceDto> getServiceDto(List<OrderService> orderServices){
+        return getServices(orderServices).stream().map(service -> mapper.<ServiceDto, Service>mapServerObjectToDto(service)).collect(Collectors.toList());
     }
 
     private boolean isOrderExist(String username, Long orderId) throws OrderNotFoundException {
