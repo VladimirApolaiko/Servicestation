@@ -24,6 +24,13 @@ public class UserResourceImpl implements IUserResource {
 
     @Override
     public UserDto createNewUser(UserDto user) throws ValidationException, UserAlreadyExists, UserDoesNotExists {
+        if (!IUserManager.USERNAME_PATTERN.matcher(user.username).matches())
+            throw new ValidationException("Username validation Exception");
+
+        if (!IUserManager.PASSWORD_PATTERN.matcher(user.password).matches()) {
+            throw new ValidationException("Password validation Exception");
+        }
+
         UserDto userDto = userManager.registerNewUser(user);
         authoritiesManager.grantAuthority(userManager.registerNewUser(user).username, Authority.ROLE_USER);
         return userDto;
@@ -31,7 +38,17 @@ public class UserResourceImpl implements IUserResource {
 
     @Override
     public UserDto createNewStationAdmin(UserDto user) throws UserDoesNotExists, UserAlreadyExists, ValidationException {
-        return userManager.registerNemAdmin(user);
+        if (!IUserManager.USERNAME_PATTERN.matcher(user.username).matches())
+            throw new ValidationException("Username validation Exception");
+
+        if (!IUserManager.PASSWORD_PATTERN.matcher(user.password).matches()) {
+            throw new ValidationException("Password validation Exception");
+        }
+
+        UserDto userDto = userManager.registerNemAdmin(user);
+        authoritiesManager.grantAuthority(userDto.username, Authority.ROLE_STATION_ADMIN);
+
+        return userDto;
     }
 
     @Override
@@ -42,19 +59,5 @@ public class UserResourceImpl implements IUserResource {
     @Override
     public UserDto getUser(SecurityContext securityContext) throws UserDoesNotExists {
         return userManager.getUserByUsername(securityContext.getUserPrincipal().getName());
-    }
-
-    private UserDto registerNewUser(UserDto user, Authority authority) throws ValidationException, UserAlreadyExists, UserDoesNotExists {
-        if (!IUserManager.USERNAME_PATTERN.matcher(user.username).matches())
-            throw new ValidationException("Username validation Exception");
-
-        if (!IUserManager.PASSWORD_PATTERN.matcher(user.password).matches()) {
-            throw new ValidationException("Password validation Exception");
-        }
-
-        UserDto userDto = userManager.registerNewUser(user);
-        authoritiesManager.grantAuthority(user.username, Authority.ROLE_USER);
-
-        return userDto;
     }
 }
