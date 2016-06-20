@@ -32,8 +32,9 @@ Access token<input type="text" id="accessToken">
 
     var sendMessage = function() {
         socket.send(JSON.stringify({action:"GET_ALL_USER_ORDERS", accessToken: document.getElementById("accessToken").value, data: JSON.stringify({
+            stationId: 18,
             startDate: "2016-06-01", /*optional*/
-            endDate: "2016-06-02" /*option*/
+            endDate: "2016-06-02"
         })}));
     }
 </script>

@@ -44,7 +44,9 @@ public class UserManager implements IUserManager {
 
     @Override
     public UserDto getAdminByStationId(Integer stationId) {
-        return mapper.mapServerObjectToDto(userDao.getAdminStation(stationId));
+        UserDto userDto = mapper.mapServerObjectToDto(userDao.getAdminStation(stationId));
+        userDto.stationId = stationId;
+        return userDto;
     }
 
     @Override
