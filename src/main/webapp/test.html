@@ -25,9 +25,9 @@ Access token<input type="text" id="accessToken">
         data.className = "alert alert-success";
         data.innerHTML = "<strong>" + JSON.parse(event.data).data + "</strong>";
         action.className = "alert alert-success";
-        action.innerHtml = "<i>" + JSON.parse(event.data).action +"</i>";
-        document.body.appendChild(data);
+        action.innerHtml = "<b>" + JSON.parse(event.data).action +"<b/>";
         document.body.appendChild(action);
+        document.body.appendChild(data);
     };
 
     var sendMessage = function() {

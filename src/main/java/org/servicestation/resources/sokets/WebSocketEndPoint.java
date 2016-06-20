@@ -82,6 +82,7 @@ public class WebSocketEndPoint {
 
     @OnClose
     public void onClose(CloseReason reason, Session session) {
+        eventEmitter.unregisterAllSessionHandlers(session.getId());
         System.out.println("Closing a WebSocket to " + reason.getReasonPhrase());
     }
 

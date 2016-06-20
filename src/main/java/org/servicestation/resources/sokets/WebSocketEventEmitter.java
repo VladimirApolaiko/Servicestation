@@ -1,18 +1,22 @@
 package org.servicestation.resources.sokets;
 
+import org.apache.log4j.spi.LoggerFactory;
 import org.servicestation.dao.IAuthoritiesDao;
 import org.servicestation.dao.IUserDao;
 import org.servicestation.resources.managers.Authority;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.websocket.Session;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class WebSocketEventEmitter implements IWebSocketEventEmitter {
+
+
+    private static final Logger LOGGER = org.slf4j.LoggerFactory.getLogger(WebSocketEventEmitter.class);
 
     @Autowired
     private IAuthoritiesDao authoritiesDao;
@@ -40,9 +44,9 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
     }
 
     @Override
-    public void unregisterEventHandler(String username, String sessionId, WebSocketEvent event, WebSocketEventHandler handler) {
+    public void unregisterEventHandler(String username, String sessionId, WebSocketEvent event) {
         HashMap<EventKey, WebSocketEventHandler> usersEventHandlers = eventHandlers.get(username);
-        usersEventHandlers.remove(new EventKey(sessionId, event), handler);
+        usersEventHandlers.remove(new EventKey(sessionId, event));
     }
 
     @Override
@@ -56,16 +60,27 @@ public class WebSocketEventEmitter implements IWebSocketEventEmitter {
 
             for (WebSocketEventHandler webSocketEventHandler : webSocketEventHandlers) {
                 webSocketEventHandler.handle(username, event, webSocketEventHandler.getSession(), data);
-                unregisterAllSessionEvents(username, webSocketEventHandler.getSession().getId());
             }
 
         }
     }
 
-    private void unregisterAllSessionEvents(String username, String sessionId) {
-        eventHandlers.get(username).entrySet().stream()
-                .filter(e -> e.getKey().sessionId.equals(sessionId))
-                .forEach(e -> unregisterEventHandler(username, sessionId, e.getKey().event, e.getValue()));
+    public void unregisterAllSessionHandlers(String sessionId) {
+        Optional<Map.Entry<String, HashMap<EventKey, WebSocketEventHandler>>> sessionEventsOptional = eventHandlers.entrySet().stream()
+                .filter(events ->
+                        events.getValue().entrySet().stream()
+                                .filter(e -> e.getKey().sessionId.equals(sessionId))
+                                .findFirst().isPresent()).findFirst();
+
+        if(sessionEventsOptional.isPresent()) {
+            Map.Entry<String, HashMap<EventKey, WebSocketEventHandler>> sessionEvents = sessionEventsOptional.get();
+            String username = sessionEvents.getKey();
+
+            Stream<EventKey> eventKeys = sessionEvents.getValue().keySet().stream().map(eventKey -> new EventKey(eventKey.sessionId, eventKey.event));
+            eventKeys.forEach(eventKey -> unregisterEventHandler(username, sessionId, eventKey.event));
+        }else {
+            LOGGER.info("Events for sessions id {} not found", sessionId);
+        }
     }
 
     public <T> void emitForAuthorities(Authority authority, WebSocketEvent event, T data) throws IOException {
