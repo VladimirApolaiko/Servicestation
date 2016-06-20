@@ -1,8 +1,11 @@
 package org.servicestation.resources.managers;
 
 import org.servicestation.resources.dto.UserDto;
-import org.servicestation.resources.exceptions.*;
+import org.servicestation.resources.exceptions.UserAlreadyExists;
+import org.servicestation.resources.exceptions.UserDoesNotExists;
+import org.servicestation.resources.exceptions.ValidationException;
 
+import java.util.List;
 import java.util.regex.Pattern;
 
 public interface IUserManager {
@@ -10,6 +13,10 @@ public interface IUserManager {
     Pattern PASSWORD_PATTERN = Pattern.compile("[A-Za-z]+.{0,14}");
 
     UserDto getUserByUsername(String username) throws UserDoesNotExists;
+
+    UserDto getAdminByStationId(Integer stationId);
+
+    List<UserDto> getAllStationAdmins();
 
     UserDto registerNewUser(UserDto newUser) throws UserAlreadyExists;
 

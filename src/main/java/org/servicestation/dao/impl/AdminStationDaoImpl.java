@@ -1,9 +1,12 @@
 package org.servicestation.dao.impl;
 
 import org.servicestation.dao.IAdminStationDao;
+import org.servicestation.model.AdminStation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
+import java.util.List;
 
 public class AdminStationDaoImpl implements IAdminStationDao {
 
@@ -30,4 +33,5 @@ public class AdminStationDaoImpl implements IAdminStationDao {
 
         namedParameterJdbcTemplate.update(UNASSIGN_ADMIN, params);
     }
+
 }

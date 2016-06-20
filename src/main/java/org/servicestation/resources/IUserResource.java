@@ -10,6 +10,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
 @Path("/user")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -22,6 +23,14 @@ public interface IUserResource {
     @POST
     @Path("/admin")
     UserDto createNewStationAdmin(UserDto user) throws UserDoesNotExists, UserAlreadyExists, ValidationException;
+
+    @GET
+    @Path("/admin/{stationId}")
+    UserDto getAdminsByStationId(@PathParam("stationId") Integer stationId);
+
+    @GET
+    @Path("/admin")
+    List<UserDto> getAllStationAdmins();
 
     @PUT
     @PreAuthorize("hasRole('ROLE_USER')")

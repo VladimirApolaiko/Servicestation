@@ -6,6 +6,8 @@ import org.servicestation.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.RowCallbackHandler;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,6 +16,8 @@ import org.springframework.jdbc.support.KeyHolder;
 import java.lang.reflect.Field;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class UserDaoImpl implements IUserDao {
@@ -33,6 +37,11 @@ public class UserDaoImpl implements IUserDao {
 
     private static final String GET_USER =
             "select * from users where username = :username";
+
+    private static final String GET_ALL_ADMINS = "select * from users where username in (select username from admin_station)";
+
+    private static final String GET_ADMIN_BY_STATION_ID =
+            "select * from users where username in (select username from admin_station where station_id = :station_id)";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -104,6 +113,25 @@ public class UserDaoImpl implements IUserDao {
         params.addValue("username", username);
 
         return namedParameterJdbcTemplate.queryForObject(GET_USER, params, (rs, rowNum) -> {
+            return getUser(rs);
+        });
+    }
+
+    @Override
+    public List<User> getAllStationAdmins() {
+        List<User> users = new ArrayList<>();
+        namedParameterJdbcTemplate.query(GET_ALL_ADMINS, rs -> {
+            users.add(getUser(rs));
+        });
+        return users;
+    }
+
+    @Override
+    public User getAdminStation(Integer stationId) {
+        MapSqlParameterSource params = new MapSqlParameterSource();
+        params.addValue("station_id", stationId);
+
+        return namedParameterJdbcTemplate.queryForObject(GET_ADMIN_BY_STATION_ID, params, (rs, rowNum) -> {
             return getUser(rs);
         });
     }

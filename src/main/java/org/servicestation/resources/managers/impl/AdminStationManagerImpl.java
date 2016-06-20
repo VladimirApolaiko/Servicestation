@@ -1,8 +1,11 @@
 package org.servicestation.resources.managers.impl;
 
 import org.servicestation.dao.IAdminStationDao;
+import org.servicestation.model.AdminStation;
 import org.servicestation.resources.managers.IAdminStationManager;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 public class AdminStationManagerImpl implements IAdminStationManager{
 

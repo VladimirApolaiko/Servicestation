@@ -13,6 +13,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class UserManager implements IUserManager {
 
     @Autowired
@@ -37,6 +40,16 @@ public class UserManager implements IUserManager {
         } catch (EmptyResultDataAccessException e) {
             throw new UserDoesNotExists("User with username" + username + " not found", e);
         }
+    }
+
+    @Override
+    public UserDto getAdminByStationId(Integer stationId) {
+        return mapper.mapServerObjectToDto(userDao.getAdminStation(stationId));
+    }
+
+    @Override
+    public List<UserDto> getAllStationAdmins() {
+        return userDao.getAllStationAdmins().stream().map(user -> mapper.<UserDto, User>mapServerObjectToDto(user)).collect(Collectors.toList());
     }
 
     @Override

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 
 import javax.ws.rs.core.SecurityContext;
+import java.util.List;
 
 public class UserResourceImpl implements IUserResource {
 
@@ -49,6 +50,16 @@ public class UserResourceImpl implements IUserResource {
         authoritiesManager.grantAuthority(userDto.username, Authority.ROLE_STATION_ADMIN);
 
         return userDto;
+    }
+
+    @Override
+    public UserDto getAdminsByStationId(Integer stationId) {
+        return userManager.getAdminByStationId(stationId);
+    }
+
+    @Override
+    public List<UserDto> getAllStationAdmins() {
+        return userManager.getAllStationAdmins();
     }
 
     @Override
