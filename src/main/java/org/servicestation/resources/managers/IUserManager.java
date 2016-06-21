@@ -14,7 +14,7 @@ public interface IUserManager {
 
     UserDto getUserByUsername(String username) throws UserDoesNotExists;
 
-    UserDto getAdminByStationId(Integer stationId);
+    UserDto getAdminByUsername(String username);
 
     List<UserDto> getAllStationAdmins();
 

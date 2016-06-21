@@ -1,16 +1,19 @@
 package org.servicestation.resources.impl;
 
+import org.servicestation.model.AdminStation;
 import org.servicestation.resources.IUserResource;
 import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.UserAlreadyExists;
 import org.servicestation.resources.exceptions.UserDoesNotExists;
 import org.servicestation.resources.exceptions.ValidationException;
 import org.servicestation.resources.managers.Authority;
+import org.servicestation.resources.managers.IAdminStationManager;
 import org.servicestation.resources.managers.IAuthoritiesManager;
 import org.servicestation.resources.managers.IUserManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.AccessDeniedException;
 
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.SecurityContext;
 import java.util.List;
 
@@ -35,31 +38,6 @@ public class UserResourceImpl implements IUserResource {
         UserDto userDto = userManager.registerNewUser(user);
         authoritiesManager.grantAuthority(userDto.username, Authority.ROLE_USER);
         return userDto;
-    }
-
-    @Override
-    public UserDto createNewStationAdmin(UserDto user) throws UserDoesNotExists, UserAlreadyExists, ValidationException {
-        if (!IUserManager.USERNAME_PATTERN.matcher(user.username).matches())
-            throw new ValidationException("Username validation Exception");
-
-        if (!IUserManager.PASSWORD_PATTERN.matcher(user.password).matches()) {
-            throw new ValidationException("Password validation Exception");
-        }
-
-        UserDto userDto = userManager.registerNemAdmin(user);
-        authoritiesManager.grantAuthority(userDto.username, Authority.ROLE_STATION_ADMIN);
-
-        return userDto;
-    }
-
-    @Override
-    public UserDto getAdminsByStationId(Integer stationId) {
-        return userManager.getAdminByStationId(stationId);
-    }
-
-    @Override
-    public List<UserDto> getAllStationAdmins() {
-        return userManager.getAllStationAdmins();
     }
 
     @Override

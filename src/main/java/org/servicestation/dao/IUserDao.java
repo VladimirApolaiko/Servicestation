@@ -15,5 +15,5 @@ public interface IUserDao {
 
     List<User> getAllStationAdmins();
 
-    User getAdminStation(Integer stationId);
+    User getAdminStation(String username);
 }

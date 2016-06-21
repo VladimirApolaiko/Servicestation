@@ -21,4 +21,10 @@ public class AdminStationManagerImpl implements IAdminStationManager{
     public void unassignAdmin(String username, Integer stationId) {
         adminStationDao.unassignAdmin(username, stationId);
     }
+
+    @Override
+    public AdminStation getAdminStationByUsername(String username) {
+        return adminStationDao.getAdminStationByUsername(username);
+    }
+
 }

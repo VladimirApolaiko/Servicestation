@@ -6,8 +6,6 @@ import org.servicestation.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.RowCallbackHandler;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -40,8 +38,8 @@ public class UserDaoImpl implements IUserDao {
 
     private static final String GET_ALL_ADMINS = "select * from users where username in (select username from admin_station)";
 
-    private static final String GET_ADMIN_BY_STATION_ID =
-            "select * from users where username in (select username from admin_station where station_id = :station_id)";
+    private static final String GET_ADMIN_BY_USERNAME =
+            "select * from users where username = :username";
 
     @Autowired
     private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -127,11 +125,11 @@ public class UserDaoImpl implements IUserDao {
     }
 
     @Override
-    public User getAdminStation(Integer stationId) {
+    public User getAdminStation(String username) {
         MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("station_id", stationId);
+        params.addValue("username", username);
 
-        return namedParameterJdbcTemplate.queryForObject(GET_ADMIN_BY_STATION_ID, params, (rs, rowNum) -> {
+        return namedParameterJdbcTemplate.queryForObject(GET_ADMIN_BY_USERNAME, params, (rs, rowNum) -> {
             return getUser(rs);
         });
     }

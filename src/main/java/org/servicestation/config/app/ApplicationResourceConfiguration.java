@@ -58,4 +58,9 @@ public class ApplicationResourceConfiguration {
     public IMechanicResource mechanicResource() {
         return new MechanicResourceImpl();
     }
+
+    @Bean
+    public IAdminResource adminResource() {
+        return new AdminResourceImpl();
+    }
 }

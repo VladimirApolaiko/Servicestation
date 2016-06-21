@@ -1,6 +1,7 @@
 package org.servicestation.resources.managers.impl;
 
 import org.servicestation.dao.IUserDao;
+import org.servicestation.model.AdminStation;
 import org.servicestation.model.User;
 import org.servicestation.resources.dto.UserDto;
 import org.servicestation.resources.exceptions.*;
@@ -43,15 +44,19 @@ public class UserManager implements IUserManager {
     }
 
     @Override
-    public UserDto getAdminByStationId(Integer stationId) {
-        UserDto userDto = mapper.mapServerObjectToDto(userDao.getAdminStation(stationId));
-        userDto.stationId = stationId;
+    public UserDto getAdminByUsername(String username) {
+        UserDto userDto = mapper.mapServerObjectToDto(userDao.getAdminStation(username));
+        userDto.stationId = adminStationManager.getAdminStationByUsername(username).stationId;
         return userDto;
     }
 
     @Override
     public List<UserDto> getAllStationAdmins() {
-        return userDao.getAllStationAdmins().stream().map(user -> mapper.<UserDto, User>mapServerObjectToDto(user)).collect(Collectors.toList());
+        return userDao.getAllStationAdmins().stream().map(user -> {
+            UserDto userDto = mapper.<UserDto, User>mapServerObjectToDto(user);
+            userDto.stationId = adminStationManager.getAdminStationByUsername(user.username).stationId;
+            return userDto;
+        }).collect(Collectors.toList());
     }
 
     @Override

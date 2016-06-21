@@ -1,7 +1,6 @@
 package org.servicestation.dao;
 
 import org.servicestation.model.Mechanic;
-import org.servicestation.model.Profile;
 
 import java.util.List;
 
