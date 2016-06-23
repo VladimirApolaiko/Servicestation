@@ -95,12 +95,12 @@ public class OrderDaoImpl implements IOrderDao {
                         break;
 
                         case "planned_end_date": {
-                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
+                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateFormat((LocalDate) value));
                         }
                         break;
 
                         case "end_date": {
-                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateTimeFormat((LocalDateTime) value));
+                            getDateFieldToQuery(params, sql, field, Utils.getStringLocalDateFormat((LocalDate) value));
                         }
                         break;
 
@@ -253,12 +253,12 @@ public class OrderDaoImpl implements IOrderDao {
         order.planned_cost = (Double) keys.get("planned_cost");
         Timestamp plannedEndDate = ((Timestamp) keys.get("planned_end_date"));
         if (plannedEndDate != null) {
-            order.planned_end_date = plannedEndDate.toLocalDateTime();
+            order.planned_end_date = plannedEndDate.toLocalDateTime().toLocalDate();
         }
         order.total_cost = (Double) keys.get("total_cost");
         Timestamp endDate = ((Timestamp) keys.get("end_date"));
         if (endDate != null) {
-            order.end_date = endDate.toLocalDateTime();
+            order.end_date = endDate.toLocalDateTime().toLocalDate();
         }
         order.username = (String) keys.get("username");
         order.station_id = (Integer) keys.get("station_id");
@@ -276,12 +276,12 @@ public class OrderDaoImpl implements IOrderDao {
         order.planned_cost = rs.getDouble("planned_cost");
         Timestamp plannedEndDate = ((Timestamp) rs.getObject("planned_end_date"));
         if (plannedEndDate != null) {
-            order.planned_end_date = plannedEndDate.toLocalDateTime();
+            order.planned_end_date = plannedEndDate.toLocalDateTime().toLocalDate();
         }
         order.total_cost = rs.getDouble("total_cost");
         Timestamp endDate = ((Timestamp) rs.getObject("end_date"));
         if (plannedEndDate != null) {
-            order.planned_end_date = endDate.toLocalDateTime();
+            order.planned_end_date = endDate.toLocalDateTime().toLocalDate();
         }
 
         order.username = rs.getString("username");
