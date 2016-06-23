@@ -23,8 +23,8 @@ public class OrderResourceImpl implements IOrderResource {
     }
 
     @Override
-    public FullOrderDto changeOrderById(SecurityContext securityContext, Long orderId, FullOrderDto dto) throws OrderNotFoundException, IOException {
-        return orderManager.changeOrder(securityContext.getUserPrincipal().getName(), orderId, dto);
+    public FullOrderDto changeOrderById(Long orderId, FullOrderDto dto) throws OrderNotFoundException, IOException {
+        return orderManager.changeOrder(orderId, dto);
     }
 
     @Override

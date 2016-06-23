@@ -11,7 +11,7 @@ import java.util.List;
 public interface IOrderManager {
     FullOrderDto createNewOrder(String username, FullOrderDto orderDto) throws IOException, CarNotFoundException;
 
-    FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException;
+    FullOrderDto changeOrder(Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException;
 
     void deleteOrder(Long orderId) throws IOException;
 

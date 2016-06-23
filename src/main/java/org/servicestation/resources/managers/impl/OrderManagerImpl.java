@@ -107,12 +107,7 @@ public class OrderManagerImpl implements IOrderManager {
     }
 
     @Override
-    public FullOrderDto changeOrder(String username, Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException {
-
-        if(!isOrderExist(username, orderId)){
-            throw new OrderNotFoundException("Order with id " + orderId + " not found for user " + username);
-        }
-
+    public FullOrderDto changeOrder(Long orderId, FullOrderDto newOrder) throws OrderNotFoundException, IOException {
         Order order = orderDao.changeOrder(orderId, mapper.mapDtoToServerObject(newOrder));
         Car car = carDao.getCarById(order.car_id);
 
@@ -123,7 +118,7 @@ public class OrderManagerImpl implements IOrderManager {
         dto.services = getServiceDto(newOrder.services.stream()
                 .map(service -> orderServiceDao.assignService(orderId, service.id)).collect(Collectors.toList()));
         dto.carInfo = mapper.mapServerObjectToDto(car);
-        webSocketEventEmitter.emit(username, WebSocketEvent.ORDERS_CHANGED, null);
+        webSocketEventEmitter.emit(order.username, WebSocketEvent.ORDERS_CHANGED, null);
         webSocketEventEmitter.emitForAuthorities(Authority.ROLE_STATION_ADMIN, WebSocketEvent.ORDERS_CHANGED, null);
         return dto;
     }

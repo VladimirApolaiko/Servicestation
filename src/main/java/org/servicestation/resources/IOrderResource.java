@@ -24,8 +24,7 @@ public interface IOrderResource {
     @PUT
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/{orderId}")
-    FullOrderDto changeOrderById(@Context SecurityContext securityContext,
-                                 @PathParam("orderId") Long orderId,
+    FullOrderDto changeOrderById(@PathParam("orderId") Long orderId,
                                  FullOrderDto orderDto) throws OrderNotFoundException, IOException;
 
     @GET
