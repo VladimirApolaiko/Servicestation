@@ -59,7 +59,11 @@ public class AdminResourceImpl implements IAdminResource{
             throw new AccessDeniedException("User is not station admin");
         }
 
-        return userManager.changeUser(username, newUser);
+        UserDto userDto = userManager.changeUser(username, newUser);
+        adminStationManager.unassignAdmin(username);
+        adminStationManager.assignAdmin(username, newUser.stationId);
+        userDto.stationId = newUser.stationId;
+        return userDto;
     }
 
     @Override
@@ -69,8 +73,7 @@ public class AdminResourceImpl implements IAdminResource{
             throw new AccessDeniedException("User is not station admin");
         }
         authoritiesManager.revokeAuthority(username, Authority.ROLE_STATION_ADMIN);
-        AdminStation adminStationByUsername = adminStationManager.getAdminStationByUsername(username);
-        adminStationManager.unassignAdmin(username, adminStationByUsername.stationId);
+        adminStationManager.unassignAdmin(username);
         userManager.deleteUserByUsername(username);
     }
 }

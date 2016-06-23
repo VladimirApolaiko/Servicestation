@@ -18,8 +18,8 @@ public class AdminStationManagerImpl implements IAdminStationManager{
     }
 
     @Override
-    public void unassignAdmin(String username, Integer stationId) {
-        adminStationDao.unassignAdmin(username, stationId);
+    public void unassignAdmin(String username) {
+        adminStationDao.unassignAdmin(username);
     }
 
     @Override

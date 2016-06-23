@@ -33,7 +33,7 @@ public class AdminStationDaoImpl implements IAdminStationDao {
     }
 
     @Override
-    public void unassignAdmin(String username, Integer stationId) {
+    public void unassignAdmin(String username) {
         MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("username", username);
 
